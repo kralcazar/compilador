@@ -7,6 +7,7 @@ Autores: Crist Alcazar y Joan Campaner
 grammar gram;
 
 //TODO: DE MOMENTO LOS IMPORTS NO SON NECESARIOS
+/*
 @header {
 package gram;
 import compilador.*;
@@ -14,106 +15,36 @@ import java.io.*;
 import java.util.Deque;
 import java.util.ArrayDeque;
 }
-
+*/
 
 //LEXER
 
 
 compilationUnit
-    : packageDeclaration? importDeclaration* typeDeclaration*
+    : classBodyDeclaration EOF
     ;
 
-packageDeclaration
-    : PACKAGE qualifiedName ';'
-    ;
-
-importDeclaration
-    : IMPORT STATIC? qualifiedName ('.' '*')? ';'
-    ;
-
-typeDeclaration
-    : classOrInterfaceModifier*
-      (classDeclaration | enumDeclaration | interfaceDeclaration)
-    | ';'
-    ;
-
-modifier
-    : classOrInterfaceModifier
-    | VOLATILE
-    ;
-
-classOrInterfaceModifier
-    : PUBLIC
-    | PROTECTED
-    | PRIVATE
-    | STATIC
-    | ABSTRACT
-    | FINAL    // FINAL for class only -- does not apply to interfaces
-    | STRICTFP
-    ;
-
-variableModifier
-    : FINAL
-    ;
-
-classDeclaration
-    : CLASS identifier typeParameters?
-      (EXTENDS typeType)?
-      classBody
-    ;
-
-typeParameters
-    : '<' typeParameter (',' typeParameter)* '>'
-    ;
-
-typeParameter
-    : identifier (EXTENDS typeBound)?
-    ;
-
-typeBound
-    : typeType ('&' typeType)*
+classBodyDeclaration
+    : ';'
+    | block
+    | memberDeclaration
     ;
 
 enumDeclaration
-    : ENUM identifier (IMPLEMENTS typeList)? '{' enumConstants? ','? enumBodyDeclarations? '}'
+    : ENUM identifier '{' enumConstants? '}'
     ;
 
 enumConstants
     : enumConstant (',' enumConstant)*
     ;
-
 enumConstant
-    : identifier arguments? classBody?
-    ;
-
-enumBodyDeclarations
-    : ';' classBodyDeclaration*
-    ;
-
-interfaceDeclaration
-    : INTERFACE identifier typeParameters? (EXTENDS typeList)? (PERMITS typeList)? interfaceBody
-    ;
-
-classBody
-    : '{' classBodyDeclaration* '}'
-    ;
-
-interfaceBody
-    : '{' interfaceBodyDeclaration* '}'
-    ;
-
-classBodyDeclaration
-    : ';'
-    | STATIC? block
-    | modifier* memberDeclaration
+    : identifier arguments?
     ;
 
 memberDeclaration
     : methodDeclaration
-    | genericMethodDeclaration
-    | constructorDeclaration
-    | genericConstructorDeclaration
-    | classDeclaration
+    | enumDeclaration
+    | fieldDeclaration
     | enumDeclaration
     ;
 
@@ -123,9 +54,7 @@ memberDeclaration
    for invalid return type after parsing.
  */
 methodDeclaration
-    : typeTypeOrVoid identifier formalParameters ('[' ']')*
-      (THROWS qualifiedNameList)?
-      methodBody
+    : typeTypeOrVoid identifier formalParameters ('[' ']')* methodBody
     ;
 
 methodBody
@@ -138,38 +67,8 @@ typeTypeOrVoid
     | VOID
     ;
 
-genericMethodDeclaration
-    : typeParameters methodDeclaration
-    ;
-
-genericConstructorDeclaration
-    : typeParameters constructorDeclaration
-    ;
-
-constructorDeclaration
-    : identifier formalParameters (THROWS qualifiedNameList)? constructorBody=block
-    ;
-
-compactConstructorDeclaration
-    : modifier* identifier constructorBody=block
-    ;
-
 fieldDeclaration
     : typeType variableDeclarators ';'
-    ;
-
-interfaceBodyDeclaration
-    : modifier* interfaceMemberDeclaration
-    | ';'
-    ;
-
-interfaceMemberDeclaration
-    : constDeclaration
-    | interfaceMethodDeclaration
-    | genericInterfaceMethodDeclaration
-    | interfaceDeclaration
-    | classDeclaration
-    | enumDeclaration
     ;
 
 constDeclaration
@@ -178,30 +77,6 @@ constDeclaration
 
 constantDeclarator
     : identifier ('[' ']')* '=' variableInitializer
-    ;
-
-// Early versions of Java allows brackets after the method name, eg.
-// public int[] return2DArray() [] { ... }
-// is the same as
-// public int[][] return2DArray() { ... }
-interfaceMethodDeclaration
-    : interfaceMethodModifier* interfaceCommonBodyDeclaration
-    ;
-
-// Java8
-interfaceMethodModifier
-    : PUBLIC
-    | ABSTRACT
-    | DEFAULT
-    | STATIC
-    ;
-
-genericInterfaceMethodDeclaration
-    : interfaceMethodModifier* typeParameters interfaceCommonBodyDeclaration
-    ;
-
-interfaceCommonBodyDeclaration
-    : typeTypeOrVoid identifier formalParameters ('[' ']')* (THROWS qualifiedNameList)? methodBody
     ;
 
 variableDeclarators
@@ -231,7 +106,6 @@ classOrInterfaceType
 
 typeArgument
     : typeType
-    | ((EXTENDS | SUPER) typeType)?
     ;
 
 
@@ -247,7 +121,7 @@ formalParameters
     ;
 
 receiverParameter
-    : typeType (identifier '.')* THIS
+    : typeType (identifier '.')*
     ;
 
 
@@ -258,11 +132,11 @@ formalParameterList
     ;
 
 formalParameter
-    : variableModifier* typeType variableDeclaratorId
+    : typeType variableDeclaratorId
     ;
 
 lastFormalParameter
-    : variableModifier* typeType '...' variableDeclaratorId
+    : typeType '...' variableDeclaratorId
     ;
 
 
@@ -280,19 +154,8 @@ literal
 // STATEMENTS / BLOCKS
 
 block
-    : '{' blockStatement* '}'
+    : '{' statement* '}'
     ;
-
-blockStatement
-    : localVariableDeclaration ';'
-    | localTypeDeclaration
-    | statement
-    ;
-
-localVariableDeclaration
-    : variableModifier* (VAR identifier '=' expression | typeType variableDeclarators)
-    ;
-
 
 identifier
     : IDENTIFIER
@@ -304,11 +167,6 @@ typeIdentifier  // Identifiers that are not restricted for type declarations
     : IDENTIFIER
     ;
 
-localTypeDeclaration
-    : classOrInterfaceModifier*
-      (classDeclaration | interfaceDeclaration)
-    ;
-
 statement
     : blockLabel=block
     | IF parExpression statement (ELSE statement)?
@@ -316,10 +174,6 @@ statement
     | SEMI
     | statementExpression=expression ';'
     | identifierLabel=identifier ':' statement
-    ;
-
-typeList
-    : typeType (',' typeType)*
     ;
 
 typeType
@@ -340,10 +194,6 @@ superSuffix
     | '.' typeArguments? identifier arguments?
     ;
 
-explicitGenericInvocationSuffix
-    : SUPER superSuffix
-    | identifier arguments
-    ;
 
 arguments
     : '(' expressionList? ')'
@@ -359,8 +209,6 @@ expressionList
 
 methodCall
     : identifier '(' expressionList? ')'
-    | THIS '(' expressionList? ')'
-    | SUPER '(' expressionList? ')'
     ;
 
 expression
@@ -369,10 +217,6 @@ expression
       (
          identifier
        | methodCall
-       | THIS
-       //| NEW nonWildcardTypeArguments? innerCreator
-       | SUPER superSuffix
-       //| explicitGenericInvocation
       )
     | expression '[' expression ']'
     | methodCall
@@ -393,11 +237,8 @@ classType
 
 primary
     : '(' expression ')'
-    | THIS
-    | SUPER
     | literal
     | identifier
-    | typeTypeOrVoid '.' CLASS
     ;
 
 // PARSER
@@ -405,9 +246,19 @@ primary
 // Palabras clave
 INT:        'entero';
 BOOLEAN:    'boleano';
+ENUM:               'enum';
+VOID:               'void';
+IF:                 'if';
+ELSE:               'else';
+RETURN:             'return';
 
 // Literales
 NULL_LITERAL:       'null';
+DECIMAL_LITERAL:    ('0' | [1-9] (Digits? | '_'+ Digits)) [lL]?;
+
+BOOL_LITERAL:       'true'
+            |       'false'
+            ;
 
 // Separadores
 LPAREN:             '(';
@@ -432,26 +283,26 @@ SUB:                '-';
 
 // Identificadores
 
-IDENTIFIER:         Letra LetraODigito*;
+IDENTIFIER:         Letter LetterOrDigit*;
 
 // Reglas de fragment
 
 //TODO: NO SE SI ES NECESARIO
-fragment SecuenciaEscape
+fragment EscapeSequence
     : '\\' [btnfr"'\\]
     | '\\' ([0-3]? [0-7])? [0-7]
 //    | '\\' 'u'+ HexDigit HexDigit HexDigit HexDigit
     ;
 //FINTODO;
 
-fragment Digitos
+fragment Digits
     : [0-9] ([0-9_]* [0-9])?
     ;
-fragment LetraODigito
-    : Letra
+fragment LetterOrDigit
+    : Letter
     | [0-9]
     ;
-fragment Letra
+fragment Letter
     : [a-zA-Z$_] // los caracteres "clásicos" de JAVA, usados para respetar el tipo de dato primitivo char de las primeras versiones de JAVA
     | ~[\u0000-\u007F\uD800-\uDBFF] // cubre todos los caracteres por encima de 0x7F que no son sustituídos por versiones nuevas de JAVA
     | [\uD800-\uDBFF] [\uDC00-\uDFFF] // cubre los pares de códigos sustituídos UTF-16 desde U+10000 a U+10FFFF
