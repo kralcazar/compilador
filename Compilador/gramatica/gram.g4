@@ -19,6 +19,386 @@ import java.util.ArrayDeque;
 //LEXER
 
 
+compilationUnit
+    : packageDeclaration? importDeclaration* typeDeclaration*
+    ;
+
+packageDeclaration
+    : PACKAGE qualifiedName ';'
+    ;
+
+importDeclaration
+    : IMPORT STATIC? qualifiedName ('.' '*')? ';'
+    ;
+
+typeDeclaration
+    : classOrInterfaceModifier*
+      (classDeclaration | enumDeclaration | interfaceDeclaration)
+    | ';'
+    ;
+
+modifier
+    : classOrInterfaceModifier
+    | VOLATILE
+    ;
+
+classOrInterfaceModifier
+    : PUBLIC
+    | PROTECTED
+    | PRIVATE
+    | STATIC
+    | ABSTRACT
+    | FINAL    // FINAL for class only -- does not apply to interfaces
+    | STRICTFP
+    ;
+
+variableModifier
+    : FINAL
+    ;
+
+classDeclaration
+    : CLASS identifier typeParameters?
+      (EXTENDS typeType)?
+      classBody
+    ;
+
+typeParameters
+    : '<' typeParameter (',' typeParameter)* '>'
+    ;
+
+typeParameter
+    : identifier (EXTENDS typeBound)?
+    ;
+
+typeBound
+    : typeType ('&' typeType)*
+    ;
+
+enumDeclaration
+    : ENUM identifier (IMPLEMENTS typeList)? '{' enumConstants? ','? enumBodyDeclarations? '}'
+    ;
+
+enumConstants
+    : enumConstant (',' enumConstant)*
+    ;
+
+enumConstant
+    : identifier arguments? classBody?
+    ;
+
+enumBodyDeclarations
+    : ';' classBodyDeclaration*
+    ;
+
+interfaceDeclaration
+    : INTERFACE identifier typeParameters? (EXTENDS typeList)? (PERMITS typeList)? interfaceBody
+    ;
+
+classBody
+    : '{' classBodyDeclaration* '}'
+    ;
+
+interfaceBody
+    : '{' interfaceBodyDeclaration* '}'
+    ;
+
+classBodyDeclaration
+    : ';'
+    | STATIC? block
+    | modifier* memberDeclaration
+    ;
+
+memberDeclaration
+    : methodDeclaration
+    | genericMethodDeclaration
+    | constructorDeclaration
+    | genericConstructorDeclaration
+    | classDeclaration
+    | enumDeclaration
+    ;
+
+/* We use rule this even for void methods which cannot have [] after parameters.
+   This simplifies grammar and we can consider void to be a type, which
+   renders the [] matching as a context-sensitive issue or a semantic check
+   for invalid return type after parsing.
+ */
+methodDeclaration
+    : typeTypeOrVoid identifier formalParameters ('[' ']')*
+      (THROWS qualifiedNameList)?
+      methodBody
+    ;
+
+methodBody
+    : block
+    | ';'
+    ;
+
+typeTypeOrVoid
+    : typeType
+    | VOID
+    ;
+
+genericMethodDeclaration
+    : typeParameters methodDeclaration
+    ;
+
+genericConstructorDeclaration
+    : typeParameters constructorDeclaration
+    ;
+
+constructorDeclaration
+    : identifier formalParameters (THROWS qualifiedNameList)? constructorBody=block
+    ;
+
+compactConstructorDeclaration
+    : modifier* identifier constructorBody=block
+    ;
+
+fieldDeclaration
+    : typeType variableDeclarators ';'
+    ;
+
+interfaceBodyDeclaration
+    : modifier* interfaceMemberDeclaration
+    | ';'
+    ;
+
+interfaceMemberDeclaration
+    : constDeclaration
+    | interfaceMethodDeclaration
+    | genericInterfaceMethodDeclaration
+    | interfaceDeclaration
+    | classDeclaration
+    | enumDeclaration
+    ;
+
+constDeclaration
+    : typeType constantDeclarator (',' constantDeclarator)* ';'
+    ;
+
+constantDeclarator
+    : identifier ('[' ']')* '=' variableInitializer
+    ;
+
+// Early versions of Java allows brackets after the method name, eg.
+// public int[] return2DArray() [] { ... }
+// is the same as
+// public int[][] return2DArray() { ... }
+interfaceMethodDeclaration
+    : interfaceMethodModifier* interfaceCommonBodyDeclaration
+    ;
+
+// Java8
+interfaceMethodModifier
+    : PUBLIC
+    | ABSTRACT
+    | DEFAULT
+    | STATIC
+    ;
+
+genericInterfaceMethodDeclaration
+    : interfaceMethodModifier* typeParameters interfaceCommonBodyDeclaration
+    ;
+
+interfaceCommonBodyDeclaration
+    : typeTypeOrVoid identifier formalParameters ('[' ']')* (THROWS qualifiedNameList)? methodBody
+    ;
+
+variableDeclarators
+    : variableDeclarator (',' variableDeclarator)*
+    ;
+
+variableDeclarator
+    : variableDeclaratorId ('=' variableInitializer)?
+    ;
+
+variableDeclaratorId
+    : identifier ('[' ']')*
+    ;
+
+variableInitializer
+    : arrayInitializer
+    | expression
+    ;
+
+arrayInitializer
+    : '{' (variableInitializer (',' variableInitializer)* (',')? )? '}'
+    ;
+
+classOrInterfaceType
+    : (identifier typeArguments? '.')* typeIdentifier typeArguments?
+    ;
+
+typeArgument
+    : typeType
+    | ((EXTENDS | SUPER) typeType)?
+    ;
+
+
+qualifiedNameList
+    : qualifiedName (',' qualifiedName)*
+    ;
+
+formalParameters
+    : '(' ( receiverParameter?
+          | receiverParameter (',' formalParameterList)?
+          | formalParameterList?
+          ) ')'
+    ;
+
+receiverParameter
+    : typeType (identifier '.')* THIS
+    ;
+
+
+
+formalParameterList
+    : formalParameter (',' formalParameter)* (',' lastFormalParameter)?
+    | lastFormalParameter
+    ;
+
+formalParameter
+    : variableModifier* typeType variableDeclaratorId
+    ;
+
+lastFormalParameter
+    : variableModifier* typeType '...' variableDeclaratorId
+    ;
+
+
+qualifiedName
+    : identifier ('.' identifier)*
+    ;
+
+literal
+    : DECIMAL_LITERAL
+    | BOOL_LITERAL
+    | NULL_LITERAL
+    ;
+
+
+// STATEMENTS / BLOCKS
+
+block
+    : '{' blockStatement* '}'
+    ;
+
+blockStatement
+    : localVariableDeclaration ';'
+    | localTypeDeclaration
+    | statement
+    ;
+
+localVariableDeclaration
+    : variableModifier* (VAR identifier '=' expression | typeType variableDeclarators)
+    ;
+
+
+identifier
+    : IDENTIFIER
+//    | VAR
+    ;
+
+
+typeIdentifier  // Identifiers that are not restricted for type declarations
+    : IDENTIFIER
+    ;
+
+localTypeDeclaration
+    : classOrInterfaceModifier*
+      (classDeclaration | interfaceDeclaration)
+    ;
+
+statement
+    : blockLabel=block
+    | IF parExpression statement (ELSE statement)?
+    | RETURN expression? ';'
+    | SEMI
+    | statementExpression=expression ';'
+    | identifierLabel=identifier ':' statement
+    ;
+
+typeList
+    : typeType (',' typeType)*
+    ;
+
+typeType
+    : (classOrInterfaceType | primitiveType)
+    ;
+
+primitiveType
+    : BOOLEAN
+    | INT
+    ;
+
+typeArguments
+    : '<' typeArgument (',' typeArgument)* '>'
+    ;
+
+superSuffix
+    : arguments
+    | '.' typeArguments? identifier arguments?
+    ;
+
+explicitGenericInvocationSuffix
+    : SUPER superSuffix
+    | identifier arguments
+    ;
+
+arguments
+    : '(' expressionList? ')'
+    ;
+
+parExpression
+    : '(' expression ')'
+    ;
+
+expressionList
+    : expression (',' expression)*
+    ;
+
+methodCall
+    : identifier '(' expressionList? ')'
+    | THIS '(' expressionList? ')'
+    | SUPER '(' expressionList? ')'
+    ;
+
+expression
+    : primary
+    | expression bop='.'
+      (
+         identifier
+       | methodCall
+       | THIS
+       //| NEW nonWildcardTypeArguments? innerCreator
+       | SUPER superSuffix
+       //| explicitGenericInvocation
+      )
+    | expression '[' expression ']'
+    | methodCall
+    //| NEW creator
+    | '(' typeType ('&' typeType)* ')' expression
+    | prefix=('+'|'-') expression
+    | expression =('+'|'-') expression
+    | expression =('>' | '<') expression
+    | expression ='&&' expression
+    | expression ='||' expression
+    | <assoc=right> expression
+      expression
+    ;
+
+classType
+    : (classOrInterfaceType '.')? identifier typeArguments?
+    ;
+
+primary
+    : '(' expression ')'
+    | THIS
+    | SUPER
+    | literal
+    | identifier
+    | typeTypeOrVoid '.' CLASS
+    ;
 
 // PARSER
 
