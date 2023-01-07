@@ -1,0 +1,9 @@
+indice{
+    devolver 3;
+}
+
+funcion ent test(){
+    devolver null;
+}
+ent i;
+

@@ -7,19 +7,21 @@ Autores: Crist Alcazar y Joan Campaner
 grammar gram;
 
 //TODO: DE MOMENTO LOS IMPORTS NO SON NECESARIOS
-/*
+
 @header {
 package gram;
+
+}
+/*
 import compilador.*;
 import java.io.*;
 import java.util.Deque;
 import java.util.ArrayDeque;
-}
 */
 
 //LEXER
 
-
+//Start variable
 compilationUnit
     : classBodyDeclaration EOF
     ;
@@ -45,7 +47,6 @@ memberDeclaration
     : methodDeclaration
     | enumDeclaration
     | fieldDeclaration
-    | enumDeclaration
     ;
 
 /* We use rule this even for void methods which cannot have [] after parameters.
