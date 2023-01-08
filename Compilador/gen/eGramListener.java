@@ -54,16 +54,6 @@ public interface eGramListener extends ParseTreeListener {
 	 */
 	void exitArrayDecl(eGramParser.ArrayDeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramParser#arrayDecl_}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayDecl_(eGramParser.ArrayDecl_Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramParser#arrayDecl_}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayDecl_(eGramParser.ArrayDecl_Context ctx);
-	/**
 	 * Enter a parse tree produced by {@link eGramParser#number}.
 	 * @param ctx the parse tree
 	 */
@@ -104,6 +94,16 @@ public interface eGramListener extends ParseTreeListener {
 	 */
 	void exitParam(eGramParser.ParamContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link eGramParser#sentsVoid}.
+	 * @param ctx the parse tree
+	 */
+	void enterSentsVoid(eGramParser.SentsVoidContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramParser#sentsVoid}.
+	 * @param ctx the parse tree
+	 */
+	void exitSentsVoid(eGramParser.SentsVoidContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link eGramParser#sents}.
 	 * @param ctx the parse tree
 	 */
@@ -133,26 +133,6 @@ public interface eGramListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSent(eGramParser.SentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramParser#switchcase}.
-	 * @param ctx the parse tree
-	 */
-	void enterSwitchcase(eGramParser.SwitchcaseContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramParser#switchcase}.
-	 * @param ctx the parse tree
-	 */
-	void exitSwitchcase(eGramParser.SwitchcaseContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramParser#switchcase_}.
-	 * @param ctx the parse tree
-	 */
-	void enterSwitchcase_(eGramParser.Switchcase_Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramParser#switchcase_}.
-	 * @param ctx the parse tree
-	 */
-	void exitSwitchcase_(eGramParser.Switchcase_Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link eGramParser#casei}.
 	 * @param ctx the parse tree

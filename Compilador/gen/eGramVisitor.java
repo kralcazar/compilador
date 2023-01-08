@@ -41,12 +41,6 @@ public interface eGramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArrayDecl(eGramParser.ArrayDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramParser#arrayDecl_}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayDecl_(eGramParser.ArrayDecl_Context ctx);
-	/**
 	 * Visit a parse tree produced by {@link eGramParser#number}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -71,6 +65,12 @@ public interface eGramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParam(eGramParser.ParamContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link eGramParser#sentsVoid}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSentsVoid(eGramParser.SentsVoidContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link eGramParser#sents}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -88,18 +88,6 @@ public interface eGramVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSent(eGramParser.SentContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramParser#switchcase}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSwitchcase(eGramParser.SwitchcaseContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramParser#switchcase_}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSwitchcase_(eGramParser.Switchcase_Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link eGramParser#casei}.
 	 * @param ctx the parse tree

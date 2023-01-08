@@ -71,18 +71,6 @@ public class eGramBaseListener implements eGramListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArrayDecl_(eGramParser.ArrayDecl_Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitArrayDecl_(eGramParser.ArrayDecl_Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterNumber(eGramParser.NumberContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -131,6 +119,18 @@ public class eGramBaseListener implements eGramListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSentsVoid(eGramParser.SentsVoidContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSentsVoid(eGramParser.SentsVoidContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSents(eGramParser.SentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -162,30 +162,6 @@ public class eGramBaseListener implements eGramListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSent(eGramParser.SentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSwitchcase(eGramParser.SwitchcaseContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSwitchcase(eGramParser.SwitchcaseContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSwitchcase_(eGramParser.Switchcase_Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSwitchcase_(eGramParser.Switchcase_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

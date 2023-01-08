@@ -74,12 +74,13 @@ decl:
     ;
 
 arrayDecl:
-	type ID {Tuple tuple = new Tuple($type.dataType); } LBRACK ( number '..' )? number arrayDecl_[tuple] RBRACK SEMI;
+	type ID /*{Tuple tuple = new Tuple($type.dataType); }*/ LBRACK ( number '..' )? number /*arrayDecl_[tuple]*/ RBRACK SEMI;
 
+/* Para añadir más dimensiones
 arrayDecl_[Tuple tuple]:
     RBRACK LBRACK ( number '..' )? number arrayDecl_[$tuple]
     |;//lambda
-
+*/
 number returns[int value, boolean constant]:
 	ID
 	| LiteralInteger;
@@ -107,20 +108,22 @@ sents_:
 sent:
 	IF expr BEGIN decl* sents END
 	| IF expr BEGIN decl* sents END ELSE BEGIN decl* sents END
-	| switchcase endcase END
+//	| switchcase endcase END
 	| WHILE expr BEGIN decl* sents END
+	| DO BEGIN decl* sents END WHILE expr SEMI
 	| RETURN expr SEMI
 	| RETURN SEMI
 	| reference[true] ASSIGN expr SEMI
 	| reference[false] SEMI;
 
+/*
 switchcase:
 	SWITCH expr BEGIN switchcase_;
 
 switchcase_:
     casei switchcase_
     |; // lambda
-
+*/
 casei:
 	CASE expr COLON sents (BREAK SEMI)?;
 
@@ -233,11 +236,12 @@ RETURN: 'devolver';
 // Tipos
 INTEGER: 'ent';
 BOOLEAN: 'logico';
-STRING: 'string';
+STRING: 'palabra';
 // Operaciones
 WHILE: 'mientras';
+DO: 'hacer';
 IF: 'si';
-ELSE: 'else';
+ELSE: 'sino';
 SWITCH: 'switch';
 CASE: 'case';
 DEFAULT: 'default';

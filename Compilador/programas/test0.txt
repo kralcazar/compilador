@@ -1,9 +1,19 @@
 indice{
-    devolver 3;
+
+    ent i = 6;
+    test();
+    mientras (i == 5) {
+        i = i +1;
+    }
+
+    hacer{
+        i = i +1;
+    } mientras (w);
+    devolver;
 }
 
-funcion ent test(){
-    devolver null;
+funcion ent test(ent help) {
+    devolver help;
 }
-ent i;
+
 
