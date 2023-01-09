@@ -14,26 +14,22 @@ import compilador.*;
 
 public class Main {
     public static void main(String[] args) throws Exception  {
-        System.out.println("Hello world!");
-        System.out.println("Trying to read a txt file");
-        System.out.println(System.getProperty("user.dir") + "\\programas\\test.txt");
-        String file = System.getProperty("user.dir") + "\\programas\\test.esl";
-        String buildPath = "pruebas\\final\\" + "prueba" + "\\";
-
-        try {
-            File program = new File(file);
-            Scanner myReader = new Scanner(program);
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                System.out.println(data);
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+        if(args.length==0) {
+            System.out.println("Argumentos necesarios no encontrados");
+            return;
         }
-
-        CharStream stream = CharStreams.fromFileName(file); //TODO: Da error cuando el parametro contiene una ruta al archivo del programa
+        //String file = System.getProperty("user.dir") + "\\programas\\test.esl";
+        //String buildPath = System.getProperty("user.dir") + "\\programas\\test.esl";
+        // Nombre del archivo procesado
+        String filename = FilenameUtils.getBaseName(args[0]);
+        String buildPath = System.getProperty("user.dir") + "\\programas\\" + filename + "\\";
+        File buildDir = new File(buildPath);
+        if (!buildDir.mkdirs()) {
+            FileUtils.cleanDirectory(buildDir);
+        }
+        System.out.println(args[0]);
+        System.out.println(System.getProperty("user.dir") + "\\programas\\" + args[0]);
+        CharStream stream = CharStreams.fromFileName(System.getProperty("user.dir") + "\\programas\\" + args[0]); //TODO: Da error cuando el parametro contiene una ruta al archivo del programa
 
         // Se obtienen los tokens a partir de la gramática
         eGramLexer lexer = new eGramLexer(stream);
