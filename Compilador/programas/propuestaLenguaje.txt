@@ -1,0 +1,33 @@
+LENGUAJE COMPILADORES 2023 (Easy Language -> ESL)
+	-Todos los ficheros que se leerán son .esl
+	-El "main" del programa será: indice{ -instrucciones- }
+	-Las funciones serán: funcion(arg1, arg2){ -instrucciones- }
+	TIPOS
+		-Entero: ent [EJ. -> ent i = 2;]
+		-lógico: logico [EJ. -> logico myVar = verdadero;]
+	TIPOS DEFINIDOS POR EL USUARIO
+		-Tuplas: vector[] [EJ. -> vector[3] cesta = [platanos, manzanas, peras]
+	VALORES
+		-Las variables no llevan ningún identificativo [EJ. -> ent i = 2; es variable]
+		-Constantes: const [EJ. -> const ent i = 3;]
+	OPERACIONES
+		-Asignación: = [EJ. -> x = 2;]
+		-Condicional: si(-condicion-){-instrucciones-} [EJ. -> si(x == 2){x=x+1}]
+		-Bucles: mientras(-condicion-){-instrucciones-} [EJ. -> mientras(x == 3) {x=x+2}]
+				para(-asignación inicial-, -condicion-, -incremento-){-instrucciones} [EJ. -> para(i=0,i<3,i++) {x=x+1}]
+	LLAMADA FUNCIONES
+		-Se llama con el nombre de la función y los argumentos [EJ. -> sumaIVA(precio)]
+		-Retorno de funciones: devolver [EJ. -> funcion sumaIVA(ent i){ i = i + 10; devolver i;}
+	OPERACIONES DE ENTRADA Y SALIDA
+		-Entrada por teclado: leer()
+		-Salida por pantalla: escribir(-variable o constante-)
+	OPERADORES
+		ARITMETICOS
+			-Suma: + [EJ. -> x = 2 + 4;]
+			-Resta - [EJ. -> x = 3 - 1;]
+		RELACIONALES
+			-Igual: == [EJ. -> si(x == 2){escribir("Se cumple");}]
+			-Menor: < [EJ. -> si(x < 5){escribir("Se cumple");}]
+		LÓGICOS
+			-y: Y [EJ. -> si(x == 2 Y z == 3){escribir("Se cumple");}]
+			-o: O [EJ. -> si(x == 2 O z == 3){escribir("Se cumple");}]
