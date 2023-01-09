@@ -123,30 +123,35 @@ switchcase:
 switchcase_:
     casei switchcase_
     |; // lambda
-*/
+
 casei:
 	CASE expr COLON sents (BREAK SEMI)?;
 
 endcase:
     DEFAULT COLON sents
     |;
-
-reference[boolean assign] returns[Symbol s, Tuple tuple, boolean dimCheck]:
+*/
+//reference[boolean assign] returns[Symbol s, Tuple tuple, boolean dimCheck]:
+//He quitado Tuple porque me da error
+reference[boolean assign] returns[Symbol s, boolean dimCheck]:
 	ID
 	| idx RBRACK
-	| ID LPAREN RPAREN
-	| contIdx RPAREN;
-
-idx returns[Symbol s, int dim, Tuple tuple]:
-	ID LBRACK expr idx_[d];
+	| ID LPAREN RPAREN;
+//	| contIdx RPAREN; //da error
+//idx returns[Symbol s, int dim, Tuple tuple]:
+//La variable d da error en compilador, la he modificado por dim y añadido $
+idx returns[Symbol s, int dim]:
+	ID LBRACK expr idx_[$dim];
 
 idx_[int dim1] returns[int dim]:
-	RBRACK LBRACK expr  idx_[d]
+	RBRACK LBRACK expr  idx_[$dim]
 	|;
 
+//da error la variable pparams
+/*
 contIdx returns[Symbol s]:
 	ID LPAREN expr contIdx_[pparams];
-
+*/
 contIdx_[Deque<Symbol.DataTypes> pparams]:
 	COMMA expr contIdx_[$pparams]
 	|; // lambda

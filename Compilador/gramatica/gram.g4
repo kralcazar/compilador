@@ -22,7 +22,7 @@ import java.util.ArrayDeque;
 //LEXER
 
 //Start variable
-compilationUnit
+program
     : classBodyDeclaration EOF
     ;
 
@@ -30,17 +30,6 @@ classBodyDeclaration
     : ';'
     | block
     | memberDeclaration
-    ;
-
-enumDeclaration
-    : ENUM identifier '{' enumConstants? '}'
-    ;
-
-enumConstants
-    : enumConstant (',' enumConstant)*
-    ;
-enumConstant
-    : identifier arguments?
     ;
 
 memberDeclaration
@@ -61,6 +50,17 @@ methodDeclaration
 methodBody
     : block
     | ';'
+    ;
+
+enumDeclaration
+    : ENUM identifier '{' enumConstants? '}'
+    ;
+
+enumConstants
+    : enumConstant (',' enumConstant)*
+    ;
+enumConstant
+    : identifier arguments?
     ;
 
 typeTypeOrVoid
@@ -107,11 +107,6 @@ classOrInterfaceType
 
 typeArgument
     : typeType
-    ;
-
-
-qualifiedNameList
-    : qualifiedName (',' qualifiedName)*
     ;
 
 formalParameters
