@@ -27,21 +27,40 @@ public class Main {
         if (!buildDir.mkdirs()) {
             FileUtils.cleanDirectory(buildDir);
         }
-        System.out.println(args[0]);
-        System.out.println(System.getProperty("user.dir") + "\\programas\\" + args[0]);
-        CharStream stream = CharStreams.fromFileName(System.getProperty("user.dir") + "\\programas\\" + args[0]); //TODO: Da error cuando el parametro contiene una ruta al archivo del programa
+        System.out.println("Leyendo "+args[0]);
+        CharStream stream = CharStreams.fromFileName(System.getProperty("user.dir") + "\\programas\\" + args[0]);
 
         // Se obtienen los tokens a partir de la gramática
         eGramLexer lexer = new eGramLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        System.out.println(tokens);
         tokens.fill();
         File tokensFile = new File(buildPath + "tokens.txt");
         try (Writer buffer = new BufferedWriter(new FileWriter(tokensFile))) {
             for (Token tok : tokens.getTokens()) {
                 buffer.write(tok.getText() + '\n');
+                System.out.println(tok.getText());
             }
             buffer.close();
+        }
+
+
+        // Análisis del código fuente
+        eGramParser parser = new eGramParser(tokens);
+        try {
+            tokens.seek(0);
+            parser.program();
+            System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT
+                    + "Proceso de análisis completado con éxito" + ConsoleColors.RESET);
+        } catch (RuntimeException e) {
+            System.out.println("Se encontraron errores en el código:");
+            System.out.println(ConsoleColors.RED_BOLD + e.getMessage() + ConsoleColors.RESET);
+            File erroresFile = new File(buildPath + "errores.txt");
+            Writer buffer = new BufferedWriter(new FileWriter(erroresFile));
+            if (e != null) {
+                buffer.write(e.getMessage());
+            }
+            buffer.close();
+            return;
         }
     }
 }

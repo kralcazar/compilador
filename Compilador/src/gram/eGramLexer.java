@@ -109,6 +109,13 @@ public class eGramLexer extends Lexer {
 	}
 
 
+	@Override
+	public void recover(RecognitionException ex)
+	{
+		throw new RuntimeException("Error léxico -  "+ex.getMessage());
+	}
+
+
 	public eGramLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
