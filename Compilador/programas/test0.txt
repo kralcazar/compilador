@@ -1,7 +1,6 @@
 indice{
 
     ent i = 6;
-    ent i = 6;
 
     test();
     mientras (i == 5) {
@@ -9,13 +8,12 @@ indice{
     }
 
     hacer{
-        i = i *1;
-    } mientras (w);
-    devolver;
+        i = i + 1;
+    } mientras (i < 50);
 }
 
-funcion ent test(ent help) {
-    devolver help;
+funcion ent test() {
+    devolver 5 ;
 }
 
 

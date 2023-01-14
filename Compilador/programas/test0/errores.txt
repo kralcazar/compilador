@@ -1,2 +1,2 @@
-Error semántico en línea 4: variable 'i' previamente declarada
-Error semántico en línea 17: 'return' no encontrado para la función 'test'
+Error semántico en línea 16: devolver de expresión en un procedimiento
+Error semántico en línea 15: 'devolver' no encontrado para la función 'test'

@@ -15,8 +15,9 @@ int depthCondition;
 String errors="";
 String folder;
 Deque<Symbol> proceduresStack = new ArrayDeque<Symbol>();
+
 //El constructor aquí no hace nada (de momento)
-public eGramParser(TokenStream input,String folder){
+public eGramParser(TokenStream input, String folder){
 	this(input);
 	this.folder=folder;
 }
@@ -184,9 +185,10 @@ decl:
         {
             symbolTable = symbolTable.blockOut();
             proceduresStack.pop();
+            System.out.println($header.procedure.getId());
             if(!$header.procedure.isReturnFound()) {
                 errors += "Error semántico en línea " + $FUNCTION.getLine() +
-                ": 'return' no encontrado para la función '" + $header.procedure.getId() + "'\n";
+                ": 'devolver' no encontrado para la función '" + $header.procedure.getId() + "'\n";
             }
             if(depthCondition != 0) {
                 errors += "Error semántico - Línea " + $FUNCTION.getLine() +
@@ -238,15 +240,128 @@ sents_:
     |;
 
 sent:
-	IF expr BEGIN decl* sents END
-	| IF expr BEGIN decl* sents END ELSE BEGIN decl* sents END
+	IF expr
+	    {
+	        if($expr.dataType!=Symbol.DataTypes.BOOLEAN) {
+                errors+="Error semántico en línea " + $IF.getLine() +
+                ": tipos incompatibles (esperado 'BOOLEAN', encontrado '" + $expr.dataType + "')\n";
+            }
+	    }
+	    BEGIN
+	    {
+	        depthCondition ++;
+	        symbolTable = symbolTable.blockIn();
+	    }
+	    decl* sents
+	    {
+	        depthCondition --;
+            symbolTable = symbolTable.blockOut();
+	    }
+	    END
+	| IF expr
+	    {
+	        if($expr.dataType!=Symbol.DataTypes.BOOLEAN) {
+                errors+="Error semántico en línea " + $IF.getLine() +
+                ": tipos incompatibles (esperado 'BOOLEAN', encontrado '" + $expr.dataType + "')\n";
+            }
+	    }
+	    BEGIN
+	    {
+	        depthCondition ++;
+	        symbolTable = symbolTable.blockIn();
+	    }
+	    decl* sents
+	    {
+            symbolTable = symbolTable.blockOut();
+	    }
+	    END ELSE BEGIN
+	    {
+	        symbolTable = symbolTable.blockIn();
+	    }
+	    decl* sents
+	    {
+	        depthCondition --;
+            symbolTable = symbolTable.blockOut();
+	    }
+	    END
 //	| switchcase endcase END
 	| WHILE expr BEGIN decl* sents END
 	| DO BEGIN decl* sents END WHILE expr SEMI
 	| RETURN expr SEMI
+	    {
+	        Symbol procedure;
+            if(proceduresStack.size()==0) {
+                // Return fuera de una función
+                errors += "Error semántico en línea " + $RETURN.getLine() + ": devolver fuera de función\n";
+            } else {
+                procedure = proceduresStack.peek();
+                if (procedure.getType() == Symbol.Types.PROC) {
+                    // Devolver no vacío en un procedimiento
+                    errors += "Error semántico en línea " + $RETURN.getLine() +
+                    ": devolver de expresión en un procedimiento\n";
+                } else if(procedure.dataType() != $expr.dataType) {
+                    // Devolver de tipo incorrecto
+                    errors += "Error semántico en línea " + $RETURN.getLine() +
+                    ": devolver de tipo incorrecto (esperado '" + proceduresStack.peek().dataType() +
+                    "', encontrado '" + $expr.dataType + "')\n";
+                } else if(depthCondition == 0) {
+                    // Devolver correcto
+
+            System.out.println(proceduresStack.peek().getId());
+                    proceduresStack.peek().setReturnFound(true);
+                }
+            }
+	    }
 	| RETURN SEMI
+	    {
+	        Symbol procedure;
+            if(proceduresStack.size()==0) {
+                // Devolver fuera de una función
+                errors += "Error semántico en línea " + $RETURN.getLine() + ": devolver fuera de función\n";
+            } else {
+                procedure = proceduresStack.peek();
+                if (procedure.getType() == Symbol.Types.FUNC) {
+                    // Devolver vacío en una función
+                    errors += "Error semántico en línea " + $RETURN.getLine() +
+                    ": devolver vacío en una función)\n";
+                }
+            }
+	    }
 	| reference[true] ASSIGN expr SEMI
-	| reference[false] SEMI;
+	    {
+	        if($reference.symbol != null) {
+                if($reference.symbol.getType() == Symbol.Types.CONST) {
+                    errors += "Error semántico en línea " + $ASSIGN.getLine() + ": " + $reference.symbol.getId() +
+                    " es una constante\n";
+                } else{
+                    Symbol.DataTypes underlType;
+                    if($reference.table != null && $reference.dimCheck) {
+                        underlType = $reference.table.dataType();
+                    } else {
+                        underlType = $reference.symbol.dataType();
+                    }
+                    if($reference.symbol.getType() == Symbol.Types.FUNC || underlType == Symbol.DataTypes.NULL) {
+                        errors += "Error semántico en línea " + $ASSIGN.getLine() +
+                        ": no se pueden asignar valores a esta referencia\n";
+                    } else if(underlType != $expr.dataType) {
+                            errors+="Error semántico en línea " + $ASSIGN.getLine() +
+                            ": asignación de tipo incorrecto (esperado '"+ underlType +
+                            "', encontrado '"+$expr.dataType+"')\n";
+                    }
+                }
+            }
+	    }
+	| reference[false] SEMI
+	{
+	    if($reference.symbol != null) {
+            if($reference.symbol.getType() != Symbol.Types.FUNC && $reference.symbol.getType() != Symbol.Types.PROC) {
+                // Tiene que ser función o procedimiento
+                errors += "Error semántico en línea " + $SEMI.getLine() +
+                ": se esperaba una función o un procedimiento\n";
+            }
+        }
+	}
+	;
 
 /*
 switchcase:
@@ -265,8 +380,24 @@ endcase:
 */
 //reference[boolean assign] returns[Symbol s, Tuple tuple, boolean dimCheck]:
 //He quitado Tuple porque me da error
-reference[boolean assign] returns[Symbol s, boolean dimCheck]:
+reference[boolean assign] returns[Symbol symbol, Table table, boolean dimCheck]:
 	ID
+	    {
+	        try {
+                $symbol = symbolTable.get($ID.getText());
+                if($assign) {
+                    $symbol.setInitialized(true);
+                } else {
+                    if(!$symbol.isInitialized()) {
+                        errors += "Error semántico en línea " + $ID.getLine() + ": '" + $ID.getText() +
+                        "' no ha sido inicializada\n";
+                    }
+                }
+            } catch (SymbolTable.SymbolTableException e) {
+                errors += "Error semántico en línea " + $ID.getLine() + ": " + e.getMessage() + "\n";
+                $symbol = null;
+            }
+	    }
 	| idx RBRACK
 	| ID LPAREN RPAREN;
 //	| contIdx RPAREN; //da error

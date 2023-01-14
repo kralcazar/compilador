@@ -45,7 +45,7 @@ public class Main {
 
 
         // Análisis del código fuente
-        eGramParser parser = new eGramParser(tokens);
+        eGramParser parser = new eGramParser(tokens, buildPath);
         try {
             tokens.seek(0);
             parser.program();

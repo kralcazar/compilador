@@ -8,16 +8,16 @@ package compilador;
  * @author @gianm99
  */
 public class Table {
-    private Symbol.DataTypes dataTypes; // Tipo subyacente de la tabla
+    private Symbol.DataTypes dataType; // Tipo subyacente de la tabla
     private Index primero, ultimo; // Inicio y fin de lista de índices
     private int b; // Desplazamiento conocido en tiempo de compilación
     private int ocupacion; // Ocupación (bytes) de cada elemento
     private int dimensiones; // Número de dimensiones de la tabla
     private int entradas; // Número de entradas de la tabla
 
-    public Table(Symbol.DataTypes dataTypes) {
-        // TSub.NULL porque la tabla no tiene tipo subyacente
-        this.dataTypes = dataTypes;
+    public Table(Symbol.DataTypes dataType) {
+        // dataType.NULL porque la tabla no tiene tipo subyacente
+        this.dataType = dataType;
         this.primero = null;
         this.ultimo = null;
         this.ocupacion = 4; // Todos los tipos de datos ocupan 4 bytes
@@ -92,8 +92,8 @@ public class Table {
      * 
      * @return El tipo subyacente de los elementos de la tabla.
      */
-    public Symbol.DataTypes tsubt() {
-        return dataTypes;
+    public Symbol.DataTypes dataType() {
+        return dataType;
     }
 
     /**
