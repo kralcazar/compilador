@@ -60,7 +60,7 @@ public void notifyErrorListeners(Token offendingToken, String msg, RecognitionEx
 @Override
 public void recover(RecognitionException ex)
 {
-	throw new RuntimeException("Error léxico -  "+ex.getMessage());
+	throw new RuntimeException("Error léxico:  "+ex.getMessage());
 }
 }
 
@@ -74,13 +74,13 @@ program:
     	symbolTable = new SymbolTable(folder);
     	// Insertar operaciones de input/output
     	try {
-    		symbolTable.insert("read",new Symbol("read",null,Symbol.Types.FUNC,Symbol.DataTypes.STRING));
-    		Symbol arg = new Symbol("argBool",null,Symbol.Types.ARG,Symbol.DataTypes.BOOLEAN);
-    		symbolTable.insert("printb", new Symbol("printb",arg,Symbol.Types.PROC, Symbol.DataTypes.NULL));
-    		arg = new Symbol("argInt",null,Symbol.Types.ARG,Symbol.DataTypes.INT);
-    		symbolTable.insert("printi", new Symbol("printi",arg,Symbol.Types.PROC, Symbol.DataTypes.NULL));
-    		arg = new Symbol("argString",null,Symbol.Types.ARG,Symbol.DataTypes.STRING);
-    		symbolTable.insert("prints", new Symbol("prints",arg,Symbol.Types.PROC, Symbol.DataTypes.NULL));
+    		symbolTable.insert("read", new Symbol("read", null, Symbol.Types.FUNC, Symbol.DataTypes.STRING));
+    		Symbol arg = new Symbol("argBool", null, Symbol.Types.ARG, Symbol.DataTypes.BOOLEAN);
+    		symbolTable.insert("printb", new Symbol("printb", arg,Symbol.Types.PROC, Symbol.DataTypes.NULL));
+    		arg = new Symbol("argInt", null,Symbol.Types.ARG,Symbol.DataTypes.INT);
+    		symbolTable.insert("printi", new Symbol("printi", arg, Symbol.Types.PROC, Symbol.DataTypes.NULL));
+    		arg = new Symbol("argString", null, Symbol.Types.ARG, Symbol.DataTypes.STRING);
+    		symbolTable.insert("prints", new Symbol("prints", arg, Symbol.Types.PROC, Symbol.DataTypes.NULL));
     	} catch (SymbolTable.SymbolTableException e) {}
     }
     main? decl* sentsVoid EOF
@@ -110,21 +110,21 @@ decl:
             try{
                 symbolTable.get($ID.getText()).setInitialized(true);
             } catch (SymbolTable.SymbolTableException e) {
-                errores += "Error semántico en línea " + $ID.getLine() + ": variable '" + $ID.getText() + "' no existe\n";
+                errors += "Error semántico en línea " + $ID.getLine() + ": variable '" + $ID.getText() + "' no existe\n";
             }
             if($expr.dataType != $type.dataType) {
-                errores += "Error semántico en línea " + $ID.getLine() + ": tipos incompatibles (esperado '" +
+                errors += "Error semántico en línea " + $ID.getLine() + ": tipos incompatibles (esperado '" +
                 $type.dataType + "', encontrado '" + $expr.dataType + "')\n";
             }
         }
         )? SEMI
     | CONSTANT type ID
         {
-        	Simbolo s = null;
+        	Symbol symbol = null;
         	try {
         		symbolTable.insert($ID.getText(), new Symbol($ID.getText(), null, Symbol.Types.CONST, $type.dataType));
-        		s = symbolTable.get($ID.getText());
-        		s.setInitialized(true);
+        		symbol = symbolTable.get($ID.getText());
+        		symbol.setInitialized(true);
         	} catch (SymbolTable.SymbolTableException e) {
         		errors+="Error semántico en línea " + $ID.getLine() + ": constante '" + $ID.getText() +
         		"' ya declarada\n";
@@ -136,21 +136,21 @@ decl:
                 errors += "Error semántico en línea " + $ID.getLine() + ": tipos incompatibles (esperado '"+
                 $type.dataType + "')\n";
             }
-            if(s!=null) {
+            if(symbol != null) {
                 switch($literal.dataType) {
                     case INT:
-                        s.setValue($literal.text);
+                        symbol.setValue($literal.text);
                         break;
                     case BOOLEAN:
                         //TODO: COMPROBAR PORQUE ESCRIBE LAS BOLEANAS A -1 Y 0
                         if($literal.text.equals("true")) {
-                            s.setValue("-1");
+                            symbol.setValue("-1");
                         } else {
-                            s.setValue("0");
+                            symbol.setValue("0");
                         }
                         break;
                     case STRING:
-                        s.setValue($literal.text);
+                        symbol.setValue($literal.text);
                         break;
                     default:
                         break;
@@ -170,7 +170,7 @@ decl:
             Symbol parameter = $header.procedure.getNext();
             while (parameter != null) {
                 Symbol aux = new Symbol(parameter);
-                aux.setInicialized(true);
+                aux.setInitialized(true);
                 aux.setNext(null);
                 try {
                     symbolTable.insert(aux.getId(),aux);
@@ -207,8 +207,18 @@ number returns[int value, boolean constant]:
 	ID
 	| LiteralInteger;
 
-header[Symbol.DataTypes dataType] returns[Procedure procedure, Symbol symbol]:
-	ID LPAREN params[$symbol]? RPAREN ;
+header[Symbol.DataTypes dataType] returns[Symbol procedure]:
+	ID
+	    {
+	        if($dataType!=null) {
+                // Función
+                $procedure = new Symbol($ID.getText(), null, Symbol.Types.FUNC, $dataType);
+            } else {
+                // Procedimiento
+                $procedure = new Symbol($ID.getText(), null, Symbol.Types.PROC, Symbol.DataTypes.NULL);
+            }
+	    }
+	    LPAREN params[$procedure]? RPAREN ;
 
 params[Symbol prev]:
 	param COMMA params[$prev.getNext()]

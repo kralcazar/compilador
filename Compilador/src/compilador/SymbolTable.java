@@ -37,7 +37,7 @@ public class SymbolTable {
         pre = null;
         try {
             // ST output
-            File tsFile = new File(folder + "/SymbolTable.html");
+            File tsFile = new File(/*folder +*/ "SymbolTable.html");
             buffer = new BufferedWriter(new FileWriter(tsFile));
             buffer.write(
                     "<!DOCTYPE html><html><head><head><style>table, th, td {  border: 1px solid\n"

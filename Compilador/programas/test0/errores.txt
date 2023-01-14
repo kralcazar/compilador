@@ -1,0 +1,2 @@
+Error semántico en línea 4: variable 'i' previamente declarada
+Error semántico en línea 17: 'return' no encontrado para la función 'test'
