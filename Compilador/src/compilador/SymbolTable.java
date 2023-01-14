@@ -62,7 +62,7 @@ public class SymbolTable {
         pre = p;
     }
 
-    public SymbolTable entraBloque() {
+    public SymbolTable blockIn() {
         try {
             // TS entre bloque output
             buffer.write("</tr>" + "</table>" + "</td>" + "</tr>" + "<tr>" + "<th>Nivel "
@@ -78,7 +78,7 @@ public class SymbolTable {
         return tabla;
     }
 
-    public SymbolTable bajaBloque() throws SymbolTableException {
+    public SymbolTable blockGoesDown() throws SymbolTableException {
         if (lastBlock > this.blockTable.size()) {
             throw new SymbolTableException(
                     "posicion incorrecta de la lista de las tablas de bloques inferiores");
@@ -86,7 +86,7 @@ public class SymbolTable {
         return blockTable.get(lastBlock);
     }
 
-    public SymbolTable saleBloque() {
+    public SymbolTable blockOut() {
         level--;
         try {
             if (level == -1) {
@@ -108,18 +108,18 @@ public class SymbolTable {
         return pre;
     }
 
-    public SymbolTable subeBloque() {
+    public SymbolTable blockGoesUp() {
         return pre;
     }
 
-    public void inserta(String id, Symbol s) throws SymbolTableException {
+    public void insert(String id, Symbol s) throws SymbolTableException {
         if (this.exists(id)) {
             throw new SymbolTableException("identificador repetido: " + id);
         }
         hashTable.put(id, s);
         try {
-            // TS poner elemento
-            buffer.write("<td>" + s.getId() + "</td>" + "<td>" + s.getT() + "</td>" + "<td>"
+            // Escribir en la tabla de símbolos
+            buffer.write("<td>" + s.getId() + "</td>" + "<td>" + s.getType() + "</td>" + "<td>"
                     + s.dataType() + "</td>\n");
             if (s.getNext() != null) {
                 Symbol sn = s.getNext();
@@ -128,7 +128,7 @@ public class SymbolTable {
                         + "<th>Id</th>" + "<th>Tipo</th>" + "<th>Tipo Subyacente</th>" + "</tr>"
                         + "<tr>\n");
                 while (sn != null) {
-                    buffer.write("<td>" + sn.getId() + "</td>" + "<td>" + sn.getT() + "</td>"
+                    buffer.write("<td>" + sn.getId() + "</td>" + "<td>" + sn.getType() + "</td>"
                             + "<td>" + sn.dataType() + "</td></tr>\n");
                     sn = sn.getNext();
                 }

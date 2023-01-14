@@ -6,11 +6,11 @@ package compilador;
  *
  */
 public class Variable {
-    private int nv; // Número de variable
+    private int variableNumber; // Número de variable
     private boolean temporal; // Si la variable es temporal
     private int proc; // Número del procedimiento que la ha declarado
     private Symbol.Types type; // Tipo: variable o constante
-    private Symbol.DataTypes datatypes; // Tipo subyacente
+    private Symbol.DataTypes dataType; // Tipo subyacente
     private String id; // Identificador de la variable (t si es temporal)
     private String value; // Valor para constantes
     private int ocup; // Ocupación de la variable
@@ -19,12 +19,12 @@ public class Variable {
     private boolean deleted; // Si la variable ha sido borrada
     private int elements; // Es 1 a menos que sea una tabla. Para tablas puede ser mayor.
 
-    public Variable(int nv, boolean temporal, int proc, Symbol.Types type, Symbol.DataTypes datatypes) {
-        this.nv = nv;
+    public Variable(int variableNumber, boolean temporal, int proc, Symbol.Types type, Symbol.DataTypes dataType) {
+        this.variableNumber = variableNumber;
         this.temporal = temporal;
         this.proc = proc;
         this.type = type;
-        this.datatypes = datatypes;
+        this.dataType = dataType;
         if (temporal) {
             id = "t";
         }
@@ -68,7 +68,7 @@ public class Variable {
     }
 
     public Symbol.DataTypes datatypes() {
-        return datatypes;
+        return dataType;
     }
 
     public boolean temporal() {
@@ -76,7 +76,7 @@ public class Variable {
     }
 
     public int nv() {
-        return nv;
+        return variableNumber;
     }
 
     public Symbol.Types type() {
@@ -89,7 +89,7 @@ public class Variable {
 
     @Override
     public String toString() {
-        return id + "$" + nv;
+        return id + "$" + variableNumber;
     }
 
     public String getId() {

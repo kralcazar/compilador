@@ -10,13 +10,13 @@ package compilador;
 public class Symbol {
 	private String id;
 	private Symbol next;
-	private Types t;
+	private Types type;
 	private DataTypes dataType;
-	private boolean returnEncontrado;
-	private String valor;
-	private boolean inicializada;
-	private int nv;
-	private Procedure np;
+	private boolean returnFound;
+	private String value;
+	private boolean initialized;
+	private int variableNumber;
+	private Procedure procedure;
 	private Table table; // Descripción de tabla
 
 	public enum Types {
@@ -27,37 +27,37 @@ public class Symbol {
 		BOOLEAN, INT, STRING, NULL;
 	}
 
-	public Symbol(String id, Symbol next, Types t, DataTypes dataType) {
+	public Symbol(String id, Symbol next, Types type, DataTypes dataType) {
 		this.id = id;
 		this.next = next;
-		this.t = t;
+		this.type = type;
 		this.dataType = dataType;
 	}
 
 	public Symbol(Symbol s) {
 		this.id = s.id;
 		this.next = s.next;
-		this.t = s.t;
+		this.type = s.type;
 		this.dataType = s.dataType;
 	}
 
 	public Symbol() {
 	};
 
-	public boolean isInicializada() {
-		return inicializada;
+	public boolean isInitialized() {
+		return initialized;
 	}
 
-	public void setInicializada(boolean inicializada) {
-		this.inicializada = inicializada;
+	public void setInitialized(boolean inicializada) {
+		this.initialized = inicializada;
 	}
 
-	public Procedure getNp() {
-		return np;
+	public Procedure getProcedure() {
+		return procedure;
 	}
 
-	public void setNp(Procedure np) {
-		this.np = np;
+	public void setProcedure(Procedure procedure) {
+		this.procedure = procedure;
 	}
 
 	public String getId() {
@@ -76,38 +76,38 @@ public class Symbol {
 		this.next = next;
 	}
 
-	public Types getT() {
-		return t;
+	public Types getType() {
+		return type;
 	}
 
-	public void setT(Types t) {
-		this.t = t;
+	public void setType(Types type) {
+		this.type = type;
 	}
 
 	public DataTypes dataType() { return dataType; }
 
-	public boolean isReturnEncontrado() {
-		return returnEncontrado;
+	public boolean isReturnFound() {
+		return returnFound;
 	}
 
-	public void setReturnEncontrado(boolean returnEncontrado) {
-		this.returnEncontrado = returnEncontrado;
+	public void setReturnFound(boolean returnFound) {
+		this.returnFound = returnFound;
 	}
 
-	public String getValor() {
-		return valor;
+	public String getValue() {
+		return value;
 	}
 
-	public void setValor(String valor) {
-		this.valor = valor;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
-	public int getNv() {
-		return nv;
+	public int getVariableNumber() {
+		return variableNumber;
 	}
 
-	public void setNv(int nv) {
-		this.nv = nv;
+	public void setVariableNumber(int variableNumber) {
+		this.variableNumber = variableNumber;
 	}
 
 	public Table getTuple() {

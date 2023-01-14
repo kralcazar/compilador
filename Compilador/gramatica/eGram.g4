@@ -10,7 +10,7 @@ import java.util.ArrayDeque;
 
 // Necesario para el analizador (parser), sobreescribe el constructor para guardar el directorio y la salida de errores para su personalización
 @parser::members {
-public SymbolTable ts;
+public SymbolTable symbolTable;
 int depthCondition;
 String errors="";
 String folder;
@@ -69,19 +69,130 @@ public void recover(RecognitionException ex)
 //Puede tener declaración main o no
 //Además tiene declaraciones y sentencias y un EOF
 program:
-    main? decl* sentsVoid EOF;
+    //TODO: QUIZAS TENGAMOS QUE PONER ESTE BLOQUE DESPUÉS DEL MAIN,NOSE...
+    {
+    	symbolTable = new SymbolTable(folder);
+    	// Insertar operaciones de input/output
+    	try {
+    		symbolTable.insert("read",new Symbol("read",null,Symbol.Types.FUNC,Symbol.DataTypes.STRING));
+    		Symbol arg = new Symbol("argBool",null,Symbol.Types.ARG,Symbol.DataTypes.BOOLEAN);
+    		symbolTable.insert("printb", new Symbol("printb",arg,Symbol.Types.PROC, Symbol.DataTypes.NULL));
+    		arg = new Symbol("argInt",null,Symbol.Types.ARG,Symbol.DataTypes.INT);
+    		symbolTable.insert("printi", new Symbol("printi",arg,Symbol.Types.PROC, Symbol.DataTypes.NULL));
+    		arg = new Symbol("argString",null,Symbol.Types.ARG,Symbol.DataTypes.STRING);
+    		symbolTable.insert("prints", new Symbol("prints",arg,Symbol.Types.PROC, Symbol.DataTypes.NULL));
+    	} catch (SymbolTable.SymbolTableException e) {}
+    }
+    main? decl* sentsVoid EOF
+    {
+        symbolTable.blockOut();
+        if(!errors.isEmpty()) {
+            throw new RuntimeException(errors);
+        }
+     };
 
-//La estructura es indice {
-    //decl* sents
-// }
 main:
     MAIN BEGIN decl* sents END
     ;
+
 decl:
-    type ID ( ASSIGN expr )? SEMI
-    | CONSTANT type ID ASSIGN literal SEMI
+    type ID
+        {
+            try{
+                symbolTable.insert($ID.getText(),new Symbol($ID.getText(),null,Symbol.Types.VAR,$type.dataType));
+            } catch (SymbolTable.SymbolTableException e) {
+                errors+="Error semántico en línea " + $ID.getLine() + ": variable '" + $ID.getText() +
+                "' previamente declarada\n";
+            }
+        }
+        ( ASSIGN expr
+        {
+            try{
+                symbolTable.get($ID.getText()).setInitialized(true);
+            } catch (SymbolTable.SymbolTableException e) {
+                errores += "Error semántico en línea " + $ID.getLine() + ": variable '" + $ID.getText() + "' no existe\n";
+            }
+            if($expr.dataType != $type.dataType) {
+                errores += "Error semántico en línea " + $ID.getLine() + ": tipos incompatibles (esperado '" +
+                $type.dataType + "', encontrado '" + $expr.dataType + "')\n";
+            }
+        }
+        )? SEMI
+    | CONSTANT type ID
+        {
+        	Simbolo s = null;
+        	try {
+        		symbolTable.insert($ID.getText(), new Symbol($ID.getText(), null, Symbol.Types.CONST, $type.dataType));
+        		s = symbolTable.get($ID.getText());
+        		s.setInitialized(true);
+        	} catch (SymbolTable.SymbolTableException e) {
+        		errors+="Error semántico en línea " + $ID.getLine() + ": constante '" + $ID.getText() +
+        		"' ya declarada\n";
+        	}
+        }
+        ASSIGN literal SEMI
+        {
+            if($literal.dataType!=$type.dataType) {
+                errors += "Error semántico en línea " + $ID.getLine() + ": tipos incompatibles (esperado '"+
+                $type.dataType + "')\n";
+            }
+            if(s!=null) {
+                switch($literal.dataType) {
+                    case INT:
+                        s.setValue($literal.text);
+                        break;
+                    case BOOLEAN:
+                        //TODO: COMPROBAR PORQUE ESCRIBE LAS BOLEANAS A -1 Y 0
+                        if($literal.text.equals("true")) {
+                            s.setValue("-1");
+                        } else {
+                            s.setValue("0");
+                        }
+                        break;
+                    case STRING:
+                        s.setValue($literal.text);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     | arrayDecl
-    | FUNCTION type header[$type.dataType] BEGIN decl* sents END
+    | FUNCTION type header[$type.dataType] BEGIN
+        {
+            try {
+                symbolTable.insert($header.procedure.getId(),$header.procedure);
+            } catch (SymbolTable.SymbolTableException e) {
+                errors += "Error semántico en línea " + $FUNCTION.getLine() + ": " + e.getMessage() + "\n";
+            }
+            symbolTable = symbolTable.blockIn();
+            proceduresStack.push($header.procedure);
+            Symbol parameter = $header.procedure.getNext();
+            while (parameter != null) {
+                Symbol aux = new Symbol(parameter);
+                aux.setInicialized(true);
+                aux.setNext(null);
+                try {
+                    symbolTable.insert(aux.getId(),aux);
+                } catch (SymbolTable.SymbolTableException e) {
+                    errors += "Error semántico en línea " + $FUNCTION.getLine() + ": " + e.getMessage() + "\n";
+                }
+                parameter = parameter.getNext();
+            }
+        }
+        decl* sents END
+        {
+            symbolTable = symbolTable.blockOut();
+            proceduresStack.pop();
+            if(!$header.procedure.isReturnFound()) {
+                errors += "Error semántico en línea " + $FUNCTION.getLine() +
+                ": 'return' no encontrado para la función '" + $header.procedure.getId() + "'\n";
+            }
+            if(depthCondition != 0) {
+                errors += "Error semántico - Línea " + $FUNCTION.getLine() +
+                ": no se puede definir una función en una estructura condicional o repetitiva\n";
+            }
+        }
     ;
 
 arrayDecl:
@@ -96,14 +207,14 @@ number returns[int value, boolean constant]:
 	ID
 	| LiteralInteger;
 
-header[Symbol.DataTypes dataType] returns[Symbol s]:
-	ID LPAREN params[$s]? RPAREN ;
+header[Symbol.DataTypes dataType] returns[Procedure procedure, Symbol symbol]:
+	ID LPAREN params[$symbol]? RPAREN ;
 
 params[Symbol prev]:
 	param COMMA params[$prev.getNext()]
 	| param;
 
-param returns[Symbol s]:
+param returns[Symbol symbol]:
 	type ID;
 
 sentsVoid:

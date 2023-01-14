@@ -65,6 +65,5 @@ public class Main {
 
         //Generación del código intermedio
 
-        eGramC3D parserC3D;
     }
 }
