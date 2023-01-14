@@ -1,6 +1,0 @@
-Error semántico en línea 3: tipos incompatibles (esperado 'INT', encontrado 'null')
-Error semántico en línea 7: asignación de tipo incorrecto (esperado 'INT', encontrado 'null')
-Error semántico en línea 11: asignación de tipo incorrecto (esperado 'INT', encontrado 'null')
-Error semántico en línea 16: tipos incompatibles (esperado 'INT', encontrado 'null')
-Error semántico en línea 17: devolver de tipo incorrecto (esperado 'INT', encontrado 'null')
-Error semántico en línea 15: 'devolver' no encontrado para la función 'test'

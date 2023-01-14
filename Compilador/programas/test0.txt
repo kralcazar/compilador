@@ -12,7 +12,7 @@ indice{
     } mientras (i < 50);
 }
 
-funcion ent test() {
+funcion ent test(ent a) {
     ent a=2;
     devolver a;
 }

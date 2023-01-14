@@ -44,6 +44,8 @@ funcion
 ent
 test
 (
+ent
+a
 )
 {
 ent

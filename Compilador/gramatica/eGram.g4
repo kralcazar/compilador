@@ -114,8 +114,6 @@ decl:
                 errors += "Error semántico en línea " + $ID.getLine() + ": variable '" + $ID.getText() + "' no existe\n";
             }
 
-            System.out.println($type.dataType);
-            System.out.println($expr.dataType);
             if($expr.dataType != $type.dataType) {
                 errors += "Error semántico en línea " + $ID.getLine() + ": tipos incompatibles (esperado '" +
                 $type.dataType + "', encontrado '" + $expr.dataType + "')\n";
@@ -424,64 +422,215 @@ contIdx_[Deque<Symbol.DataTypes> pparams]:
 // Expresiones
 expr returns[Symbol.DataTypes dataType]:
 	exprOr
-	{
-	    $dataType = $exprOr.dataType;
-	}
+        {
+            $dataType = $exprOr.dataType;
+        }
 	;
 
 // Expresión de OR
 exprOr returns[Symbol.DataTypes dataType]:
-	exprAnd exprOr_;
+	exprAnd exprOr_
+        {
+            if($exprOr_.dataType != null) {
+                if($exprAnd.dataType != $exprOr_.dataType) {
+                    errors += "Error semántico en línea " + $exprOr_.start.getLine() +
+                    ": tipos incompatibles (esperado " + $exprAnd.dataType + "," +
+                    " encontrado " + $exprOr_.dataType + ")\n";
+                }
+                $dataType = $exprOr_.dataType;
+            } else {
+                $dataType = $exprAnd.dataType;
+            }
+        }
+	;
 
 exprOr_ returns[Symbol.DataTypes dataType]:
 	OR exprAnd exprOr_
+	    {
+	        if($exprAnd.dataType != Symbol.DataTypes.BOOLEAN){
+                errors += "Error semántico en línea " + $exprAnd.start.getLine() +
+                    ": tipos incompatibles (esperado BOOLEAN, encontrado " + $exprAnd.dataType + ")\n";
+            }
+            $dataType = Symbol.DataTypes.BOOLEAN;
+	    }
 	|; //lambda
 
 // Expresión de AND
 exprAnd returns[Symbol.DataTypes dataType]:
-	exprNot exprAnd_;
+	exprNot exprAnd_
+	    {
+	        if($exprAnd_.dataType != null) {
+                if($exprNot.dataType != $exprAnd_.dataType) {
+                    errors += "Error semántico en línea " + $exprAnd_.start.getLine() +
+                    ": tipos incompatibles (esperado "+$exprNot.dataType + "," +
+                    " encontrado "+$exprAnd_.dataType + ")\n";
+                }
+                $dataType = $exprAnd_.dataType;
+            } else {
+                $dataType = $exprNot.dataType;
+            }
+	    }
+	;
 
 exprAnd_ returns[Symbol.DataTypes dataType]:
 	AND exprNot exprAnd_
+	    {
+	        if($exprNot.dataType != Symbol.DataTypes.BOOLEAN){
+                errors += "Error semántico en línea " + $exprNot.start.getLine() +
+                    ": tipos incompatibles (esperado BOOLEAN, encontrado " + $exprNot.dataType + ")\n";
+            }
+            $dataType = Symbol.DataTypes.BOOLEAN;
+	    }
 	|; //lambda
 
 // Expresión de NOT
 exprNot returns[Symbol.DataTypes dataType]:
 	NOT exprComp
-	| exprComp;
+	    {
+            if($exprComp.dataType != Symbol.DataTypes.BOOLEAN) {
+                errors += "Error semántico en línea " + $exprComp.start.getLine() +
+                ": tipos incompatibles (esperado BOOLEAN, encontrado " + $exprComp.dataType + ")\n";
+            }
+            $dataType = Symbol.DataTypes.BOOLEAN;
+	    }
+	| exprComp
+	    {
+            $dataType = $exprComp.dataType;
+	    }
+	;
 
 // Expresión comparativa
 exprComp returns[Symbol.DataTypes dataType]:
-	exprAdit exprComp_;
+	exprAdit exprComp_
+	    {
+            if($exprComp_.dataType != null) {
+                if($exprAdit.dataType != Symbol.DataTypes.INT) {
+                    errors+="Error semántico en línea " + $exprComp_.start.getLine() +
+                    ": tipos incompatibles (esperado INT," +
+                    " encontrado " + $exprComp_.dataType + ")\n";
+                    $dataType = Symbol.DataTypes.BOOLEAN;
+                }
+                $dataType = $exprComp_.dataType;
+            } else {
+                $dataType = $exprAdit.dataType;
+            }
+	    }
+	;
 
 exprComp_ returns[Symbol.DataTypes dataType]:
 	OPREL exprAdit
+	    {
+            if($exprAdit.dataType != Symbol.DataTypes.INT) {
+                errors+="Error semántico en línea " + $exprAdit.start.getLine() +
+                ": tipos incompatibles (esperado INT, encontrado " + $exprAdit.dataType + ")\n";
+            }
+            $dataType = Symbol.DataTypes.BOOLEAN;
+        }
 	|; //lambda
 
 // Expresión aditiva
 exprAdit returns[Symbol.DataTypes dataType]:
-	exprMult exprAdit_;
+	exprMult exprAdit_
+	    {
+            if($exprAdit_.dataType != null) {
+                if($exprMult.dataType != $exprAdit_.dataType) {
+                    errors+="Error semántico en línea " + $exprAdit_.start.getLine() +
+                    ": tipos incompatibles (esperado " + $exprMult.dataType + "," +
+                    " encontrado " + $exprAdit_.dataType + ")\n";
+                }
+                $dataType = $exprAdit_.dataType;
+            } else {
+                $dataType = $exprMult.dataType;
+            }
+	    }
+	;
 
 exprAdit_ returns[Symbol.DataTypes dataType]:
 	ADD exprMult exprAdit_
+        {
+            if($exprMult.dataType != Symbol.DataTypes.INT) {
+                errors += "Error semántico en línea " + $exprMult.start.getLine() +
+                ": tipos incompatibles (esperado INT, encontrado " + $exprMult.dataType + ")\n";
+            }
+            $dataType = Symbol.DataTypes.INT;
+        }
 	| SUB exprMult exprAdit_
+	    {
+            if($exprMult.dataType != Symbol.DataTypes.INT) {
+                errors += "Error semántico en línea " + $exprMult.start.getLine() +
+                ": tipos incompatibles (esperado INT, encontrado " + $exprMult.dataType + ")\n";
+            }
+            $dataType = Symbol.DataTypes.INT;
+	    }
 	|; //lambda
 
 // Expresión multiplicativa
 exprMult returns[Symbol.DataTypes dataType]:
-	exprNeg exprMult_;
+	exprNeg exprMult_
+	    {
+	        if($exprMult_.dataType != null) {
+                if($exprNeg.dataType != $exprMult_.dataType) {
+                    errors+="Error semántico en línea " + $exprMult_.start.getLine() +
+                    ": tipos incompatibles (esperado "+ $exprMult_.dataType + "," +
+                    " encontrado " + $exprNeg.dataType + ")\n";
+                }
+                $dataType = $exprMult_.dataType;
+            } else {
+                $dataType = $exprNeg.dataType;
+            }
+	    }
+	;
 
 exprMult_
 	returns[Symbol.DataTypes dataType]:
 	MULT exprNeg exprMult_
+	    {
+            if($exprNeg.dataType != Symbol.DataTypes.INT) {
+                errors += "Error semántico en línea " + $exprNeg.start.getLine() +
+                ": tipos incompatibles (esperado INT, encontrado " + $exprNeg.dataType + ")\n";
+            }
+            $dataType = Symbol.DataTypes.INT;
+	    }
 	| DIV exprNeg exprMult_
+	    {
+            if($exprNeg.dataType != Symbol.DataTypes.INT) {
+                errors += "Error semántico en línea " + $exprNeg.start.getLine() +
+                ": tipos incompatibles (esperado INT, encontrado " + $exprNeg.dataType + ")\n";
+            } else if($exprNeg.zero) {
+                errors+="Error semántico en línea " + $exprNeg.start.getLine() +
+                ": división por cero\n";
+            }
+            $dataType = Symbol.DataTypes.INT;
+	    }
 	| MOD exprNeg exprMult_
+	    {
+	        if($exprNeg.dataType != Symbol.DataTypes.INT) {
+                errors += "Error semántico en línea " + $exprNeg.start.getLine() +
+                ": tipos incompatibles (esperado INT, encontrado " + $exprNeg.dataType + ")\n";
+            } else if($exprNeg.zero) {
+                errors+="Error semántico en línea " + $exprNeg.start.getLine() +
+                ": módulo por cero\n";
+            }
+		    $dataType = Symbol.DataTypes.INT;
+	    }
 	|; //lambda
 
 // Expresión de negación
 exprNeg returns[Symbol.DataTypes dataType, boolean zero]:
 	SUB primary
-	| primary;
+	    {
+            if($primary.dataType != Symbol.DataTypes.INT) {
+                errors+="Error semántico en línea " + $primary.start.getLine()+
+                ": tipos incompatibles (esperado INT, encontrado " + $primary.dataType +")\n";
+            }
+	        $dataType = Symbol.DataTypes.INT;
+            $zero = $primary.zero;
+	    }
+	| primary
+	    {
+	        $dataType = $primary.dataType;
+            $zero = $primary.zero;
+	    };
 
 primary returns[Symbol.DataTypes dataType, boolean zero]:
 	LPAREN expr RPAREN
