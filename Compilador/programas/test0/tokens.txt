@@ -1,6 +1,6 @@
 indice
 {
-int
+ent
 i
 =
 6

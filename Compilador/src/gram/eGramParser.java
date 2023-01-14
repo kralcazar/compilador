@@ -3,7 +3,6 @@
 package gram;
 import compilador.*;
 import java.io.*;
-import java.sql.SQLOutput;
 import java.util.Deque;
 import java.util.ArrayDeque;
 
@@ -131,14 +130,15 @@ public class eGramParser extends Parser {
 		this.folder=folder;
 	}
 
-
+	// Se sobreescribe la salida del error otorgada por Antlr4 según el contenido de la misma
 	@Override
 	public void notifyErrorListeners(Token offendingToken, String msg, RecognitionException ex)
 	{
-		String notificacion = "Error sintáctico en la línea " + offendingToken.getLine()
-		+ ", columna " + offendingToken.getCharPositionInLine() + ": \n\t ";
-		System.out.println(offendingToken);
+		String notificacion = "Error sintáctico - Línea " + offendingToken.getLine()
+		+ ", Columna " + offendingToken.getCharPositionInLine() + ": \n\t ";
 		String expected = msg;
+
+		//TODO: MODIFICAR PARA "HACERLO NUESTRO"
 		if(expected.contains("expecting")){
 			expected = expected.substring(expected.indexOf("expecting") + 10);
 			notificacion += "encontrado: '" + offendingToken.getText() + "' esperado: "+ expected;
@@ -146,18 +146,18 @@ public class eGramParser extends Parser {
 			expected = expected.substring(expected.indexOf("missing") + 8);
 			expected = expected.substring(0, expected.indexOf("at") - 1);
 			notificacion += "encontrado: '" + offendingToken.getText() + "', falta "+ expected;
-		}else if(expected.contains("alternative")){
-			expected = expected.substring(expected.indexOf("input") + 6).replace("'","");
-			notificacion += "Se ha detectado un error antes de la entrada '" + offendingToken.getText()+"'.";
-			//Eliminar el siguiente token encontrado tras analizar el token que genera error
-			//TODO: La siguiente instrucción solo quita el offendingToken que se encuentra despues del error, no los de antes. caso que funciona: int i = 6; caso que no funciona: ent i 6;
-			expected = expected.substring(0, expected.length()-offendingToken.getText().length());
-			String[] lines = offendingToken.getInputStream().toString().split(System.getProperty("line.separator"));
-			if(expected.length()==0){ //Es posible que sea porque falta cerrar la sentencia con punto y coma
-				notificacion += " Se esperaba otra instrucción, quizás te has saltado un ';'.";
-			}else{
-				notificacion += " No se reconoce '" + expected +"'";
-			}
+		}else if(expected.contains("alternative")){ //HE EMPEZADO A MODIFICAR ESTA SALIDA AL DETECTAR COMO SE MUESTRAN LOS ERRORES EN ANTLR4
+				expected = expected.substring(expected.indexOf("input") + 6).replace("'","");
+				notificacion += "Se ha detectado un error antes de la entrada '" + offendingToken.getText()+"'.";
+				//Eliminar el siguiente token encontrado tras analizar el token que genera error
+				//TODO: La siguiente instrucción solo quita el offendingToken que se encuentra despues del error, no los de antes. caso que funciona: int i = 6; caso que no funciona: ent i 6;
+				expected = expected.substring(0, expected.length()-offendingToken.getText().length());
+				String[] lines = offendingToken.getInputStream().toString().split(System.getProperty("line.separator"));
+				if(expected.length()==0){ //Es posible que sea porque falta cerrar la sentencia con punto y coma
+					notificacion += " Se esperaba otra instrucción, quizás te has saltado un ';'.";
+				}else{
+					notificacion += " No se reconoce '" + expected +"'";
+				}
 		}
 		notificacion = notificacion.replaceAll("Comparador","==, !=, <, >, <=, >=");
 		notificacion = notificacion.replaceAll("OpBinSum","+, -");

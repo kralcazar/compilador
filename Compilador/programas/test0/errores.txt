@@ -1,2 +1,0 @@
-Error sintáctico en la línea 3, columna 8: 
-	 Se ha detectado un error antes de la entrada 'i'. No se reconoce 'int'

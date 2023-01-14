@@ -1,6 +1,6 @@
 indice{
 
-    int i = 6;
+    ent i = 6;
     test();
     mientras (i == 5) {
         i = i +1;

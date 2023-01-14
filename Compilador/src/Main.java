@@ -62,5 +62,9 @@ public class Main {
             buffer.close();
             return;
         }
+
+        //Generación del código intermedio
+
+        eGramC3D parserC3D;
     }
 }
