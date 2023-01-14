@@ -110,11 +110,11 @@ public class Symbol {
 		this.variableNumber = variableNumber;
 	}
 
-	public Table getTuple() {
+	public Table getTable() {
 		return table;
 	}
 
-	public void setTuple(Table table) {
+	public void setTable(Table table) {
 		this.table = table;
 	}
 }

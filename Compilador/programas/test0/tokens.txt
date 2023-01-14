@@ -46,8 +46,13 @@ test
 (
 )
 {
+ent
+a
+=
+2
+;
 devolver
-5
+a
 ;
 }
 <EOF>

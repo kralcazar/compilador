@@ -13,7 +13,8 @@ indice{
 }
 
 funcion ent test() {
-    devolver 5 ;
+    ent a=2;
+    devolver a;
 }
 
 

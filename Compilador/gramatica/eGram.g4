@@ -113,6 +113,9 @@ decl:
             } catch (SymbolTable.SymbolTableException e) {
                 errors += "Error semántico en línea " + $ID.getLine() + ": variable '" + $ID.getText() + "' no existe\n";
             }
+
+            System.out.println($type.dataType);
+            System.out.println($expr.dataType);
             if($expr.dataType != $type.dataType) {
                 errors += "Error semántico en línea " + $ID.getLine() + ": tipos incompatibles (esperado '" +
                 $type.dataType + "', encontrado '" + $expr.dataType + "')\n";
@@ -185,7 +188,6 @@ decl:
         {
             symbolTable = symbolTable.blockOut();
             proceduresStack.pop();
-            System.out.println($header.procedure.getId());
             if(!$header.procedure.isReturnFound()) {
                 errors += "Error semántico en línea " + $FUNCTION.getLine() +
                 ": 'devolver' no encontrado para la función '" + $header.procedure.getId() + "'\n";
@@ -212,7 +214,7 @@ number returns[int value, boolean constant]:
 header[Symbol.DataTypes dataType] returns[Symbol procedure]:
 	ID
 	    {
-	        if($dataType!=null) {
+	        if($dataType != null) {
                 // Función
                 $procedure = new Symbol($ID.getText(), null, Symbol.Types.FUNC, $dataType);
             } else {
@@ -307,7 +309,7 @@ sent:
                 } else if(depthCondition == 0) {
                     // Devolver correcto
 
-            System.out.println(proceduresStack.peek().getId());
+                    //TODO: PORQUE VUELVE A HACER PEEK EN VEZ DE PILLAR LA REFERENCIA procedure
                     proceduresStack.peek().setReturnFound(true);
                 }
             }
@@ -421,7 +423,11 @@ contIdx_[Deque<Symbol.DataTypes> pparams]:
 
 // Expresiones
 expr returns[Symbol.DataTypes dataType]:
-	exprOr;
+	exprOr
+	{
+	    $dataType = $exprOr.dataType;
+	}
+	;
 
 // Expresión de OR
 exprOr returns[Symbol.DataTypes dataType]:
@@ -479,18 +485,64 @@ exprNeg returns[Symbol.DataTypes dataType, boolean zero]:
 
 primary returns[Symbol.DataTypes dataType, boolean zero]:
 	LPAREN expr RPAREN
+	    {
+	        $dataType = $expr.dataType;
+            $zero = false;
+	    }
 	| reference[false]
-	| literal;
+	    {
+	        if($reference.symbol == null) {
+                errors += "Error semántico en línea " + $reference.start.getLine()+
+                ": tipos incompatibles (encontrado NULL)\n";
+                $dataType = Symbol.DataTypes.NULL;
+            } else {
+                $dataType =$reference.symbol.dataType();
+                if($reference.symbol.getType() == Symbol.Types.CONST && $reference.symbol.dataType() == Symbol.DataTypes.INT) {
+                    $zero = $reference.symbol.getValue().equals("0");
+                } else if($reference.table != null && $reference.dimCheck) {
+                    $dataType = $reference.symbol.getTable().dataType();
+                }
+            }
+	    }
+	| literal
+        {
+            $dataType = $literal.dataType;
+            $zero = $literal.zero;
+        }
+	;
 
 type returns[Symbol.DataTypes dataType]:
 	INTEGER
-	| BOOLEAN
-	| STRING;
+	    {
+    		$dataType = Symbol.DataTypes.INT;
+    	}
+    | BOOLEAN
+        {
+    		$dataType = Symbol.DataTypes.BOOLEAN;
+    	}
+    | STRING
+        {
+    		$dataType = Symbol.DataTypes.STRING;
+        }
+    ;
 
 literal returns[Symbol.DataTypes dataType, boolean zero]:
 	LiteralInteger
-	| LiteralBoolean
-	| LiteralString;
+        {
+            $dataType = Symbol.DataTypes.INT;
+            $zero = $LiteralInteger.getText().equals("0");
+        }
+    | LiteralBoolean
+        {
+            $dataType = Symbol.DataTypes.BOOLEAN;
+            $zero = false;
+        }
+    | LiteralString
+        {
+            $dataType = Symbol.DataTypes.STRING;
+            $zero = false;
+        }
+    ;
 
 
 
