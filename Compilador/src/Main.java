@@ -64,6 +64,17 @@ public class Main {
         }
 
         //Generación del código intermedio
-
+        eGramC3D parserC3D;
+        parserC3D = new eGramC3D(tokens, buildPath, parser.symbolTable);
+        try {
+            tokens.seek(0);
+            parserC3D.program();
+            System.out.println(ConsoleColors.BLUE_BOLD_BRIGHT
+                                + "Proceso de generación de código completado con éxito" + ConsoleColors.RESET);
+        } catch (RuntimeException e) {
+            System.out.println(
+                    ConsoleColors.RED_BOLD + "Error al generar código:" + ConsoleColors.RESET);
+            throw e;
+        }
     }
 }

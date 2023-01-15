@@ -25,11 +25,12 @@ private String directory;
 private ArrayList<Instruction> C3D;
 private int pc = 0; // program counter
 private int depth=0;
+
 public eGramC3D(TokenStream input, String directory, SymbolTable ts){
 	this(input);
 	this.directory=directory;
 	this.ts=ts;
-	this.C3D = new ArrayList<instruction>();
+	this.C3D = new ArrayList<Instruction>();
 	this.tv= new VariablesTable(directory);
 	this.tp= new ProceduresTable();
 	this.te = new TagsTable();
@@ -128,41 +129,45 @@ program:
 		Symbol s;
 		try{
 			// Operación de entrada
-			s=ts.exists("read");
-			s.setNp(tp.newProc(depth,s.getT(),"read"));
+			s=ts.get("read");
+			s.setProcedure(tp.newProc(depth,s.getType(),"read"));
 			// Operaciones de salida
-			s=ts.exists("printb");
-			s.setNp(tp.newProc(depth,s.getT(),"printb"));
-			s=ts.exists("printi");
-			s.setNp(tp.newProc(depth,s.getT(),"printi"));
-			s=ts.exists("prints");
-			s.setNp(tp.newProc(depth,s.getT(),"prints"));
+			s=ts.get("printb");
+			s.setProcedure(tp.newProc(depth,s.getType(),"printb"));
+			s=ts.get("printi");
+			s.setProcedure(tp.newProc(depth,s.getType(),"printi"));
+			s=ts.get("prints");
+			s.setProcedure(tp.newProc(depth,s.getType(),"prints"));
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
-	} decl* sents EOF {
+	} main? decl* sents EOF {
 	Tag e=te.get(te.newTag(false));
 	generate(OP.skip, null, null, e.toString());
 	backpatch($sents.sents_seg,e);
-	tv.calculoDespOcupVL(tp);
+	tv.calcDespOcupVL(tp);
 	printC3D();
 };
+
+main:
+    MAIN BEGIN decl* sents END
+    ;
 
 decl:
 	tipo ID {
 		Symbol s=new Symbol();
 		int nv=0;
 		try {
-			s=ts.exists($ID.getText());
-			nv=tv.newVar(false,pproc.peek(),Types.VAR, s.datatypes());
+			s=ts.get($ID.getText());
+			nv=tv.newVar(false,pproc.peek(),Types.VAR, s.dataType());
 			tv.get(nv).setId(s.getId());
-			s.setNv(nv);
+			s.setVariableNumber(nv);
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
 	} (
 		'=' expr {
-			if(s.datatypes()==DataTypes.BOOLEAN) {
+			if(s.dataType()==DataTypes.BOOLEAN) {
 				Tag ec=te.get(te.newTag(false));
 				Tag ef=te.get(te.newTag(false));
 				Tag efin=te.get(te.newTag(false));
@@ -182,11 +187,11 @@ decl:
 	| CONSTANT tipo ID '=' literal ';' {
 		Symbol s;
 		try {
-			s = ts.exists($ID.getText());
-			int nv=tv.newVar(false,pproc.peek(),Symbol.Types.CONST, s.datatypes());
+			s = ts.get($ID.getText());
+			int nv=tv.newVar(false,pproc.peek(),Symbol.Types.CONST, s.dataType());
 			tv.get(nv).setId(s.getId());
-			tv.get(nv).setValor(s.getValor());
-			s.setNv(nv);
+			tv.get(nv).setValue(s.getValue());
+			s.setVariableNumber(nv);
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
@@ -195,7 +200,7 @@ decl:
 	| FUNCTION tipo encabezado BEGIN {
 		depth++;
 		try{
-			ts=ts.bajaBloque();
+			ts=ts.blockGoesDown();
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
@@ -205,10 +210,10 @@ decl:
 		int nparam=1;
 		while(aux!=null) {
 			try {
-				int nv=tv.newVar(false,pproc.peek(),Types.VAR, aux.datatypes());
+				int nv=tv.newVar(false,pproc.peek(),Types.VAR, aux.dataType());
 				tv.get(nv).setNparam(nparam);
 				tv.get(nv).setId(aux.getId());
-				ts.exists(aux.getId()).setNv(nv);
+				ts.get(aux.getId()).setVariableNumber(nv);
 			} catch(SymbolTable.SymbolTableException e) {
 				System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 			}
@@ -216,7 +221,7 @@ decl:
 			nparam++;
 		}
 		Tag e=te.get(te.newTag(true));
-		$encabezado.met.setInicio(e.getNe());
+		$encabezado.met.setStartTag(e.getNe());
 		$encabezado.met.setNumParams(nparam-1);
 		generate(OP.skip, null, null, e.toString());
 		generate(OP.pmb, null, null, $encabezado.met.toString());
@@ -224,7 +229,7 @@ decl:
 		C3D.get(pc-1).setInstFinal(true);
 		pproc.pop();
 		depth--;
-		ts=ts.subeBloque();
+		ts=ts.blockGoesUp();
 	};
 
 declArray:
@@ -232,12 +237,12 @@ declArray:
 	Symbol s=null;
 	int nv=0;
 	try {
-		s=ts.exists($ID.getText());
-		Tabla dt = s.getDt();
-		nv=tv.newVar(false,pproc.peek(),Types.VAR, dt.datatypest());
+		s=ts.get($ID.getText());
+		Table dt = s.getTable();
+		nv=tv.newVar(false,pproc.peek(),Types.VAR, dt.dataType());
 		tv.get(nv).setId(s.getId());
-		s.setNv(nv);
-		tv.get(nv).setElementos(dt.entradas());
+		s.setVariableNumber(nv);
+		tv.get(nv).setElements(dt.entradas());
 	} catch(SymbolTable.SymbolTableException e) {
 		System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 	}
@@ -253,14 +258,14 @@ numero
 	| ID;
 
 encabezado
-	returns[Procedimiento met, Symbol s]:
+	returns[Procedure met, Symbol s]:
 	ID '(' parametros? ')' {
 		Symbol s=new Symbol();
-		Procedimiento met;
+		Procedure met;
 		try {
-			s=ts.exists($ID.getText());
-			met=tp.newProc(depth,s.getT(),$ID.getText());
-			s.setNp(met);
+			s=ts.get($ID.getText());
+			met=tp.newProc(depth,s.getType(),$ID.getText());
+			s.setProcedure(met);
 			$met = met;
 			$s=s;
 		} catch(SymbolTable.SymbolTableException e) {
@@ -305,20 +310,20 @@ sent[Deque<Integer> sents_seg]
 	returns[Deque<Integer> sent_seg]:
 	IF expr BEGIN {
 		try{
-			ts=ts.bajaBloque();
+			ts=ts.blockGoesDown();
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
 		Tag ec = te.get(te.newTag(false));
 		generate(OP.skip, null, null, ec.toString());
 	} decl* sents {
-		ts=ts.subeBloque();
+		ts=ts.blockGoesUp();
 		backpatch($expr.cierto, ec);
 		$sent_seg = concat($expr.falso, $sents.sents_seg);
 	} END
 	| IF expr BEGIN {
 		try{
-			ts=ts.bajaBloque();
+			ts=ts.blockGoesDown();
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
@@ -333,7 +338,7 @@ sent[Deque<Integer> sents_seg]
 		generate(OP.skip, null, null, ef.toString());
 	} ELSE BEGIN {
 	} decl* sents END {
-		ts=ts.subeBloque();
+		ts=ts.blockGoesUp();
 		backpatch($expr.cierto, ec);
 		backpatch($expr.falso, ef);
 		$sent_seg = concat(sents_seg1, $sents.sents_seg);
@@ -363,7 +368,7 @@ sent[Deque<Integer> sents_seg]
 	}
 	| WHILE {
 		try{
-			ts=ts.bajaBloque();
+			ts=ts.blockGoesDown();
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
@@ -373,7 +378,7 @@ sent[Deque<Integer> sents_seg]
 		Tag ec = te.get(te.newTag(false));
 		generate(OP.skip, null, null, ec.toString());
 	} decl* sents {
-		ts=ts.subeBloque();
+		ts=ts.blockGoesUp();
 		backpatch($expr.cierto,ec);
 		backpatch($sent_seg,ei);
 		$sent_seg=$expr.falso;
@@ -386,11 +391,11 @@ sent[Deque<Integer> sents_seg]
 			Tag efin=te.get(te.newTag(false));
 			generate(OP.skip, null, null, ec.toString());
 			generate(OP.copy, "-1", null, $expr.r.toString());
-			$expr.r.setValor("-1");
+			$expr.r.setValue("-1");
 			generate(OP.jump, null, null, efin.toString());
 			generate(OP.skip, null, null, ef.toString());
 			generate(OP.copy, "0", null, $expr.r.toString());
-			$expr.r.setValor("0");
+			$expr.r.setValue("0");
 			generate(OP.skip, null, null, efin.toString());
 			backpatch($expr.cierto,ec);
 			backpatch($expr.falso,ef);
@@ -512,32 +517,32 @@ referencia
 		Symbol s;
 		int t;
 		try {
-			s = ts.exists($ID.getText());
-			if (s.getT() == Types.CONST){
-				t = tv.newVar(true,pproc.peek(),Types.VAR,s.datatypes());
-				switch(s.datatypes()) {
+			s = ts.get($ID.getText());
+			if (s.getType() == Types.CONST){
+				t = tv.newVar(true,pproc.peek(),Types.VAR,s.dataType());
+				switch(s.dataType()) {
 					case BOOLEAN:
-						generate(OP.copy, s.getValor(), null, tv.get(t).toString());
-						if(s.getValor().equals("true")){
-							tv.get(t).setValor("-1");
+						generate(OP.copy, s.getValue(), null, tv.get(t).toString());
+						if(s.getValue().equals("true")){
+							tv.get(t).setValue("-1");
 						} else {
-							tv.get(t).setValor("0");
+							tv.get(t).setValue("0");
 						}
 						break;
 					case INT:
-						generate(OP.copy, s.getValor(), null, tv.get(t).toString());
-						tv.get(t).setValor(s.getValor());
+						generate(OP.copy, s.getValue(), null, tv.get(t).toString());
+						tv.get(t).setValue(s.getValue());
 						break;
 					case STRING:
-						generate(OP.copy, tv.get(s.getNv()).toString(), null, tv.get(t).toString());
-						tv.get(t).setValor(s.getValor());
+						generate(OP.copy, tv.get(s.getVariableNumber()).toString(), null, tv.get(t).toString());
+						tv.get(t).setValue(s.getValue());
 						break;
 				}
 				$r = tv.get(t);
 			} else {
-				$r = tv.get(s.getNv());
+				$r = tv.get(s.getVariableNumber());
 			}
-			$datatypes=s.datatypes();
+			$datatypes=s.dataType();
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
@@ -562,12 +567,12 @@ referencia
 		Symbol s;
 		int t;
 		try {
-			s = ts.exists($ID.getText());
-			generate(OP.call, null, null, s.getNp().toString());
-			if(s.getT()==Types.FUNC) {
-				t = tv.newVar(true, pproc.peek(),Types.VAR,s.datatypes());
+			s = ts.get($ID.getText());
+			generate(OP.call, null, null, s.getProcedure().toString());
+			if(s.getType()==Types.FUNC) {
+				t = tv.newVar(true, pproc.peek(),Types.VAR,s.dataType());
 				$r = tv.get(t);
-				$datatypes=s.datatypes();
+				$datatypes=s.dataType();
 				generate(OP.st, null, null, tv.get(t).toString());
 			}
 		} catch(SymbolTable.SymbolTableException e) {
@@ -579,35 +584,35 @@ referencia
 		while($contIdx.pparams.size()>0)
 		generate(OP.params, null, null, $contIdx.pparams.pop().toString());
 		generate(OP.call, null, null, $contIdx.met.toString());
-		if($contIdx.s.getT()==Types.FUNC) {
-			t = tv.newVar(true, pproc.peek(),Types.VAR,$contIdx.s.datatypes());
+		if($contIdx.s.getType()==Types.FUNC) {
+			t = tv.newVar(true, pproc.peek(),Types.VAR,$contIdx.s.dataType());
 			$r = tv.get(t);
-			$datatypes = $contIdx.s.datatypes();
+			$datatypes = $contIdx.s.dataType();
 			generate(OP.st, null, null, tv.get(t).toString());
 		}
 	};
 
 idx
-	returns[Tabla dt, Variable r, Variable d]:
+	returns[Table dt, Variable r, Variable d]:
 	ID '[' expr {
 		Symbol dv = null;
 		try {
-			dv = ts.exists($ID.getText());
+			dv = ts.get($ID.getText());
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
-		$dt = dv.getDt();
-		Indice idx = $dt.primerIndice();
-		$r = tv.get(dv.getNv());
+		$dt = dv.getTable();
+		Index idx = $dt.primerIndice();
+		$r = tv.get(dv.getVariableNumber());
 		Variable d = $expr.r;
 	} idx_[idx, d] {
 		$d = $idx_.d;
 	};
 
-idx_[Indice idx1, Variable d1]
+idx_[Index idx1, Variable d1]
 	returns[Variable d]:
 	']' '[' expr {
-		Indice idx = idx1.siguiente();
+		Index idx = idx1.getNextIndex();
 		Variable t1 = tv.get(tv.newVar(true, pproc.peek(), Types.VAR, DataTypes.INT));
 		generate(OP.mult, $d1.toString(), String.valueOf(idx.d()), t1.toString());
 		Variable t2 = tv.get(tv.newVar(true, pproc.peek(), Types.VAR, DataTypes.INT));
@@ -620,14 +625,14 @@ idx_[Indice idx1, Variable d1]
 	};
 
 contIdx
-	returns[Deque<Variable> pparams, Procedimiento met, Symbol s]:
+	returns[Deque<Variable> pparams, Procedure met, Symbol s]:
 	ID '(' expr {
 		Symbol s=new Symbol();
 		$pparams = new ArrayDeque<Variable>();
 		try {
-			s = ts.exists($ID.getText());
+			s = ts.get($ID.getText());
 			$s = s;
-			$met = s.getNp();
+			$met = s.getProcedure();
 			$pparams.push($expr.r);
 			// Boolean parámetro
 			if($expr.cierto!=null || $expr.falso!=null) {
@@ -935,14 +940,14 @@ primario
 				t = tv.newVar(true,pproc.peek(), Types.VAR,DataTypes.BOOLEAN);
 				if($literal.text.equals("true")) {
 					generate(OP.copy, "-1", null, tv.get(t).toString());
-					tv.get(t).setValor("-1");
+					tv.get(t).setValue("-1");
 					generate(OP.jump, null, null, null);
 					$cierto=new ArrayDeque<Integer>();
 					$cierto.add(pc);
 					$falso = null;
 				} else {
 					generate(OP.copy, "0", null, tv.get(t).toString());
-					tv.get(t).setValor("0");
+					tv.get(t).setValue("0");
 					generate(OP.jump, null, null, null);
 					$falso=new ArrayDeque<Integer>();
 					$falso.add(pc);
@@ -951,12 +956,12 @@ primario
 				break;
 			case STRING:
 				t = tv.newVar(true,pproc.peek(), Types.CONST,DataTypes.STRING);
-				tv.get(t).setValor($literal.text);
+				tv.get(t).setValue($literal.text);
 				break;
 			case INT:
 				t = tv.newVar(true,pproc.peek(), Types.VAR,DataTypes.INT);
 				generate(OP.copy, $literal.text, null, tv.get(t).toString());
-				tv.get(t).setValor($literal.text);
+				tv.get(t).setValue($literal.text);
 				break;
 			default:
 				break;

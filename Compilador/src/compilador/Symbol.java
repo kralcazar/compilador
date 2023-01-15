@@ -48,8 +48,8 @@ public class Symbol {
 		return initialized;
 	}
 
-	public void setInitialized(boolean inicializada) {
-		this.initialized = inicializada;
+	public void setInitialized(boolean initialized) {
+		this.initialized = initialized;
 	}
 
 	public Procedure getProcedure() {

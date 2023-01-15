@@ -112,8 +112,8 @@ public class Instruction {
         return instruction[3];
     }
 
-    public void setLabel(String label) {
-        this.instruction[3] = label;
+    public void setTag(String tag) {
+        this.instruction[3] = tag;
     }
 
     public OP getOpCode() {
