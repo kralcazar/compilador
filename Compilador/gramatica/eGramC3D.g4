@@ -150,7 +150,18 @@ program:
 };
 
 main:
-    MAIN BEGIN decl* sents END
+    MAIN BEGIN decl* sents END {
+        Symbol s=new Symbol();
+        int nv=0;
+        try {
+            s=ts.get($MAIN.getText());
+            nv=tv.newVar(false,pproc.peek(),Types.VAR, s.dataType());
+            tv.get(nv).setId(s.getId());
+            s.setVariableNumber(nv);
+        } catch(SymbolTable.SymbolTableException e) {
+            System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+        }
+    }
     ;
 
 decl:

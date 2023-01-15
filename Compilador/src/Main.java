@@ -76,5 +76,10 @@ public class Main {
                     ConsoleColors.RED_BOLD + "Error al generar código:" + ConsoleColors.RESET);
             throw e;
         }
+
+        //Ensamblado de código sin optimizar
+        Assembler normal = new Assembler(buildPath + filename, parserC3D.getC3D(),
+                parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
+        normal.ensamblar();
     }
 }
