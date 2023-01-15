@@ -13,8 +13,6 @@ devolver
 a
 ;
 }
-indice
-{
 ent
 i
 =
@@ -54,5 +52,4 @@ i
 50
 )
 ;
-}
 <EOF>

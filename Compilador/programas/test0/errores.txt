@@ -1,2 +1,0 @@
-Error sintáctico - Línea 8, Columna 0: 
-	 encontrado: 'indice' esperado: {<EOF>, 'const', 'funcion', 'devolver', 'ent', 'logico', 'palabra', 'mientras', 'hacer', 'si', ID}

@@ -253,7 +253,7 @@ declArray:
 		nv=tv.newVar(false,pproc.peek(),Types.VAR, dt.dataType());
 		tv.get(nv).setId(s.getId());
 		s.setVariableNumber(nv);
-		tv.get(nv).setElements(dt.entradas());
+		tv.get(nv).setElements(dt.getEntries());
 	} catch(SymbolTable.SymbolTableException e) {
 		System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 	}
@@ -560,12 +560,12 @@ referencia
 	}
 	| idx ']' {
 		Variable t2;
-		String nbytes = String.valueOf($idx.dt.ocupacion());
-		if($idx.dt.b()==0) {
+		String nbytes = String.valueOf($idx.dt.getItemSize());
+		if($idx.dt.getOffset()==0) {
 			t2 = tv.get(tv.newVar(true, pproc.peek(), Types.VAR, DataTypes.INT));
 			generate(OP.mult, $idx.d.toString(), nbytes, t2.toString());
 		} else {
-			String b = String.valueOf($idx.dt.b());
+			String b = String.valueOf($idx.dt.getOffset());
 			Variable t1 = tv.get(tv.newVar(true, pproc.peek(), Types.VAR, DataTypes.INT));
 			generate(OP.sub, $idx.d.toString(), b, t1.toString());
 			t2 = tv.get(tv.newVar(true, pproc.peek(), Types.VAR, DataTypes.INT));
@@ -613,7 +613,7 @@ idx
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
 		$dt = dv.getTable();
-		Index idx = $dt.primerIndice();
+		Index idx = $dt.getFirst();
 		$r = tv.get(dv.getVariableNumber());
 		Variable d = $expr.r;
 	} idx_[idx, d] {
