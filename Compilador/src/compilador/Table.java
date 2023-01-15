@@ -9,72 +9,80 @@ package compilador;
  */
 public class Table {
     private Symbol.DataTypes dataType; // Tipo subyacente de la tabla
-    private Index primero, ultimo; // Inicio y fin de lista de índices
-    private int b; // Desplazamiento conocido en tiempo de compilación
-    private int ocupacion; // Ocupación (bytes) de cada elemento
-    private int dimensiones; // Número de dimensiones de la tabla
-    private int entradas; // Número de entradas de la tabla
+    private Index first, last; // Inicio y fin de lista de índices
+    private int offset; // Desplazamiento conocido en tiempo de compilación
+    private int itemSize; // Ocupación (bytes) de cada elemento
+    private int dimension; // Número de dimensiones de la tabla
+    private int entries; // Número de entradas de la tabla
 
     public Table(Symbol.DataTypes dataType) {
         // dataType.NULL porque la tabla no tiene tipo subyacente
         this.dataType = dataType;
-        this.primero = null;
-        this.ultimo = null;
-        this.ocupacion = 4; // Todos los tipos de datos ocupan 4 bytes
+        this.first = null;
+        this.last = null;
+        this.itemSize = 4; // Todos los tipos de datos ocupan 4 bytes
     }
 
     /**
+     * Inicializa los parámetros de la tabla
+     */
+    public void init(){
+        setDimension();
+        setOffset();
+        setEntries();
+    }
+    /**
      * Calcula el número de dimensiones que tiene la tabla.
      */
-    public void calcularDimensiones() {
-        int dimensiones = 0;
-        Index i = primero;
+    private void setDimension() {
+        int dim = 0;
+        Index i = first;
         while (i != null) {
-            dimensiones++;
+            dim++;
             i = i.getNextIndex();
         }
-        this.dimensiones = dimensiones;
+        this.dimension = dim;
     }
 
     /**
      * Calcula el número de entradas que tiene la tabla.
      */
-    public void calcularEntradas() {
+    private void setEntries() {
         int entradas = 0;
-        Index i = primero;
+        Index i = first;
         while (i != null) {
             entradas += i.d();
             i=i.getNextIndex();
         }
-        this.entradas = entradas;
+        this.entries = entradas;
     }
 
     /**
      * Calcula el desplazamiento conocido en tiempo de compilación.
      */
-    public void calcularB() {
+    private void setOffset() {
         int b = 0;
-        if (primero != null) {
-            b = primero.li();
-            Index i = primero.getNextIndex();
+        if (first != null) {
+            b = first.li();
+            Index i = first.getNextIndex();
             while (i != null) {
                 b = b * i.d() + i.li();
-                i=i.getNextIndex();
+                i = i.getNextIndex();
             }
         }
-        this.b = b;
+        this.offset = b;
     }
 
     /**
      * Añade un nuevo índice o dimensión a la tabla.
      */
-    public void nuevoIndice(int li, int lf) {
-        if (primero == null) {
-            primero = new Index(li, lf);
-            ultimo = primero;
+    public void setIndex(int bottomLimit, int upperLimit) {
+        if (first == null) {
+            first = new Index(bottomLimit, upperLimit);
+            last = first;
         } else {
-            ultimo.setNextIndex(new Index(li, lf));
-            ultimo = ultimo.getNextIndex();
+            last.setNextIndex(new Index(bottomLimit, upperLimit));
+            last = last.getNextIndex();
         }
     }
 
@@ -83,8 +91,8 @@ public class Table {
      * 
      * @return El primer índice de la tabla.
      */
-    public Index primerIndice() {
-        return primero;
+    public Index getFirst() {
+        return first;
     }
 
     /**
@@ -101,8 +109,8 @@ public class Table {
      * 
      * @return El desplazamiento conocido en tiempo de compilación.
      */
-    public int b() {
-        return b;
+    public int getOffset() {
+        return offset;
     }
 
     /**
@@ -110,8 +118,8 @@ public class Table {
      * 
      * @return La ocupación de cada elemento de la tabla.
      */
-    public int ocupacion() {
-        return ocupacion;
+    public int getItemSize() {
+        return itemSize;
     }
 
     /**
@@ -119,8 +127,8 @@ public class Table {
      * 
      * @return El número de dimensiones de la tabla.
      */
-    public int dimensiones() {
-        return dimensiones;
+    public int getDimension() {
+        return dimension;
     }
 
     /**
@@ -129,7 +137,7 @@ public class Table {
      * 
      * @return El número de entradas de la tabla.
      */
-    public int entradas() {
-        return entradas;
+    public int getEntries() {
+        return entries;
     }
 }

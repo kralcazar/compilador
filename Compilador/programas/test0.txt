@@ -1,1 +1,18 @@
-funcion ent test(){devolver 5+6;}
+
+
+funcion ent test() {
+    ent a=2;
+    devolver a;
+}
+
+    ent i = 6;
+
+    test();
+    mientras (i == 5) {
+        i = i +1;
+    }
+
+    hacer{
+        i = i + 1;
+    } mientras (i < 50);
+

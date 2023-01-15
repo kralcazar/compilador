@@ -41,6 +41,12 @@ public interface eGramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArrayDecl(eGramParser.ArrayDeclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link eGramParser#arrayDecl_}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayDecl_(eGramParser.ArrayDecl_Context ctx);
+	/**
 	 * Visit a parse tree produced by {@link eGramParser#number}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -106,6 +112,12 @@ public interface eGramVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIdx_(eGramParser.Idx_Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link eGramParser#contIdx}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitContIdx(eGramParser.ContIdxContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link eGramParser#contIdx_}.
 	 * @param ctx the parse tree

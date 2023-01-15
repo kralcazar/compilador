@@ -12,10 +12,8 @@ import java.util.ArrayDeque;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
@@ -736,7 +734,7 @@ public class eGramC3D extends Parser {
 					nv=tv.newVar(false,pproc.peek(),Types.VAR, dt.dataType());
 					tv.get(nv).setId(s.getId());
 					s.setVariableNumber(nv);
-					tv.get(nv).setElements(dt.entradas());
+					tv.get(nv).setElements(dt.getEntries());
 				} catch(SymbolTable.SymbolTableException e) {
 					System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 				}
@@ -2065,12 +2063,12 @@ public class eGramC3D extends Parser {
 				match(RBRACK);
 
 						Variable t2;
-						String nbytes = String.valueOf(((ReferenciaContext)_localctx).idx.dt.ocupacion());
-						if(((ReferenciaContext)_localctx).idx.dt.b()==0) {
+						String nbytes = String.valueOf(((ReferenciaContext)_localctx).idx.dt.getItemSize());
+						if(((ReferenciaContext)_localctx).idx.dt.getOffset()==0) {
 							t2 = tv.get(tv.newVar(true, pproc.peek(), Types.VAR, DataTypes.INT));
 							generate(OP.mult, ((ReferenciaContext)_localctx).idx.d.toString(), nbytes, t2.toString());
 						} else {
-							String b = String.valueOf(((ReferenciaContext)_localctx).idx.dt.b());
+							String b = String.valueOf(((ReferenciaContext)_localctx).idx.dt.getOffset());
 							Variable t1 = tv.get(tv.newVar(true, pproc.peek(), Types.VAR, DataTypes.INT));
 							generate(OP.sub, ((ReferenciaContext)_localctx).idx.d.toString(), b, t1.toString());
 							t2 = tv.get(tv.newVar(true, pproc.peek(), Types.VAR, DataTypes.INT));
@@ -2197,7 +2195,7 @@ public class eGramC3D extends Parser {
 						System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 					}
 					((IdxContext)_localctx).dt =  dv.getTable();
-					Index idx = _localctx.dt.primerIndice();
+					Index idx = _localctx.dt.getFirst();
 					((IdxContext)_localctx).r =  tv.get(dv.getVariableNumber());
 					Variable d = ((IdxContext)_localctx).expr.r;
 				

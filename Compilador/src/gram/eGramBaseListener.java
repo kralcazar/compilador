@@ -71,6 +71,18 @@ public class eGramBaseListener implements eGramListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArrayDecl_(eGramParser.ArrayDecl_Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayDecl_(eGramParser.ArrayDecl_Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNumber(eGramParser.NumberContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -198,6 +210,18 @@ public class eGramBaseListener implements eGramListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIdx_(eGramParser.Idx_Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterContIdx(eGramParser.ContIdxContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitContIdx(eGramParser.ContIdxContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

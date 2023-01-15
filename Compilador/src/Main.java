@@ -64,6 +64,7 @@ public class Main {
         }
 
         //Generación del código intermedio
+        /*
         eGramC3D parserC3D;
         parserC3D = new eGramC3D(tokens, buildPath, parser.symbolTable);
         try {
@@ -81,5 +82,7 @@ public class Main {
         Assembler normal = new Assembler(buildPath + filename, parserC3D.getC3D(),
                 parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
         normal.ensamblar();
+
+         */
     }
 }

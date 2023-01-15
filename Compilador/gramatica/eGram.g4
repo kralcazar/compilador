@@ -70,7 +70,6 @@ public void recover(RecognitionException ex)
 //Puede tener declaración main o no
 //Además tiene declaraciones y sentencias y un EOF
 program:
-    //TODO: QUIZAS TENGAMOS QUE PONER ESTE BLOQUE DESPUÉS DEL MAIN,NOSE...
     {
     	symbolTable = new SymbolTable(folder);
     	// Insertar operaciones de input/output
@@ -198,16 +197,127 @@ decl:
     ;
 
 arrayDecl:
-	type ID /*{Tuple tuple = new Tuple($type.dataType); }*/ LBRACK ( number '..' )? number /*arrayDecl_[tuple]*/ RBRACK SEMI;
+	type ID LBRACK
+	    {
+	        Symbol symbol = new Symbol($ID.getText(), null, Symbol.Types.VAR, Symbol.DataTypes.NULL);
+            Table table = new Table($type.dataType);
+            symbol.setTable(table);
+            try{
+                symbolTable.insert($ID.getText(), symbol);
+            } catch (SymbolTable.SymbolTableException e) {
+                errors += "Error semántico en línea " + $ID.getLine() + ": variable '" + $ID.getText() +
+                "' ya declarada\n";
+            }
+            int bottomLimit = 0;
+            boolean limits = false;
+	    }
+	    (
+        number '..'
+        {
+            // Permitimos la entrada pero advertimos sobre el uso de variables
+            if($number.isConstant) {
+                errors += "Error semántico en línea " + $ID.getLine() +
+                ": los límites del índice deben ser valores constantes\n";
+            }
+            bottomLimit = $number.value;
+            limits = true;
+        }
+	    )? number
+	    {
+	        if(!$number.isConstant) {
+                errors += "Error semántico en línea " + $ID.getLine() +
+                ": los límites del índice deben ser valores constantes\n";
+            }
+            int upperLimit = $number.value;
+            if(!limits) {
+                // Caso en el que se indica el tamaño
+                if(upperLimit < 1) {
+                    errors+="Error semántico en línea "+ $ID.getLine() +
+                    ": una tabla no puede ser de tamaño 0\n";
+                } else {
+                    upperLimit--; // Si se indica el tamaño, hay que corregir el limite superior
+                }
+            } else {
+                // Caso en el que se indican los limites
+                if(bottomLimit > upperLimit) {
+                    errors+="Error semántico en línea " + $number.start.getLine() +
+                    ": el límite inferior no puede ser mayor al superior\n";
+                }
+            }
+            table.setIndex(bottomLimit, upperLimit);
+	    }
+	    arrayDecl_[table]
+	    {
+	        table.init();
+	    }
+	    RBRACK SEMI
+    ;
 
-/* Para añadir más dimensiones
-arrayDecl_[Tuple tuple]:
-    RBRACK LBRACK ( number '..' )? number arrayDecl_[$tuple]
-    |;//lambda
-*/
-number returns[int value, boolean constant]:
+//Para añadir más dimensiones
+arrayDecl_[Table table]:
+    RBRACK LBRACK
+        {
+            int bottomLimit = 0;
+            boolean limits = false;
+        }
+        ( number '..'
+        {
+            if($number.isConstant) {
+                errors += "Error semántico en línea " + $number.start.getLine() +
+                ": los límites del índice deben ser valores constantes\n";
+            }
+            bottomLimit = $number.value;
+            limits = true;
+        }
+        )? number
+        {
+            if(!$number.isConstant) {
+                errors += "Error semántico en línea " + $number.start.getLine() +
+                ": los límites del índice deben ser valores constantes\n";
+            }
+            int upperLimit = $number.value;
+            if(!limits) { // Caso en el que se indica el tamaño
+                if(upperLimit < 1) {
+                    errors+="Error semántico en línea "+ $number.start.getLine() +
+                    ": una tabla no puede ser de tamaño 0\n";
+                } else {
+                    upperLimit--; // Si se indica el tamaño, hay que corregir el limite superior
+                }
+            } else { // Caso en el que se indican los limites
+                if(bottomLimit > upperLimit) {
+                    errors+="Error semántico en línea " + $number.start.getLine() +
+                    ": el límite inferior no puede ser mayor al superior\n";
+                }
+            }
+            table.setIndex(bottomLimit, upperLimit);
+        }
+        arrayDecl_[$table]
+    |; //lambda
+
+number returns[int value, boolean isConstant]:
 	ID
-	| LiteralInteger;
+	    {
+	        Symbol symbol = null;
+            try {
+                symbol = symbolTable.get($ID.getText());
+            } catch (SymbolTable.SymbolTableException e) {
+                errors += "Error semántico en línea " + $ID.getLine() + ": "+e.getMessage() + "\n";
+            }
+            if(symbol != null && symbol.getType() == Symbol.Types.CONST) {
+                $value = Integer.parseInt(symbol.getValue());
+                $isConstant = true;
+            } else {
+                errors += "Error semántico en línea " + $ID.getLine() +
+                ": el limite debe ser un literal o una constante\n";
+                $value = 0;
+                $isConstant = false;
+            }
+	    }
+	| LiteralInteger
+	    {
+	        $value = Integer.parseInt($LiteralInteger.getText());
+            $isConstant = true;
+	    };
 
 header[Symbol.DataTypes dataType] returns[Symbol procedure]:
 	ID
@@ -223,21 +333,34 @@ header[Symbol.DataTypes dataType] returns[Symbol procedure]:
 	    LPAREN params[$procedure]? RPAREN ;
 
 params[Symbol prev]:
-	param COMMA params[$prev.getNext()]
-	| param;
+	param COMMA
+        {
+            $prev.setNext($param.symbol);
+        }
+        params[$prev.getNext()]
+	| param
+        {
+            $prev.setNext($param.symbol);
+        }
+    ;
 
 param returns[Symbol symbol]:
-	type ID;
+	type ID
+	    {
+	        $symbol = new Symbol($ID.getText(), null, Symbol.Types.ARG, $type.dataType);
+	    }
+	;
 
 sentsVoid:
     sents
     |;
+
 sents:
     sent sents_;
 
 sents_:
     sent sents_
-    |;
+    |; //lambda
 
 sent:
 	IF expr
@@ -260,7 +383,7 @@ sent:
 	    END
 	| IF expr
 	    {
-	        if($expr.dataType!=Symbol.DataTypes.BOOLEAN) {
+	        if($expr.dataType != Symbol.DataTypes.BOOLEAN) {
                 errors+="Error semántico en línea " + $IF.getLine() +
                 ": tipos incompatibles (esperado 'BOOLEAN', encontrado '" + $expr.dataType + "')\n";
             }
@@ -284,8 +407,24 @@ sent:
             symbolTable = symbolTable.blockOut();
 	    }
 	    END
-//	| switchcase endcase END
-	| WHILE expr BEGIN decl* sents END
+	| WHILE expr
+	    {
+	        if($expr.dataType != Symbol.DataTypes.BOOLEAN){
+	            errors += "Error semántico en línea " + $WHILE.getLine() +
+                ": tipos incompatibles (esperado 'BOOLEAN', encontrado '" + $expr.dataType + "')\n";
+	        }
+	    }
+	    BEGIN
+	    {
+	        depthCondition ++;
+	        symbolTable = symbolTable.blockIn();
+	    }
+	    decl* sents
+	    {
+            depthCondition --;
+            symbolTable = symbolTable.blockOut();
+        }
+	    END
 	| DO BEGIN decl* sents END WHILE expr SEMI
 	| RETURN expr SEMI
 	    {
@@ -399,24 +538,137 @@ reference[boolean assign] returns[Symbol symbol, Table table, boolean dimCheck]:
             }
 	    }
 	| idx RBRACK
-	| ID LPAREN RPAREN;
-//	| contIdx RPAREN; //da error
+	    {
+	        $table = $idx.table;
+	        $symbol = $idx.symbol;
+	        if($table != null) {
+                // Comprobar la cantidad de indirecciones usadas
+                int dim = $table.getDimension();
+                $dimCheck = false;
+                if($idx.dimension < dim) {
+                    errors+="Error semántico en línea " + $idx.start.getLine() +
+                    ": la tabla tiene más dimensiones\n";
+                } else if($idx.dimension > dim){
+                    errors+="Error semántico en línea " + $idx.start.getLine() +
+                    ": la tabla no tiene tantas dimensiones\n";
+                } else {
+                    $dimCheck = true;
+                }
+            }
+	    }
+	| ID LPAREN RPAREN
+	    {
+	        try {
+                $symbol = symbolTable.get($ID.getText());
+                if($symbol.getNext() != null) {
+                    errors+="Error semántico en línea " + $ID.getLine() + ": falta(n) argumento(s) para " +
+                    $ID.getText() + "\n";
+                }
+            } catch (SymbolTable.SymbolTableException e) {
+                errors += "Error semántico en línea " + $ID.getLine() + ": " + e.getMessage() + "\n";
+                $symbol = null;
+            }
+	    }
+	| contIdx RPAREN
+	    {
+	        $symbol = $contIdx.procedure;
+	    }
+	;
+
 //idx returns[Symbol s, int dim, Tuple tuple]:
 //La variable d da error en compilador, la he modificado por dim y añadido $
-idx returns[Symbol s, int dim]:
-	ID LBRACK expr idx_[$dim];
+idx returns[Symbol symbol, int dimension, Table table]:
+	ID LBRACK expr
+	    {
+	        int dim = 1;
+            try {
+                $symbol = symbolTable.get($ID.getText());
+            } catch (SymbolTable.SymbolTableException e) {
+                errors += "Error semántico en línea " + $ID.getLine() + ": " + e.getMessage() + "\n";
+            }
+            if($expr.dataType != Symbol.DataTypes.INT) {
+                errors += "Error semántico en línea " + $expr.start.getLine() + ": " + $expr.text +
+                " no es un valor numérico\n";
+            }
+            if($symbol != null) {
+                $table = $symbol.getTable();
+                if($table == null) {
+                    errors += "Error semántico en línea " + $ID.getLine() + ": " + $ID.getText() +
+                    " no es una tabla\n";
+                }
+            }
+	    }
+	    idx_[dim]
+	    {
+	        $dimension = $idx_.dimension;
+	    }
+	;
 
-idx_[int dim1] returns[int dim]:
-	RBRACK LBRACK expr  idx_[$dim]
-	|;
+idx_[int dimension_] returns[int dimension]:
+	RBRACK LBRACK expr
+	    {
+	        if($expr.dataType != Symbol.DataTypes.INT) {
+                errors += "Error semántico en línea " + $expr.start.getLine() + ": " + $expr.text +
+                " no es un valor numérico\n";
+            }
+            int dim = $dimension_ + 1;
+	    }
+	    idx_[dim]
+	    {
+	        $dimension = $idx_.dimension;
+	    }
+	|
+	    {
+	        $dimension = $dimension_;
+	    }
+	;
 
-//da error la variable pparams
-/*
-contIdx returns[Symbol s]:
-	ID LPAREN expr contIdx_[pparams];
-*/
+contIdx returns[Symbol procedure]:
+	ID LPAREN expr
+	    {
+	        Deque<Symbol.DataTypes> pparams=new ArrayDeque<Symbol.DataTypes>();
+            try {
+                $procedure = symbolTable.get($ID.getText());
+                pparams.add($expr.dataType);
+            } catch (SymbolTable.SymbolTableException e) {
+                errors += "Error semántico en línea " + $ID.getLine() + ": " + e.getMessage() + "\n";
+                $procedure = null;
+            }
+	    }
+	    contIdx_[pparams]
+	    {
+	        if($procedure != null) {
+                Symbol.DataTypes aux;
+                Symbol param = $procedure;
+                param = param.getNext();
+                while(pparams.size() != 0) {
+                    aux = pparams.remove();
+                    if(param == null) {
+                        errors += "Error semántico en línea " + $ID.getLine() +
+                        ": demasiados argumentos para " + $ID.getText() + "\n";
+                        break;
+                    } else if(aux != param.dataType()) {
+                        errors += "Error semántico en línea " + $ID.getLine() +
+                        ": tipos incompatibles (esperado '" + param.dataType() +
+                        "', encontrado '" + aux + "')\n";
+                        break;
+                    }
+                    param = param.getNext();
+                }
+                if(param != null) {
+                    errors += "Error semántico en línea " + $ID.getLine() + ": falta(n) argumento(s) para " +
+                    $ID.getText() + "\n";
+                }
+            }
+	    }
+    ;
+
 contIdx_[Deque<Symbol.DataTypes> pparams]:
-	COMMA expr contIdx_[$pparams]
+	COMMA expr
+	    {
+	        $pparams.add($expr.dataType);
+	    }
+	    contIdx_[$pparams]
 	|; // lambda
 
 // Expresiones

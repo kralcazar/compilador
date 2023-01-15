@@ -54,6 +54,16 @@ public interface eGramListener extends ParseTreeListener {
 	 */
 	void exitArrayDecl(eGramParser.ArrayDeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link eGramParser#arrayDecl_}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayDecl_(eGramParser.ArrayDecl_Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramParser#arrayDecl_}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayDecl_(eGramParser.ArrayDecl_Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link eGramParser#number}.
 	 * @param ctx the parse tree
 	 */
@@ -163,6 +173,16 @@ public interface eGramListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIdx_(eGramParser.Idx_Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link eGramParser#contIdx}.
+	 * @param ctx the parse tree
+	 */
+	void enterContIdx(eGramParser.ContIdxContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramParser#contIdx}.
+	 * @param ctx the parse tree
+	 */
+	void exitContIdx(eGramParser.ContIdxContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link eGramParser#contIdx_}.
 	 * @param ctx the parse tree
