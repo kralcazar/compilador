@@ -45,21 +45,21 @@ public class eGramBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArrayDecl(eGramParser.ArrayDeclContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSents(eGramParser.SentsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArrayDecl_(eGramParser.ArrayDecl_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitSents_(eGramParser.Sents_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNumber(eGramParser.NumberContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSent(eGramParser.SentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -87,28 +87,21 @@ public class eGramBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSentsVoid(eGramParser.SentsVoidContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArrayDecl(eGramParser.ArrayDeclContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSents(eGramParser.SentsContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArrayDecl_(eGramParser.ArrayDecl_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSents_(eGramParser.Sents_Context ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitSent(eGramParser.SentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNumber(eGramParser.NumberContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -206,14 +199,14 @@ public class eGramBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprAdit(eGramParser.ExprAditContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprAdd(eGramParser.ExprAddContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprAdit_(eGramParser.ExprAdit_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitExprAdd_(eGramParser.ExprAdd_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

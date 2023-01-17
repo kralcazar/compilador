@@ -35,23 +35,23 @@ public interface eGramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDecl(eGramParser.DeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramParser#arrayDecl}.
+	 * Visit a parse tree produced by {@link eGramParser#sents}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArrayDecl(eGramParser.ArrayDeclContext ctx);
+	T visitSents(eGramParser.SentsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramParser#arrayDecl_}.
+	 * Visit a parse tree produced by {@link eGramParser#sents_}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArrayDecl_(eGramParser.ArrayDecl_Context ctx);
+	T visitSents_(eGramParser.Sents_Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramParser#number}.
+	 * Visit a parse tree produced by {@link eGramParser#sent}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNumber(eGramParser.NumberContext ctx);
+	T visitSent(eGramParser.SentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link eGramParser#header}.
 	 * @param ctx the parse tree
@@ -71,29 +71,23 @@ public interface eGramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParam(eGramParser.ParamContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramParser#sentsVoid}.
+	 * Visit a parse tree produced by {@link eGramParser#arrayDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSentsVoid(eGramParser.SentsVoidContext ctx);
+	T visitArrayDecl(eGramParser.ArrayDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramParser#sents}.
+	 * Visit a parse tree produced by {@link eGramParser#arrayDecl_}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSents(eGramParser.SentsContext ctx);
+	T visitArrayDecl_(eGramParser.ArrayDecl_Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramParser#sents_}.
+	 * Visit a parse tree produced by {@link eGramParser#number}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSents_(eGramParser.Sents_Context ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramParser#sent}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSent(eGramParser.SentContext ctx);
+	T visitNumber(eGramParser.NumberContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link eGramParser#reference}.
 	 * @param ctx the parse tree
@@ -173,17 +167,17 @@ public interface eGramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprComp_(eGramParser.ExprComp_Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramParser#exprAdit}.
+	 * Visit a parse tree produced by {@link eGramParser#exprAdd}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprAdit(eGramParser.ExprAditContext ctx);
+	T visitExprAdd(eGramParser.ExprAddContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramParser#exprAdit_}.
+	 * Visit a parse tree produced by {@link eGramParser#exprAdd_}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprAdit_(eGramParser.ExprAdit_Context ctx);
+	T visitExprAdd_(eGramParser.ExprAdd_Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link eGramParser#exprMult}.
 	 * @param ctx the parse tree

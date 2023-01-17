@@ -44,35 +44,35 @@ public interface eGramListener extends ParseTreeListener {
 	 */
 	void exitDecl(eGramParser.DeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramParser#arrayDecl}.
+	 * Enter a parse tree produced by {@link eGramParser#sents}.
 	 * @param ctx the parse tree
 	 */
-	void enterArrayDecl(eGramParser.ArrayDeclContext ctx);
+	void enterSents(eGramParser.SentsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramParser#arrayDecl}.
+	 * Exit a parse tree produced by {@link eGramParser#sents}.
 	 * @param ctx the parse tree
 	 */
-	void exitArrayDecl(eGramParser.ArrayDeclContext ctx);
+	void exitSents(eGramParser.SentsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramParser#arrayDecl_}.
+	 * Enter a parse tree produced by {@link eGramParser#sents_}.
 	 * @param ctx the parse tree
 	 */
-	void enterArrayDecl_(eGramParser.ArrayDecl_Context ctx);
+	void enterSents_(eGramParser.Sents_Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramParser#arrayDecl_}.
+	 * Exit a parse tree produced by {@link eGramParser#sents_}.
 	 * @param ctx the parse tree
 	 */
-	void exitArrayDecl_(eGramParser.ArrayDecl_Context ctx);
+	void exitSents_(eGramParser.Sents_Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramParser#number}.
+	 * Enter a parse tree produced by {@link eGramParser#sent}.
 	 * @param ctx the parse tree
 	 */
-	void enterNumber(eGramParser.NumberContext ctx);
+	void enterSent(eGramParser.SentContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramParser#number}.
+	 * Exit a parse tree produced by {@link eGramParser#sent}.
 	 * @param ctx the parse tree
 	 */
-	void exitNumber(eGramParser.NumberContext ctx);
+	void exitSent(eGramParser.SentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link eGramParser#header}.
 	 * @param ctx the parse tree
@@ -104,45 +104,35 @@ public interface eGramListener extends ParseTreeListener {
 	 */
 	void exitParam(eGramParser.ParamContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramParser#sentsVoid}.
+	 * Enter a parse tree produced by {@link eGramParser#arrayDecl}.
 	 * @param ctx the parse tree
 	 */
-	void enterSentsVoid(eGramParser.SentsVoidContext ctx);
+	void enterArrayDecl(eGramParser.ArrayDeclContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramParser#sentsVoid}.
+	 * Exit a parse tree produced by {@link eGramParser#arrayDecl}.
 	 * @param ctx the parse tree
 	 */
-	void exitSentsVoid(eGramParser.SentsVoidContext ctx);
+	void exitArrayDecl(eGramParser.ArrayDeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramParser#sents}.
+	 * Enter a parse tree produced by {@link eGramParser#arrayDecl_}.
 	 * @param ctx the parse tree
 	 */
-	void enterSents(eGramParser.SentsContext ctx);
+	void enterArrayDecl_(eGramParser.ArrayDecl_Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramParser#sents}.
+	 * Exit a parse tree produced by {@link eGramParser#arrayDecl_}.
 	 * @param ctx the parse tree
 	 */
-	void exitSents(eGramParser.SentsContext ctx);
+	void exitArrayDecl_(eGramParser.ArrayDecl_Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramParser#sents_}.
+	 * Enter a parse tree produced by {@link eGramParser#number}.
 	 * @param ctx the parse tree
 	 */
-	void enterSents_(eGramParser.Sents_Context ctx);
+	void enterNumber(eGramParser.NumberContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramParser#sents_}.
+	 * Exit a parse tree produced by {@link eGramParser#number}.
 	 * @param ctx the parse tree
 	 */
-	void exitSents_(eGramParser.Sents_Context ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramParser#sent}.
-	 * @param ctx the parse tree
-	 */
-	void enterSent(eGramParser.SentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramParser#sent}.
-	 * @param ctx the parse tree
-	 */
-	void exitSent(eGramParser.SentContext ctx);
+	void exitNumber(eGramParser.NumberContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link eGramParser#reference}.
 	 * @param ctx the parse tree
@@ -274,25 +264,25 @@ public interface eGramListener extends ParseTreeListener {
 	 */
 	void exitExprComp_(eGramParser.ExprComp_Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramParser#exprAdit}.
+	 * Enter a parse tree produced by {@link eGramParser#exprAdd}.
 	 * @param ctx the parse tree
 	 */
-	void enterExprAdit(eGramParser.ExprAditContext ctx);
+	void enterExprAdd(eGramParser.ExprAddContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramParser#exprAdit}.
+	 * Exit a parse tree produced by {@link eGramParser#exprAdd}.
 	 * @param ctx the parse tree
 	 */
-	void exitExprAdit(eGramParser.ExprAditContext ctx);
+	void exitExprAdd(eGramParser.ExprAddContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramParser#exprAdit_}.
+	 * Enter a parse tree produced by {@link eGramParser#exprAdd_}.
 	 * @param ctx the parse tree
 	 */
-	void enterExprAdit_(eGramParser.ExprAdit_Context ctx);
+	void enterExprAdd_(eGramParser.ExprAdd_Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramParser#exprAdit_}.
+	 * Exit a parse tree produced by {@link eGramParser#exprAdd_}.
 	 * @param ctx the parse tree
 	 */
-	void exitExprAdit_(eGramParser.ExprAdit_Context ctx);
+	void exitExprAdd_(eGramParser.ExprAdd_Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link eGramParser#exprMult}.
 	 * @param ctx the parse tree

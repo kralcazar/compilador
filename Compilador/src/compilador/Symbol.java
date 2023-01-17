@@ -20,7 +20,7 @@ public class Symbol {
 	private Table table; // Descripción de tabla
 
 	public enum Types {
-		CONST, VAR, PROC, FUNC, ARG, NULO;
+		CONST, VAR, PROC, FUNC, ARG, MAIN, NULO;
 	}
 
 	public enum DataTypes {

@@ -59,37 +59,37 @@ public class eGramBaseListener implements eGramListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArrayDecl(eGramParser.ArrayDeclContext ctx) { }
+	@Override public void enterSents(eGramParser.SentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArrayDecl(eGramParser.ArrayDeclContext ctx) { }
+	@Override public void exitSents(eGramParser.SentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArrayDecl_(eGramParser.ArrayDecl_Context ctx) { }
+	@Override public void enterSents_(eGramParser.Sents_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArrayDecl_(eGramParser.ArrayDecl_Context ctx) { }
+	@Override public void exitSents_(eGramParser.Sents_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNumber(eGramParser.NumberContext ctx) { }
+	@Override public void enterSent(eGramParser.SentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNumber(eGramParser.NumberContext ctx) { }
+	@Override public void exitSent(eGramParser.SentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -131,49 +131,37 @@ public class eGramBaseListener implements eGramListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSentsVoid(eGramParser.SentsVoidContext ctx) { }
+	@Override public void enterArrayDecl(eGramParser.ArrayDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSentsVoid(eGramParser.SentsVoidContext ctx) { }
+	@Override public void exitArrayDecl(eGramParser.ArrayDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSents(eGramParser.SentsContext ctx) { }
+	@Override public void enterArrayDecl_(eGramParser.ArrayDecl_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSents(eGramParser.SentsContext ctx) { }
+	@Override public void exitArrayDecl_(eGramParser.ArrayDecl_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSents_(eGramParser.Sents_Context ctx) { }
+	@Override public void enterNumber(eGramParser.NumberContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSents_(eGramParser.Sents_Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSent(eGramParser.SentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSent(eGramParser.SentContext ctx) { }
+	@Override public void exitNumber(eGramParser.NumberContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -335,25 +323,25 @@ public class eGramBaseListener implements eGramListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprAdit(eGramParser.ExprAditContext ctx) { }
+	@Override public void enterExprAdd(eGramParser.ExprAddContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprAdit(eGramParser.ExprAditContext ctx) { }
+	@Override public void exitExprAdd(eGramParser.ExprAddContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprAdit_(eGramParser.ExprAdit_Context ctx) { }
+	@Override public void enterExprAdd_(eGramParser.ExprAdd_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprAdit_(eGramParser.ExprAdit_Context ctx) { }
+	@Override public void exitExprAdd_(eGramParser.ExprAdd_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

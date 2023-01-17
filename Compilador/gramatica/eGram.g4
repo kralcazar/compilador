@@ -70,30 +70,53 @@ public void recover(RecognitionException ex)
 //Puede tener declaración main o no
 //Además tiene declaraciones y sentencias y un EOF
 program:
-    {
-    	symbolTable = new SymbolTable(folder);
-    	// Insertar operaciones de input/output
-    	try {
-    		symbolTable.insert("read", new Symbol("read", null, Symbol.Types.FUNC, Symbol.DataTypes.STRING));
-    		Symbol arg = new Symbol("argBool", null, Symbol.Types.ARG, Symbol.DataTypes.BOOLEAN);
-    		symbolTable.insert("printb", new Symbol("printb", arg,Symbol.Types.PROC, Symbol.DataTypes.NULL));
-    		arg = new Symbol("argInt", null,Symbol.Types.ARG,Symbol.DataTypes.INT);
-    		symbolTable.insert("printi", new Symbol("printi", arg, Symbol.Types.PROC, Symbol.DataTypes.NULL));
-    		arg = new Symbol("argString", null, Symbol.Types.ARG, Symbol.DataTypes.STRING);
-    		symbolTable.insert("prints", new Symbol("prints", arg, Symbol.Types.PROC, Symbol.DataTypes.NULL));
-    	} catch (SymbolTable.SymbolTableException e) {}
-    }
-    main? decl* sentsVoid EOF
-    {
-        symbolTable.blockOut();
-        if(!errors.isEmpty()) {
-            throw new RuntimeException(errors);
+        {
+            symbolTable = new SymbolTable(folder);
+            // Insertar operaciones de input/output
+            try {
+                symbolTable.insert("read", new Symbol("read", null, Symbol.Types.FUNC, Symbol.DataTypes.STRING));
+                Symbol arg = new Symbol("argBool", null, Symbol.Types.ARG, Symbol.DataTypes.BOOLEAN);
+                symbolTable.insert("printb", new Symbol("printb", arg,Symbol.Types.PROC, Symbol.DataTypes.NULL));
+                arg = new Symbol("argInt", null,Symbol.Types.ARG,Symbol.DataTypes.INT);
+                symbolTable.insert("printi", new Symbol("printi", arg, Symbol.Types.PROC, Symbol.DataTypes.NULL));
+                arg = new Symbol("argString", null, Symbol.Types.ARG, Symbol.DataTypes.STRING);
+                symbolTable.insert("prints", new Symbol("prints", arg, Symbol.Types.PROC, Symbol.DataTypes.NULL));
+            } catch (SymbolTable.SymbolTableException e) {}
         }
-     };
-
-main:
-    MAIN BEGIN decl* sents END
+    (decl+ | main)+ EOF
+        {
+            symbolTable.blockOut();
+            if(!errors.isEmpty()) {
+                throw new RuntimeException(errors);
+            }
+        }
     ;
+
+main returns[Symbol symbol]:
+    MAIN BEGIN
+        {
+            $symbol = new Symbol($MAIN.getText(), null, Symbol.Types.MAIN, null);
+            try {
+                symbolTable.insert($MAIN.getText(), $symbol);
+            } catch (SymbolTable.SymbolTableException e) {
+                errors += "Error semántico en línea " + $MAIN.getLine() + ": El índice ya ha sido declarado\n";
+            }
+
+            symbolTable = symbolTable.blockIn();
+            proceduresStack.push($symbol);
+        }
+        decl* sents END
+        {
+            symbolTable = symbolTable.blockOut();
+            proceduresStack.pop();
+
+            if(depthCondition != 0) {
+                errors += "Error semántico - Línea " + $MAIN.getLine() +
+                ": no se puede definir una función en una estructura condicional o repetitiva\n";
+            }
+        }
+    ;
+
 
 decl:
     type ID
@@ -196,167 +219,10 @@ decl:
         }
     ;
 
-arrayDecl:
-	type ID LBRACK
-	    {
-	        Symbol symbol = new Symbol($ID.getText(), null, Symbol.Types.VAR, Symbol.DataTypes.NULL);
-            Table table = new Table($type.dataType);
-            symbol.setTable(table);
-            try{
-                symbolTable.insert($ID.getText(), symbol);
-            } catch (SymbolTable.SymbolTableException e) {
-                errors += "Error semántico en línea " + $ID.getLine() + ": variable '" + $ID.getText() +
-                "' ya declarada\n";
-            }
-            int bottomLimit = 0;
-            boolean limits = false;
-	    }
-	    (
-        number '..'
-        {
-            // Permitimos la entrada pero advertimos sobre el uso de variables
-            if($number.isConstant) {
-                errors += "Error semántico en línea " + $ID.getLine() +
-                ": los límites del índice deben ser valores constantes\n";
-            }
-            bottomLimit = $number.value;
-            limits = true;
-        }
-	    )? number
-	    {
-	        if(!$number.isConstant) {
-                errors += "Error semántico en línea " + $ID.getLine() +
-                ": los límites del índice deben ser valores constantes\n";
-            }
-            int upperLimit = $number.value;
-            if(!limits) {
-                // Caso en el que se indica el tamaño
-                if(upperLimit < 1) {
-                    errors+="Error semántico en línea "+ $ID.getLine() +
-                    ": una tabla no puede ser de tamaño 0\n";
-                } else {
-                    upperLimit--; // Si se indica el tamaño, hay que corregir el limite superior
-                }
-            } else {
-                // Caso en el que se indican los limites
-                if(bottomLimit > upperLimit) {
-                    errors+="Error semántico en línea " + $number.start.getLine() +
-                    ": el límite inferior no puede ser mayor al superior\n";
-                }
-            }
-            table.setIndex(bottomLimit, upperLimit);
-	    }
-	    arrayDecl_[table]
-	    {
-	        table.init();
-	    }
-	    RBRACK SEMI
-    ;
-
-//Para añadir más dimensiones
-arrayDecl_[Table table]:
-    RBRACK LBRACK
-        {
-            int bottomLimit = 0;
-            boolean limits = false;
-        }
-        ( number '..'
-        {
-            if($number.isConstant) {
-                errors += "Error semántico en línea " + $number.start.getLine() +
-                ": los límites del índice deben ser valores constantes\n";
-            }
-            bottomLimit = $number.value;
-            limits = true;
-        }
-        )? number
-        {
-            if(!$number.isConstant) {
-                errors += "Error semántico en línea " + $number.start.getLine() +
-                ": los límites del índice deben ser valores constantes\n";
-            }
-            int upperLimit = $number.value;
-            if(!limits) { // Caso en el que se indica el tamaño
-                if(upperLimit < 1) {
-                    errors+="Error semántico en línea "+ $number.start.getLine() +
-                    ": una tabla no puede ser de tamaño 0\n";
-                } else {
-                    upperLimit--; // Si se indica el tamaño, hay que corregir el limite superior
-                }
-            } else { // Caso en el que se indican los limites
-                if(bottomLimit > upperLimit) {
-                    errors+="Error semántico en línea " + $number.start.getLine() +
-                    ": el límite inferior no puede ser mayor al superior\n";
-                }
-            }
-            table.setIndex(bottomLimit, upperLimit);
-        }
-        arrayDecl_[$table]
-    |; //lambda
-
-number returns[int value, boolean isConstant]:
-	ID
-	    {
-	        Symbol symbol = null;
-            try {
-                symbol = symbolTable.get($ID.getText());
-            } catch (SymbolTable.SymbolTableException e) {
-                errors += "Error semántico en línea " + $ID.getLine() + ": "+e.getMessage() + "\n";
-            }
-            if(symbol != null && symbol.getType() == Symbol.Types.CONST) {
-                $value = Integer.parseInt(symbol.getValue());
-                $isConstant = true;
-            } else {
-                errors += "Error semántico en línea " + $ID.getLine() +
-                ": el limite debe ser un literal o una constante\n";
-                $value = 0;
-                $isConstant = false;
-            }
-	    }
-	| LiteralInteger
-	    {
-	        $value = Integer.parseInt($LiteralInteger.getText());
-            $isConstant = true;
-	    };
-
-header[Symbol.DataTypes dataType] returns[Symbol procedure]:
-	ID
-	    {
-	        if($dataType != null) {
-                // Función
-                $procedure = new Symbol($ID.getText(), null, Symbol.Types.FUNC, $dataType);
-            } else {
-                // Procedimiento
-                $procedure = new Symbol($ID.getText(), null, Symbol.Types.PROC, Symbol.DataTypes.NULL);
-            }
-	    }
-	    LPAREN params[$procedure]? RPAREN ;
-
-params[Symbol prev]:
-	param COMMA
-        {
-            $prev.setNext($param.symbol);
-        }
-        params[$prev.getNext()]
-	| param
-        {
-            $prev.setNext($param.symbol);
-        }
-    ;
-
-param returns[Symbol symbol]:
-	type ID
-	    {
-	        $symbol = new Symbol($ID.getText(), null, Symbol.Types.ARG, $type.dataType);
-	    }
-	;
-
-sentsVoid:
-    sents
-    |;
 
 sents:
-    sent sents_;
+    sent sents_
+    ;
 
 sents_:
     sent sents_
@@ -491,34 +357,173 @@ sent:
             }
 	    }
 	| reference[false] SEMI
-	{
-	    if($reference.symbol != null) {
-            if($reference.symbol.getType() != Symbol.Types.FUNC && $reference.symbol.getType() != Symbol.Types.PROC) {
-                // Tiene que ser función o procedimiento
-                errors += "Error semántico en línea " + $SEMI.getLine() +
-                ": se esperaba una función o un procedimiento\n";
+        {
+            if($reference.symbol != null) {
+                if($reference.symbol.getType() != Symbol.Types.FUNC && $reference.symbol.getType() != Symbol.Types.PROC) {
+                    // Tiene que ser función o procedimiento
+                    errors += "Error semántico en línea " + $SEMI.getLine() +
+                    ": se esperaba una función o un procedimiento\n";
+                }
             }
         }
-	}
 	;
 
-/*
-switchcase:
-	SWITCH expr BEGIN switchcase_;
 
-switchcase_:
-    casei switchcase_
-    |; // lambda
+header[Symbol.DataTypes dataType] returns[Symbol procedure]:
+	ID
+	    {
+	        if($dataType != null) {
+                // Función
+                $procedure = new Symbol($ID.getText(), null, Symbol.Types.FUNC, $dataType);
+            } else {
+                // Procedimiento
+                $procedure = new Symbol($ID.getText(), null, Symbol.Types.PROC, Symbol.DataTypes.NULL);
+            }
+	    }
+	    LPAREN params[$procedure]? RPAREN ;
 
-casei:
-	CASE expr COLON sents (BREAK SEMI)?;
+params[Symbol prev]:
+	param COMMA
+        {
+            $prev.setNext($param.symbol);
+        }
+        params[$prev.getNext()]
+	| param
+        {
+            $prev.setNext($param.symbol);
+        }
+    ;
 
-endcase:
-    DEFAULT COLON sents
-    |;
-*/
-//reference[boolean assign] returns[Symbol s, Tuple tuple, boolean dimCheck]:
-//He quitado Tuple porque me da error
+param returns[Symbol symbol]:
+	type ID
+	    {
+	        $symbol = new Symbol($ID.getText(), null, Symbol.Types.ARG, $type.dataType);
+	    }
+	;
+
+arrayDecl:
+	type ID LBRACK
+	    {
+	        Symbol symbol = new Symbol($ID.getText(), null, Symbol.Types.VAR, Symbol.DataTypes.NULL);
+            Table table = new Table($type.dataType);
+            symbol.setTable(table);
+            try{
+                symbolTable.insert($ID.getText(), symbol);
+            } catch (SymbolTable.SymbolTableException e) {
+                errors += "Error semántico en línea " + $ID.getLine() + ": variable '" + $ID.getText() +
+                "' ya declarada\n";
+            }
+            int bottomLimit = 0;
+            boolean limits = false;
+	    }
+	    (
+        number '..'
+        {
+            // Permitimos la entrada pero advertimos sobre el uso de variables
+            if($number.isConstant) {
+                errors += "Error semántico en línea " + $ID.getLine() +
+                ": los límites del índice deben ser valores constantes\n";
+            }
+            bottomLimit = $number.value;
+            limits = true;
+        }
+	    )? number
+	    {
+	        if(!$number.isConstant) {
+                errors += "Error semántico en línea " + $ID.getLine() +
+                ": los límites del índice deben ser valores constantes\n";
+            }
+            int upperLimit = $number.value;
+            if(!limits) {
+                // Caso en el que se indica el tamaño
+                if(upperLimit < 1) {
+                    errors+="Error semántico en línea "+ $ID.getLine() +
+                    ": una tabla no puede ser de tamaño 0\n";
+                } else {
+                    upperLimit--; // Si se indica el tamaño, hay que corregir el limite superior
+                }
+            } else {
+                // Caso en el que se indican los limites
+                if(bottomLimit > upperLimit) {
+                    errors+="Error semántico en línea " + $number.start.getLine() +
+                    ": el límite inferior no puede ser mayor al superior\n";
+                }
+            }
+            table.setIndex(bottomLimit, upperLimit);
+	    }
+	    arrayDecl_[table]
+	    {
+	        table.init();
+	    }
+	    RBRACK SEMI
+    ;
+
+//Para añadir más dimensiones
+arrayDecl_[Table table]:
+    RBRACK LBRACK
+        {
+            int bottomLimit = 0;
+            boolean limits = false;
+        }
+        ( number '..'
+        {
+            if($number.isConstant) {
+                errors += "Error semántico en línea " + $number.start.getLine() +
+                ": los límites del índice deben ser valores constantes\n";
+            }
+            bottomLimit = $number.value;
+            limits = true;
+        }
+        )? number
+        {
+            if(!$number.isConstant) {
+                errors += "Error semántico en línea " + $number.start.getLine() +
+                ": los límites del índice deben ser valores constantes\n";
+            }
+            int upperLimit = $number.value;
+            if(!limits) { // Caso en el que se indica el tamaño
+                if(upperLimit < 1) {
+                    errors+="Error semántico en línea "+ $number.start.getLine() +
+                    ": una tabla no puede ser de tamaño 0\n";
+                } else {
+                    upperLimit--; // Si se indica el tamaño, hay que corregir el limite superior
+                }
+            } else { // Caso en el que se indican los limites
+                if(bottomLimit > upperLimit) {
+                    errors+="Error semántico en línea " + $number.start.getLine() +
+                    ": el límite inferior no puede ser mayor al superior\n";
+                }
+            }
+            table.setIndex(bottomLimit, upperLimit);
+        }
+        arrayDecl_[$table]
+    |; //lambda
+
+number returns[int value, boolean isConstant]:
+	ID
+	    {
+	        Symbol symbol = null;
+            try {
+                symbol = symbolTable.get($ID.getText());
+            } catch (SymbolTable.SymbolTableException e) {
+                errors += "Error semántico en línea " + $ID.getLine() + ": "+e.getMessage() + "\n";
+            }
+            if(symbol != null && symbol.getType() == Symbol.Types.CONST) {
+                $value = Integer.parseInt(symbol.getValue());
+                $isConstant = true;
+            } else {
+                errors += "Error semántico en línea " + $ID.getLine() +
+                ": el limite debe ser un literal o una constante\n";
+                $value = 0;
+                $isConstant = false;
+            }
+	    }
+	| LiteralInteger
+	    {
+	        $value = Integer.parseInt($LiteralInteger.getText());
+            $isConstant = true;
+	    };
+
 reference[boolean assign] returns[Symbol symbol, Table table, boolean dimCheck]:
 	ID
 	    {
@@ -575,8 +580,6 @@ reference[boolean assign] returns[Symbol symbol, Table table, boolean dimCheck]:
 	    }
 	;
 
-//idx returns[Symbol s, int dim, Tuple tuple]:
-//La variable d da error en compilador, la he modificado por dim y añadido $
 idx returns[Symbol symbol, int dimension, Table table]:
 	ID LBRACK expr
 	    {
@@ -671,7 +674,6 @@ contIdx_[Deque<Symbol.DataTypes> pparams]:
 	    contIdx_[$pparams]
 	|; // lambda
 
-// Expresiones
 expr returns[Symbol.DataTypes dataType]:
 	exprOr
         {
@@ -679,7 +681,6 @@ expr returns[Symbol.DataTypes dataType]:
         }
 	;
 
-// Expresión de OR
 exprOr returns[Symbol.DataTypes dataType]:
 	exprAnd exprOr_
         {
@@ -707,7 +708,6 @@ exprOr_ returns[Symbol.DataTypes dataType]:
 	    }
 	|; //lambda
 
-// Expresión de AND
 exprAnd returns[Symbol.DataTypes dataType]:
 	exprNot exprAnd_
 	    {
@@ -735,7 +735,6 @@ exprAnd_ returns[Symbol.DataTypes dataType]:
 	    }
 	|; //lambda
 
-// Expresión de NOT
 exprNot returns[Symbol.DataTypes dataType]:
 	NOT exprComp
 	    {
@@ -751,12 +750,11 @@ exprNot returns[Symbol.DataTypes dataType]:
 	    }
 	;
 
-// Expresión comparativa
 exprComp returns[Symbol.DataTypes dataType]:
-	exprAdit exprComp_
+	exprAdd exprComp_
 	    {
             if($exprComp_.dataType != null) {
-                if($exprAdit.dataType != Symbol.DataTypes.INT) {
+                if($exprAdd.dataType != Symbol.DataTypes.INT) {
                     errors+="Error semántico en línea " + $exprComp_.start.getLine() +
                     ": tipos incompatibles (esperado INT," +
                     " encontrado " + $exprComp_.dataType + ")\n";
@@ -764,41 +762,40 @@ exprComp returns[Symbol.DataTypes dataType]:
                 }
                 $dataType = $exprComp_.dataType;
             } else {
-                $dataType = $exprAdit.dataType;
+                $dataType = $exprAdd.dataType;
             }
 	    }
 	;
 
 exprComp_ returns[Symbol.DataTypes dataType]:
-	OPREL exprAdit
+	OPREL exprAdd
 	    {
-            if($exprAdit.dataType != Symbol.DataTypes.INT) {
-                errors+="Error semántico en línea " + $exprAdit.start.getLine() +
-                ": tipos incompatibles (esperado INT, encontrado " + $exprAdit.dataType + ")\n";
+            if($exprAdd.dataType != Symbol.DataTypes.INT) {
+                errors+="Error semántico en línea " + $exprAdd.start.getLine() +
+                ": tipos incompatibles (esperado INT, encontrado " + $exprAdd.dataType + ")\n";
             }
             $dataType = Symbol.DataTypes.BOOLEAN;
         }
 	|; //lambda
 
-// Expresión aditiva
-exprAdit returns[Symbol.DataTypes dataType]:
-	exprMult exprAdit_
+exprAdd returns[Symbol.DataTypes dataType]:
+	exprMult exprAdd_
 	    {
-            if($exprAdit_.dataType != null) {
-                if($exprMult.dataType != $exprAdit_.dataType) {
-                    errors+="Error semántico en línea " + $exprAdit_.start.getLine() +
+            if($exprAdd_.dataType != null) {
+                if($exprMult.dataType != $exprAdd_.dataType) {
+                    errors+="Error semántico en línea " + $exprAdd_.start.getLine() +
                     ": tipos incompatibles (esperado " + $exprMult.dataType + "," +
-                    " encontrado " + $exprAdit_.dataType + ")\n";
+                    " encontrado " + $exprAdd_.dataType + ")\n";
                 }
-                $dataType = $exprAdit_.dataType;
+                $dataType = $exprAdd_.dataType;
             } else {
                 $dataType = $exprMult.dataType;
             }
 	    }
 	;
 
-exprAdit_ returns[Symbol.DataTypes dataType]:
-	ADD exprMult exprAdit_
+exprAdd_ returns[Symbol.DataTypes dataType]:
+	ADD exprMult exprAdd_
         {
             if($exprMult.dataType != Symbol.DataTypes.INT) {
                 errors += "Error semántico en línea " + $exprMult.start.getLine() +
@@ -806,7 +803,7 @@ exprAdit_ returns[Symbol.DataTypes dataType]:
             }
             $dataType = Symbol.DataTypes.INT;
         }
-	| SUB exprMult exprAdit_
+	| SUB exprMult exprAdd_
 	    {
             if($exprMult.dataType != Symbol.DataTypes.INT) {
                 errors += "Error semántico en línea " + $exprMult.start.getLine() +
