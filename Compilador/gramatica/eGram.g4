@@ -52,8 +52,6 @@ grammar eGram;
                     notificacion += " No se reconoce '" + expected +"'";
                 }
         }
-        //notificacion = notificacion.replaceAll("Comparador","==, !=, <, >, <=, >=");
-        //notificacion = notificacion.replaceAll("OpBinSum","+, -");
         throw new RuntimeException(notificacion);
     }
 }
@@ -444,7 +442,7 @@ arrayDecl:
             boolean limits = false;
 	    }
 	    (
-        number '..'
+        number DOUBLEDOT
         {
             // Permitimos la entrada pero advertimos sobre el uso de variables
             if($number.isConstant) {
@@ -491,7 +489,7 @@ arrayDecl_[Table table]:
             int bottomLimit = 0;
             boolean limits = false;
         }
-        ( number '..'
+        ( number DOUBLEDOT
         {
             if($number.isConstant) {
                 errors += "Error semántico en línea " + $number.start.getLine() +
@@ -1021,15 +1019,14 @@ END:            '}';
 COMMA:          ',';
 SEMI:           ';';
 COLON:          ':';
+DOUBLEDOT:      '..';
 
-OPREL:          EQUAL | NOTEQUAL | GT | LT | GE | LE;
+OPREL:          EQUAL | NOTEQUAL | GT | LT ;
 ASSIGN:         '=';
 EQUAL:          '==';
 NOTEQUAL:       '!=';
 GT:             '>';
 LT:             '<';
-GE:             '>=';
-LE:             '<=';
 ADD:            '+';
 SUB:            '-';
 MULT:           '*';

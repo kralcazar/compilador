@@ -2,9 +2,6 @@
 
 package gram;
 import compilador.*;
-import compilador.Instruction.OP;
-import compilador.Symbol.Types;
-import compilador.Symbol.DataTypes;
 import java.io.*;
 import java.util.Deque;
 import java.util.ArrayDeque;
@@ -194,17 +191,17 @@ public interface eGramC3DVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprComp_(eGramC3D.ExprComp_Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramC3D#exprAdit}.
+	 * Visit a parse tree produced by {@link eGramC3D#exprAdd}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprAdit(eGramC3D.ExprAditContext ctx);
+	T visitExprAdd(eGramC3D.ExprAddContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramC3D#exprAdit_}.
+	 * Visit a parse tree produced by {@link eGramC3D#exprAdd_}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprAdit_(eGramC3D.ExprAdit_Context ctx);
+	T visitExprAdd_(eGramC3D.ExprAdd_Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link eGramC3D#exprMult}.
 	 * @param ctx the parse tree

@@ -2,9 +2,6 @@
 
 package gram;
 import compilador.*;
-import compilador.Instruction.OP;
-import compilador.Symbol.Types;
-import compilador.Symbol.DataTypes;
 import java.io.*;
 import java.util.Deque;
 import java.util.ArrayDeque;
@@ -307,25 +304,25 @@ public interface eGramC3DListener extends ParseTreeListener {
 	 */
 	void exitExprComp_(eGramC3D.ExprComp_Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramC3D#exprAdit}.
+	 * Enter a parse tree produced by {@link eGramC3D#exprAdd}.
 	 * @param ctx the parse tree
 	 */
-	void enterExprAdit(eGramC3D.ExprAditContext ctx);
+	void enterExprAdd(eGramC3D.ExprAddContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramC3D#exprAdit}.
+	 * Exit a parse tree produced by {@link eGramC3D#exprAdd}.
 	 * @param ctx the parse tree
 	 */
-	void exitExprAdit(eGramC3D.ExprAditContext ctx);
+	void exitExprAdd(eGramC3D.ExprAddContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramC3D#exprAdit_}.
+	 * Enter a parse tree produced by {@link eGramC3D#exprAdd_}.
 	 * @param ctx the parse tree
 	 */
-	void enterExprAdit_(eGramC3D.ExprAdit_Context ctx);
+	void enterExprAdd_(eGramC3D.ExprAdd_Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramC3D#exprAdit_}.
+	 * Exit a parse tree produced by {@link eGramC3D#exprAdd_}.
 	 * @param ctx the parse tree
 	 */
-	void exitExprAdit_(eGramC3D.ExprAdit_Context ctx);
+	void exitExprAdd_(eGramC3D.ExprAdd_Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link eGramC3D#exprMult}.
 	 * @param ctx the parse tree

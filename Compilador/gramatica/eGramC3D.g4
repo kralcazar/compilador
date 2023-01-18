@@ -1,15 +1,12 @@
 parser grammar eGramC3D;
 options
 {
-	tokenVocab = eGramLexer;
+	tokenVocab = eGram;
 }
 
 @parser::header {
 package gram;
 import compilador.*;
-import compilador.Instruction.OP;
-import compilador.Symbol.Types;
-import compilador.Symbol.DataTypes;
 import java.io.*;
 import java.util.Deque;
 import java.util.ArrayDeque;
@@ -124,46 +121,58 @@ public TagsTable getTe(){
 }
 
 program:
-	{
-		// Poner los métodos de IO en la tabla de procedimientos
-		Symbol s;
-		try{
-			// Operación de entrada
-			s=ts.get("read");
-			s.setProcedure(tp.newProc(depth,s.getType(),"read"));
-			// Operaciones de salida
-			s=ts.get("printb");
-			s.setProcedure(tp.newProc(depth,s.getType(),"printb"));
-			s=ts.get("printi");
-			s.setProcedure(tp.newProc(depth,s.getType(),"printi"));
-			s=ts.get("prints");
-			s.setProcedure(tp.newProc(depth,s.getType(),"prints"));
-		} catch(SymbolTable.SymbolTableException e) {
-			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
-		}
-	} main? decl* sents EOF {
-	Tag e=te.get(te.newTag(false));
-	generate(OP.skip, null, null, e.toString());
-	backpatch($sents.sents_seg,e);
-	tv.calcDespOcupVL(tp);
-	printC3D();
-};
-
-main:
-    MAIN BEGIN decl* sents END {
-        Symbol s=new Symbol();
-        int nv=0;
-        try {
-            s=ts.get($MAIN.getText());
-            nv=tv.newVar(false,pproc.peek(),Types.VAR, s.dataType());
-            tv.get(nv).setId(s.getId());
-            s.setVariableNumber(nv);
-        } catch(SymbolTable.SymbolTableException e) {
-            System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+        {
+            // Poner los métodos de IO en la tabla de procedimientos
+            Symbol s;
+            try{
+                // Operación de entrada
+                s=ts.get("read");
+                s.setProcedure(tp.newProc(depth,s.getType(),"read"));
+                // Operaciones de salida
+                s=ts.get("printb");
+                s.setProcedure(tp.newProc(depth,s.getType(),"printb"));
+                s=ts.get("printi");
+                s.setProcedure(tp.newProc(depth,s.getType(),"printi"));
+                s=ts.get("prints");
+                s.setProcedure(tp.newProc(depth,s.getType(),"prints"));
+            } catch(SymbolTable.SymbolTableException e) {
+                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+            }
         }
-    }
+	(decl+ | main)+ EOF
+        {
+            tv.calcDespOcupVL(tp);
+            printC3D();
+        }
+;
+
+
+/*******************************************************************************************/
+/*                                       MAIN                                              */
+/*******************************************************************************************/
+main:
+    MAIN BEGIN decl* sents END
+        {
+            Symbol s=new Symbol();
+            int nv=0;
+            try {
+                s=ts.get($MAIN.getText());
+                nv=tv.newVar(false,pproc.peek(),Types.VAR, s.dataType());
+                tv.get(nv).setId(s.getId());
+                s.setVariableNumber(nv);
+            } catch(SymbolTable.SymbolTableException e) {
+                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+            }
+
+            Tag e=te.get(te.newTag(false));
+            generate(OP.skip, null, null, e.toString());
+            backpatch($sents.sents_seg,e);
+        }
     ;
 
+/*******************************************************************************************/
+/*                                   DECLARACIONES                                         */
+/*******************************************************************************************/
 decl:
 	tipo ID {
 		Symbol s=new Symbol();
@@ -177,7 +186,7 @@ decl:
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
 	} (
-		'=' expr {
+		ASSIGN expr {
 			if(s.dataType()==DataTypes.BOOLEAN) {
 				Tag ec=te.get(te.newTag(false));
 				Tag ef=te.get(te.newTag(false));
@@ -194,8 +203,8 @@ decl:
 				generate(OP.copy, $expr.r.toString(), null, tv.get(nv).toString());
 			}
 	}
-	)? ';'
-	| CONSTANT tipo ID '=' literal ';' {
+	)? SEMI
+	| CONSTANT tipo ID ASSIGN literal SEMI {
 		Symbol s;
 		try {
 			s = ts.get($ID.getText());
@@ -207,7 +216,7 @@ decl:
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
 	}
-	| declArray ']' ';'
+	| declArray RBRACK SEMI
 	| FUNCTION tipo encabezado BEGIN {
 		depth++;
 		try{
@@ -244,7 +253,7 @@ decl:
 	};
 
 declArray:
-	tipo ID '[' (numero '..')? numero declArray_ {
+	tipo ID LBRACK (numero DOUBLEDOT)? numero declArray_ {
 	Symbol s=null;
 	int nv=0;
 	try {
@@ -260,7 +269,7 @@ declArray:
 };
 
 declArray_:
-	']' '[' (numero '..')? numero declArray_
+	RBRACK LBRACK (numero DOUBLEDOT)? numero declArray_
 	|; // lambda
 
 numero
@@ -270,7 +279,7 @@ numero
 
 encabezado
 	returns[Procedure met, Symbol s]:
-	ID '(' parametros? ')' {
+	ID LPAREN parametros? RPAREN {
 		Symbol s=new Symbol();
 		Procedure met;
 		try {
@@ -284,7 +293,7 @@ encabezado
 		}
 	};
 
-parametros: parametro ',' parametros | parametro;
+parametros: parametro COMMA parametros | parametro;
 
 parametro: tipo ID;
 
@@ -395,7 +404,7 @@ sent[Deque<Integer> sents_seg]
 		$sent_seg=$expr.falso;
 		generate(OP.jump, null, null, ei.toString());
 	} END
-	| RETURN expr ';' {
+	| RETURN expr SEMI {
 		if($expr.cierto!=null || $expr.falso!=null) {//cambiar
 			Tag ec=te.get(te.newTag(false));
 			Tag ef=te.get(te.newTag(false));
@@ -413,10 +422,10 @@ sent[Deque<Integer> sents_seg]
 		}
 		generate(OP.ret, $expr.r.toString(), null, pproc.peek().toString());
 	}
-	| RETURN ';' {
+	| RETURN SEMI {
 		generate(OP.ret, null, null, pproc.peek().toString());
 	}
-	| referencia '=' expr ';' {
+	| referencia ASSIGN expr SEMI {
 		if($referencia.d!=null) {
 			if($referencia.datatypes==DataTypes.BOOLEAN) {
 				Tag ec=te.get(te.newTag(false));
@@ -451,7 +460,7 @@ sent[Deque<Integer> sents_seg]
 			}
 		}
 	}
-	| referencia ';';
+	| referencia SEMI;
 
 contcase
 	returns[Variable r, boolean acababreak, Tag etest, Deque<Integer> pilaefi, Deque<Tag> pilasent, Deque<Integer> pilavar, Deque<Tag> pilacond, Deque<Tag> pilatest]
@@ -494,7 +503,7 @@ caso
 	CASE {
 		$econd = te.get(te.newTag(false));
 		generate(OP.skip, null, null, $econd.toString());
-	} expr ':' {
+	} expr COLON {
 		$etest = te.get(te.newTag(false));
 		generate(OP.jump, null, null, $etest.toString());
 		$esent = te.get(te.newTag(false));
@@ -502,7 +511,7 @@ caso
 	} sents {
 		$acababreak=false;
 	} (
-		BREAK ';' {
+		BREAK SEMI {
 		$acababreak=true;
 	}
 	)? {
@@ -513,7 +522,7 @@ caso
 
 endcase
 	returns[Tag e, Tag efi]:
-	DEFAULT ':' {
+	DEFAULT COLON {
 		$e = te.get(te.newTag(false));
 		generate(OP.skip, null, null, $e.toString());
 	} sents {
@@ -558,7 +567,7 @@ referencia
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
 	}
-	| idx ']' {
+	| idx RBRACK {
 		Variable t2;
 		String nbytes = String.valueOf($idx.dt.getItemSize());
 		if($idx.dt.getOffset()==0) {
@@ -574,7 +583,7 @@ referencia
 		$r = $idx.r;
 		$d = t2;
 	}
-	| ID '(' ')' {
+	| ID LPAREN RPAREN {
 		Symbol s;
 		int t;
 		try {
@@ -590,7 +599,7 @@ referencia
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
 	}
-	| contIdx ')' {
+	| contIdx RPAREN {
 		int t;
 		while($contIdx.pparams.size()>0)
 		generate(OP.params, null, null, $contIdx.pparams.pop().toString());
@@ -605,7 +614,7 @@ referencia
 
 idx
 	returns[Table dt, Variable r, Variable d]:
-	ID '[' expr {
+	ID LBRACK expr {
 		Symbol dv = null;
 		try {
 			dv = ts.get($ID.getText());
@@ -622,7 +631,7 @@ idx
 
 idx_[Index idx1, Variable d1]
 	returns[Variable d]:
-	']' '[' expr {
+	RBRACK LBRACK expr {
 		Index idx = idx1.getNextIndex();
 		Variable t1 = tv.get(tv.newVar(true, pproc.peek(), Types.VAR, DataTypes.INT));
 		generate(OP.mult, $d1.toString(), String.valueOf(idx.d()), t1.toString());
@@ -637,7 +646,7 @@ idx_[Index idx1, Variable d1]
 
 contIdx
 	returns[Deque<Variable> pparams, Procedure met, Symbol s]:
-	ID '(' expr {
+	ID LPAREN expr {
 		Symbol s=new Symbol();
 		$pparams = new ArrayDeque<Variable>();
 		try {
@@ -665,7 +674,7 @@ contIdx
 	} contIdx_[$pparams];
 
 contIdx_[Deque<Variable> pparams]:
-	',' expr {
+	COMMA expr {
 		$pparams.push($expr.r);
 		// Boolean parámetro
 		if($expr.cierto!=null || $expr.falso!=null) {
@@ -775,10 +784,10 @@ exprNot
 // Expresión comparativa
 exprComp
 	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
-	exprAdit {
-		$r=$exprAdit.r;
-		$cierto=$exprAdit.cierto;
-		$falso=$exprAdit.falso;
+	exprAdd {
+		$r=$exprAdd.r;
+		$cierto=$exprAdd.cierto;
+		$falso=$exprAdd.falso;
 	} exprComp_[$r]{
 		if($exprComp_.cierto!=null || $exprComp_.falso!=null) {
 			$cierto=$exprComp_.cierto;
@@ -788,34 +797,34 @@ exprComp
 
 exprComp_[Variable t1]
 	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
-	OPREL exprAdit {
-		generate(condJumpValue($OPREL.getText()), $t1.toString(), $exprAdit.r.toString(), null);
+	OPREL exprAdd {
+		generate(condJumpValue($OPREL.getText()), $t1.toString(), $exprAdd.r.toString(), null);
 		$cierto=new ArrayDeque<Integer>();
  		$cierto.add(pc);
 		generate(OP.jump, null, null, null);
 		$falso=new ArrayDeque<Integer>();
  		$falso.add(pc);
-		$r = $exprAdit.r;
+		$r = $exprAdd.r;
     }
 	//exprComp_
 	|; //lambda
 
 // Expresión aditiva
-exprAdit
+exprAdd
 	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
 	exprMult {
 		$r = $exprMult.r;
 		$cierto=$exprMult.cierto;
 		$falso=$exprMult.falso;
-	} exprAdit_[$r] {
-		if($exprAdit_.cierto!=null || $exprAdit_.falso!=null || $exprAdit_.r!=null) {
-			$r=$exprAdit_.r;
-			$cierto=$exprAdit_.cierto;
-			$falso=$exprAdit_.falso;
+	} exprAdd_[$r] {
+		if($exprAdd_.cierto!=null || $exprAdd_.falso!=null || $exprAdd_.r!=null) {
+			$r=$exprAdd_.r;
+			$cierto=$exprAdd_.cierto;
+			$falso=$exprAdd_.falso;
 		}
 	};
 
-exprAdit_[Variable t1]
+exprAdd_[Variable t1]
 	returns[Variable r, Deque<Integer> cierto, Deque<Integer falso>]:
 	ADD exprMult {
 		int t = tv.newVar(true,pproc.peek(),Types.VAR,DataTypes.INT);
@@ -823,11 +832,11 @@ exprAdit_[Variable t1]
 		$r=tv.get(t);
 		$cierto=$exprMult.cierto;
 		$falso=$exprMult.falso;
-	} exprAdit_[$r] {
-		if($exprAdit_.r!=null || $exprAdit_.cierto!=null || $exprAdit_.falso!=null) {
-			$r=$exprAdit_.r;
-			$cierto=$exprAdit_.cierto;
-			$falso=$exprAdit_.falso;
+	} exprAdd_[$r] {
+		if($exprAdd_.r!=null || $exprAdd_.cierto!=null || $exprAdd_.falso!=null) {
+			$r=$exprAdd_.r;
+			$cierto=$exprAdd_.cierto;
+			$falso=$exprAdd_.falso;
 		}
 	}
 	| SUB exprMult {
@@ -836,11 +845,11 @@ exprAdit_[Variable t1]
 		$r=tv.get(t);
 		$cierto=$exprMult.cierto;
 		$falso=$exprMult.falso;
-	} exprAdit_[$r] {
-		if($exprAdit_.r!=null || $exprAdit_.cierto!=null || $exprAdit_.falso!=null) {
-			$r=$exprAdit_.r;
-			$cierto=$exprAdit_.cierto;
-			$falso=$exprAdit_.falso;
+	} exprAdd_[$r] {
+		if($exprAdd_.r!=null || $exprAdd_.cierto!=null || $exprAdd_.falso!=null) {
+			$r=$exprAdd_.r;
+			$cierto=$exprAdd_.cierto;
+			$falso=$exprAdd_.falso;
 		}
 	}
 	|; //lambda
@@ -921,7 +930,7 @@ exprNeg
 
 primario
 	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
-	'(' expr ')' {
+	LPAREN expr RPAREN {
 		$r = $expr.r;
 		$cierto = $expr.cierto;
 		$falso = $expr.falso;
@@ -1003,3 +1012,4 @@ literal
 	| LiteralString {
 		$datatypes=DataTypes.STRING;
 	};
+

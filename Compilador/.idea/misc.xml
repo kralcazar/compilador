@@ -16,7 +16,7 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/gramatica/eGramC3D.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="C:\Users\JoanCampaner\Desktop\Universidad\Cuarto\Compiladores\Practica\compilador\Compilador\src\gram" />
+          <option name="outputDir" value="C:\Users\kralc\Documents\UIB\Compiladors\app\compilador\Compilador\src\gram" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="" />

@@ -1,15 +1,15 @@
 // Generated from java-escape by ANTLR 4.11.1
 
-package gram;
-import compilador.*;
-import java.io.*;
-import java.util.Deque;
-import java.util.ArrayDeque;
+    package gram;
+    import compilador.*;
+    import java.io.*;
+    import java.util.Deque;
+    import java.util.ArrayDeque;
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
- * This class provides an empty implementation of {@link eGramC3DVisitor},
+ * This class provides an empty implementation of {@link eGramVisitor},
  * which can be extended to create a visitor which only needs to handle a subset
  * of the available methods.
  *
@@ -17,264 +17,236 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * operations with no return type.
  */
 @SuppressWarnings("CheckReturnValue")
-public class eGramC3DBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements eGramC3DVisitor<T> {
+public class eGramBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements eGramVisitor<T> {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitProgram(eGramC3D.ProgramContext ctx) { return visitChildren(ctx); }
+	@Override public T visitProgram(eGramParser.ProgramContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitMain(eGramC3D.MainContext ctx) { return visitChildren(ctx); }
+	@Override public T visitMain(eGramParser.MainContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDecl(eGramC3D.DeclContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDecl(eGramParser.DeclContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDeclArray(eGramC3D.DeclArrayContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSents(eGramParser.SentsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDeclArray_(eGramC3D.DeclArray_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitSents_(eGramParser.Sents_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNumero(eGramC3D.NumeroContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSent(eGramParser.SentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitEncabezado(eGramC3D.EncabezadoContext ctx) { return visitChildren(ctx); }
+	@Override public T visitHeader(eGramParser.HeaderContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParametros(eGramC3D.ParametrosContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParams(eGramParser.ParamsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParametro(eGramC3D.ParametroContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParam(eGramParser.ParamContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSents(eGramC3D.SentsContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArrayDecl(eGramParser.ArrayDeclContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSents_(eGramC3D.Sents_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitArrayDecl_(eGramParser.ArrayDecl_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSent(eGramC3D.SentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNumber(eGramParser.NumberContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitContcase(eGramC3D.ContcaseContext ctx) { return visitChildren(ctx); }
+	@Override public T visitReference(eGramParser.ReferenceContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitContcase_(eGramC3D.Contcase_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitIdx(eGramParser.IdxContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCaso(eGramC3D.CasoContext ctx) { return visitChildren(ctx); }
+	@Override public T visitIdx_(eGramParser.Idx_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitEndcase(eGramC3D.EndcaseContext ctx) { return visitChildren(ctx); }
+	@Override public T visitContIdx(eGramParser.ContIdxContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitReferencia(eGramC3D.ReferenciaContext ctx) { return visitChildren(ctx); }
+	@Override public T visitContIdx_(eGramParser.ContIdx_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitIdx(eGramC3D.IdxContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExpr(eGramParser.ExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitIdx_(eGramC3D.Idx_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitExprOr(eGramParser.ExprOrContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitContIdx(eGramC3D.ContIdxContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprOr_(eGramParser.ExprOr_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitContIdx_(eGramC3D.ContIdx_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitExprAnd(eGramParser.ExprAndContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExpr(eGramC3D.ExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprAnd_(eGramParser.ExprAnd_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprOr(eGramC3D.ExprOrContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprNot(eGramParser.ExprNotContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprOr_(eGramC3D.ExprOr_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitExprComp(eGramParser.ExprCompContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprAnd(eGramC3D.ExprAndContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprComp_(eGramParser.ExprComp_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprAnd_(eGramC3D.ExprAnd_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitExprAdd(eGramParser.ExprAddContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprNot(eGramC3D.ExprNotContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprAdd_(eGramParser.ExprAdd_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprComp(eGramC3D.ExprCompContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprMult(eGramParser.ExprMultContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprComp_(eGramC3D.ExprComp_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitExprMult_(eGramParser.ExprMult_Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprAdd(eGramC3D.ExprAddContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprNeg(eGramParser.ExprNegContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprAdd_(eGramC3D.ExprAdd_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitPrimary(eGramParser.PrimaryContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprMult(eGramC3D.ExprMultContext ctx) { return visitChildren(ctx); }
+	@Override public T visitType(eGramParser.TypeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprMult_(eGramC3D.ExprMult_Context ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitExprNeg(eGramC3D.ExprNegContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitPrimario(eGramC3D.PrimarioContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitTipo(eGramC3D.TipoContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitLiteral(eGramC3D.LiteralContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLiteral(eGramParser.LiteralContext ctx) { return visitChildren(ctx); }
 }
