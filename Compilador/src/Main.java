@@ -38,7 +38,6 @@ public class Main {
         try (Writer buffer = new BufferedWriter(new FileWriter(tokensFile))) {
             for (Token tok : tokens.getTokens()) {
                 buffer.write(tok.getText() + '\n');
-                System.out.println(tok.getText());
             }
             buffer.close();
         }

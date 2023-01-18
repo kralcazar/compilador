@@ -39,7 +39,7 @@ grammar eGram;
             expected = expected.substring(expected.indexOf("missing") + 8);
             expected = expected.substring(0, expected.indexOf("at") - 1);
             notificacion += "encontrado: '" + offendingToken.getText() + "', falta "+ expected;
-        }else if(expected.contains("alternative")){ //HE EMPEZADO A MODIFICAR ESTA SALIDA AL DETECTAR COMO SE MUESTRAN LOS ERRORES EN ANTLR4
+        }else if(expected.contains("alternative")){
                 expected = expected.substring(expected.indexOf("input") + 6).replace("'","");
                 notificacion += "Se ha detectado un error antes de la entrada '" + offendingToken.getText()+"'.";
                 //Eliminar el siguiente token encontrado tras analizar el token que genera error
@@ -52,8 +52,8 @@ grammar eGram;
                     notificacion += " No se reconoce '" + expected +"'";
                 }
         }
-        notificacion = notificacion.replaceAll("Comparador","==, !=, <, >, <=, >=");
-        notificacion = notificacion.replaceAll("OpBinSum","+, -");
+        //notificacion = notificacion.replaceAll("Comparador","==, !=, <, >, <=, >=");
+        //notificacion = notificacion.replaceAll("OpBinSum","+, -");
         throw new RuntimeException(notificacion);
     }
 }
@@ -302,7 +302,24 @@ sent:
             symbolTable = symbolTable.blockOut();
         }
 	    END
-	| DO BEGIN decl* sents END WHILE expr SEMI
+	| DO BEGIN
+	    {
+	        depthCondition ++;
+	        symbolTable = symbolTable.blockIn();
+	    }
+	    decl* sents
+	    {
+            depthCondition --;
+            symbolTable = symbolTable.blockOut();
+	    }
+	    END WHILE expr
+	    {
+	        if($expr.dataType != Symbol.DataTypes.BOOLEAN){
+                errors += "Error semántico en línea " + $WHILE.getLine() +
+                ": tipos incompatibles (esperado 'BOOLEAN', encontrado '" + $expr.dataType + "')\n";
+            }
+	    }
+	    SEMI
 	| RETURN expr SEMI
 	    {
 	        Symbol procedure;
@@ -646,6 +663,7 @@ contIdx returns[Symbol procedure]:
                 errors += "Error semántico en línea " + $ID.getLine() + ": " + e.getMessage() + "\n";
                 $procedure = null;
             }
+
 	    }
 	    contIdx_[pparams]
 	    {
@@ -1030,3 +1048,5 @@ fragment LETRADIGITO:
 WS:             [ \r\n\t]+ -> skip;
 BLOCK_COMMENT:  '/*' .*? '*/' -> skip;
 LINE_COMMENT:   '//' ~[\r\n]* -> skip;
+
+

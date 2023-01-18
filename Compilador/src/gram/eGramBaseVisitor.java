@@ -1,10 +1,10 @@
 // Generated from java-escape by ANTLR 4.11.1
 
-package gram;
-import compilador.*;
-import java.io.*;
-import java.util.Deque;
-import java.util.ArrayDeque;
+    package gram;
+    import compilador.*;
+    import java.io.*;
+    import java.util.Deque;
+    import java.util.ArrayDeque;
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 

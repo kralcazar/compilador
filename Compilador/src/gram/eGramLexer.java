@@ -1,10 +1,10 @@
 // Generated from java-escape by ANTLR 4.11.1
 
-package gram;
-import compilador.*;
-import java.io.*;
-import java.util.Deque;
-import java.util.ArrayDeque;
+    package gram;
+    import compilador.*;
+    import java.io.*;
+    import java.util.Deque;
+    import java.util.ArrayDeque;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -109,11 +109,11 @@ public class eGramLexer extends Lexer {
 	}
 
 
-	@Override
-	public void recover(RecognitionException ex)
-	{
-		throw new RuntimeException("Error léxico:  "+ex.getMessage());
-	}
+	    @Override
+	    public void recover(RecognitionException ex)
+	    {
+	        throw new RuntimeException("Error léxico:  "+ex.getMessage());
+	    }
 
 
 	public eGramLexer(CharStream input) {
