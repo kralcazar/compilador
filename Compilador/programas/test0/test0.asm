@@ -207,12 +207,12 @@ test$5:
 	push ebp
 	mov ebp, esp  ; BP = SP
 	mov [esi+0], ebp  ; DISP(prof) = BP
-	sub esp, 0  ; reserva memoria para las variables locales
+	sub esp, 8  ; reserva memoria para las variables locales
 	mov eax, 2
-	mov t$4, eax
-	mov eax, t$4  ; eax = t$4
-	mov a$3, eax
-	mov eax, a$3  ; eax = a$3
+	mov [ebp-8], eax
+	mov eax, [ebp-8]
+	mov [ebp-4], eax
+	mov eax, [ebp-4]
 	mov esp, ebp  ; SP = BP
 	pop ebp  ; BP = antiguo BP
 	lea edi, DISP  ; EDI = @DISP

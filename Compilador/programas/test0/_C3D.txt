@@ -1,0 +1,28 @@
+t$2 = 6
+i$1 = t$2
+e1: skip
+pmb test$5
+t$4 = 2
+a$3 = t$4
+rtn 5, a$3
+e2: skip
+t$6 = 6
+i$5 = t$6
+call test$5
+store t$7
+e3: skip
+e4: skip
+t$8 = 5
+if i$5 == t$8 goto e5
+goto e7
+e5: skip
+t$9 = 1
+t$10 = i$5 + t$9
+i$5 = t$10
+e6: skip
+goto e4
+e7: skip
+t$11 = 5
+param_s t$11
+call printi$3
+e8: skip
