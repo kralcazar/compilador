@@ -141,6 +141,8 @@ program:
 	    }
 	    EOF
         {
+            Tag e=te.get(te.newTag(false));
+            generate(Instruction.OP.skip, null, null, e.toString());
             tv.calcDespOcupVL(tp);
         }
 ;

@@ -13,13 +13,14 @@ includelib \masm32\lib\masm32.lib
 	inputBuffer db 65536 dup(?)
 	DISP  DW  1000 DUP (?)
 	i$1  DD  ?
-	test$3  DD  ?
 .code
 start PROC
 	mov eax, 6
 	mov i$1, eax
-	mov eax, 2
-	mov test$3, eax
+e1:
+e3:
+	call indice$6
+	add esp, 0
 	invoke ExitProcess, 0
 start ENDP
 read$1:
@@ -158,4 +159,59 @@ strlen:
 	mov edi, OFFSET DISP
 	pop [edi]
 	ret
+test$5:
+	mov  esi, OFFSET DISP  ; ESI = @DISP
+	push [esi+0]
+	push ebp
+	mov ebp, esp  ; BP = SP
+	mov [esi+0], ebp  ; DISP(prof) = BP
+	sub esp, 8  ; reserva memoria para las variables locales
+	mov eax, 2
+	mov [ebp-4], eax
+	mov eax, [ebp-4]
+	mov esp, ebp  ; SP = BP
+	pop ebp  ; BP = antiguo BP
+	lea edi, DISP  ; EDI = @DISP
+	pop [edi+0]  ; DISP[prof] = antiguo valor
+	ret
+indice$6:
+	mov  esi, OFFSET DISP  ; ESI = @DISP
+	push [esi+0]
+	push ebp
+	mov ebp, esp  ; BP = SP
+	mov [esi+0], ebp  ; DISP(prof) = BP
+	sub esp, 40  ; reserva memoria para las variables locales
+	mov eax, 6
+	mov [ebp-4], eax
+	call test$5
+	add esp, 0
+	mov [ebp-12], eax
+e5:
+	mov eax, [ebp-4]
+	mov ebx, 5
+	cmp eax, ebx
+	jne e8
+	mov eax, [ebp-4]
+	mov ebx, 1
+	add eax, ebx
+	mov [ebp-4], eax
+	jmp e5
+e8:
+e9:
+	mov eax, 5
+	mov [ebp-28], eax
+	mov eax, [ebp-28]
+	push eax
+	call printi$3
+	add esp, 0
+	mov eax, [ebp-4]
+	mov ebx, 1
+	add eax, ebx
+	mov [ebp-4], eax
+	mov eax, [ebp-4]
+	mov ebx, 50
+	cmp eax, ebx
+	jge e13
+	jmp e9
+e13:
 END start

@@ -344,6 +344,8 @@ public class eGramC3D extends Parser {
 			setState(86);
 			match(EOF);
 
+			            Tag e=te.get(te.newTag(false));
+			            generate(Instruction.OP.skip, null, null, e.toString());
 			            tv.calcDespOcupVL(tp);
 			        
 			}
