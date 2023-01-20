@@ -386,25 +386,49 @@ sent[Deque<Integer> sents_seg]
 		backpatch($contcase.pilaefi, efi);
 		generate(Instruction.OP.skip, null, null, efi.toString());
 	}
-	| WHILE {
-		try{
-			ts=ts.blockGoesDown();
-		} catch(SymbolTable.SymbolTableException e) {
-			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
-		}
-		Tag ei = te.get(te.newTag(false));
-		generate(Instruction.OP.skip, null, null, ei.toString());
-	} expr BEGIN {
-		Tag ec = te.get(te.newTag(false));
-		generate(Instruction.OP.skip, null, null, ec.toString());
-	} decl* sents {
-		ts=ts.blockGoesUp();
-		backpatch($expr.cierto,ec);
-		backpatch($sent_seg,ei);
-		$sent_seg=$expr.falso;
-		generate(Instruction.OP.jump, null, null, ei.toString());
-	} END
-	| DO BEGIN decl* sents END WHILE expr SEMI
+	| WHILE
+	    {
+            try{
+                ts=ts.blockGoesDown();
+            } catch(SymbolTable.SymbolTableException e) {
+                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+            }
+            Tag ei = te.get(te.newTag(false));
+            generate(Instruction.OP.skip, null, null, ei.toString());
+        } expr BEGIN {
+            Tag eis = te.get(te.newTag(false));
+            generate(Instruction.OP.skip, null, null, eis.toString());
+        } decl* sents {
+            ts=ts.blockGoesUp();
+            backpatch($expr.cierto,eis);
+            backpatch($sent_seg,ei);
+            $sent_seg=$expr.falso;
+            generate(Instruction.OP.jump, null, null, ei.toString());
+        }
+	    END
+	| DO
+	    {
+            try{
+                ts=ts.blockGoesDown();
+            } catch(SymbolTable.SymbolTableException e) {
+                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+            }
+	    }
+	    BEGIN
+	    {
+            Tag eis = te.get(te.newTag(false));
+            generate(Instruction.OP.skip, null, null, eis.toString());
+        }
+	    decl* sents
+	    {
+            ts=ts.blockGoesUp();
+        }
+	    END WHILE expr SEMI
+	    {
+            backpatch($expr.cierto, eis);
+            $sent_seg=$expr.falso;
+            generate(Instruction.OP.jump, null, null, eis.toString());
+	    }
 	| RETURN expr SEMI {
 		if($expr.cierto!=null || $expr.falso!=null) {//cambiar
 			Tag ec=te.get(te.newTag(false));
