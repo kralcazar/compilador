@@ -96,7 +96,7 @@ public class Optimizer {
             Instruction ins = C3D.get(i);
             if (isIf(ins)) {
                 Variable operating1 = tv.get(ins.getOperating(1));
-                if (operating1.datatypes() == Symbol.DataTypes.BOOLEAN && operating1 != null
+                if (operating1.getDataType() == Symbol.DataTypes.BOOLEAN && operating1 != null
                         && C3D.get(i).destination().equals(C3D.get(i + 2).destination())) {
                     ArrayList<Instruction> arrayaux = new ArrayList<Instruction>();
                     arrayaux.add(new Instruction(OP.copy, C3D.get(i).getOperating(1), "",
@@ -206,7 +206,7 @@ public class Optimizer {
             if (C3D.get(i).destination().charAt(0) == 't' && C3D.get(i).destination().charAt(1) == '$') {
                 if ((C3D.get(i).getOpCode() == Instruction.OP.copy)) {
                     if (!contieneVariableDestino(InstrucVars, C3D.get(i).destination())
-                            && !(tv.get(C3D.get(i).destination()).datatypes() == Symbol.DataTypes.STRING)) {
+                            && !(tv.get(C3D.get(i).destination()).getDataType() == Symbol.DataTypes.STRING)) {
                         InstrucVars.add(C3D.get(i));
                     }
                 } else if (C3D.get(i).getOpCode() == Instruction.OP.params) {
