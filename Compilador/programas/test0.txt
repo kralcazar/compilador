@@ -15,10 +15,11 @@ indice{
     mientras (i == 5) {
         i = i +1;
     }
-
-    printi(5);
     hacer{
-        i = i + 1;
-    } mientras (i < 50);
+            i = i + 1;
+        } mientras (i < 50);
+    printi(5);
+
+
 }
 

@@ -1,7 +1,7 @@
 parser grammar eGramC3D;
 options
 {
-	tokenVocab = eGram;
+	tokenVocab = eGramLexer;
 }
 
 @parser::header {
@@ -245,7 +245,7 @@ decl:
 		$encabezado.met.setNumParams(nparam-1);
 		generate(Instruction.OP.skip, null, null, e.toString());
 		generate(Instruction.OP.pmb, null, null, $encabezado.met.toString());
-	} decl* sents {
+	} decl* sents END{
 		C3D.get(pc-1).setInstFinal(true);
 		pproc.pop();
 		depth--;
@@ -404,6 +404,7 @@ sent[Deque<Integer> sents_seg]
 		$sent_seg=$expr.falso;
 		generate(Instruction.OP.jump, null, null, ei.toString());
 	} END
+	| DO BEGIN decl* sents END WHILE expr SEMI
 	| RETURN expr SEMI {
 		if($expr.cierto!=null || $expr.falso!=null) {//cambiar
 			Tag ec=te.get(te.newTag(false));

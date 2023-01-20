@@ -43,11 +43,6 @@ i
 1
 ;
 }
-printi
-(
-5
-)
-;
 hacer
 {
 i
@@ -62,6 +57,11 @@ mientras
 i
 <
 50
+)
+;
+printi
+(
+5
 )
 ;
 }

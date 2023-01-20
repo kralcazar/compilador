@@ -35,7 +35,7 @@ public class Assembler {
      */
     public void ensamblar() {
         generarASM();
-        generarEXE();
+        //generarEXE();
     }
 
     /**

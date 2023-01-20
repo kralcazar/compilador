@@ -22,7 +22,16 @@ i$5 = t$10
 e6: skip
 goto e4
 e7: skip
-t$11 = 5
-param_s t$11
-call printi$3
+t$11 = 1
+t$12 = i$5 + t$11
+i$5 = t$12
 e8: skip
+t$13 = 50
+if i$5 < t$13 goto null
+goto null
+e9: skip
+t$14 = 5
+param_s t$14
+call printi$3
+e10: skip
+e11: skip

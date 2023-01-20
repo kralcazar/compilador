@@ -21,6 +21,10 @@ includelib \masm32\lib\masm32.lib
 	t$9  DD  ?
 	t$10  DD  ?
 	t$11  DD  ?
+	t$12  DD  ?
+	t$13  DD  ?
+	t$14  DD  ?
+	indice$15  DD  ?
 .code
 start PROC
 	mov eax, 6
@@ -56,13 +60,31 @@ e5:
 e6:
 	jmp e4
 e7:
-	mov eax, 5
+	mov eax, 1
 	mov t$11, eax
-	mov eax, t$11  ; eax = t$11
+	mov eax, i$5  ; eax = i$5
+	mov ebx, t$11  ; ebx = t$11
+	add eax, ebx
+	mov t$12, eax
+	mov eax, t$12  ; eax = t$12
+	mov i$5, eax
+e8:
+	mov eax, 50
+	mov t$13, eax
+	mov eax, i$5  ; eax = i$5
+	mov ebx, t$13  ; ebx = t$13
+	cmp eax, ebx
+	jl null
+	jmp null
+e9:
+	mov eax, 5
+	mov t$14, eax
+	mov eax, t$14  ; eax = t$14
 	push eax
 	call printi$3
 	add esp, 0
-e8:
+e10:
+e11:
 	invoke ExitProcess, 0
 start ENDP
 read$1:
