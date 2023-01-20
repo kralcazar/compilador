@@ -70,23 +70,24 @@ e8:
 	mov eax, t$12  ; eax = t$12
 	mov i$5, eax
 e9:
+e10:
 	mov eax, 50
 	mov t$13, eax
 	mov eax, i$5  ; eax = i$5
 	mov ebx, t$13  ; ebx = t$13
 	cmp eax, ebx
 	jl e8
-	jmp e10
+	jmp e11
 	jmp e8
-e10:
+e11:
 	mov eax, 5
 	mov t$14, eax
 	mov eax, t$14  ; eax = t$14
 	push eax
 	call printi$3
 	add esp, 0
-e11:
 e12:
+e13:
 	invoke ExitProcess, 0
 start ENDP
 read$1:

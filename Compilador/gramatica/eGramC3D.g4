@@ -423,9 +423,15 @@ sent[Deque<Integer> sents_seg]
 	    {
             ts=ts.blockGoesUp();
         }
-	    END WHILE expr SEMI
+	    END WHILE
+	    {
+            Tag ei = te.get(te.newTag(false));
+            generate(Instruction.OP.skip, null, null, ei.toString());
+	    }
+	    expr SEMI
 	    {
             backpatch($expr.cierto, eis);
+            backpatch($sent_seg, ei);
             $sent_seg=$expr.falso;
             generate(Instruction.OP.jump, null, null, eis.toString());
 	    }
