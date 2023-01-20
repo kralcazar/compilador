@@ -1,42 +1,42 @@
 t$2 = 6
 i$1 = t$2
-e1: skip
-pmb test$5
 t$4 = 2
+<<<<<<< Updated upstream
 a$3 = t$4
 rtn 5, a$3
 e2: skip
-e3: skip
-pmb indice$6
 t$6 = 6
 i$5 = t$6
 call test$5
 store t$7
+e3: skip
 e4: skip
-e5: skip
 t$8 = 5
-if i$5 == t$8 goto e6
-goto e8
-e6: skip
+if i$5 == t$8 goto e5
+goto e7
+e5: skip
 t$9 = 1
 t$10 = i$5 + t$9
 i$5 = t$10
+e6: skip
+goto e4
 e7: skip
-goto e5
 e8: skip
-e9: skip
 t$11 = 1
 t$12 = i$5 + t$11
 i$5 = t$12
+e9: skip
 e10: skip
-e11: skip
 t$13 = 50
-if i$5 < t$13 goto e9
-goto e12
-goto e9
-e12: skip
+if i$5 < t$13 goto e8
+goto e11
+goto e8
+e11: skip
 t$14 = 5
 param_s t$14
 call printi$3
+e12: skip
 e13: skip
-call indice$6
+=======
+test$3 = t$4
+>>>>>>> Stashed changes

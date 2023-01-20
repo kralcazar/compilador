@@ -2,7 +2,7 @@
     ent i = 6;
 
 
-funcion ent test() {
+/*funcion ent test() {
     ent a=2;
     devolver a;
 }
@@ -15,11 +15,15 @@ indice{
     mientras (i == 5) {
         i = i +1;
     }
+
     hacer{
-            i = i + 1;
-        } mientras (i < 50);
-    printi(5);
+        printi(5);
+        i = i + 1;
+    } mientras (i < 50);
 
 
-}
+
+}*/
+
+ent test = 2;
 

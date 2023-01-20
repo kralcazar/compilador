@@ -33,7 +33,7 @@ public class Assembler {
     /**
      * Genera el código ensamblador y el ejecutable.
      */
-    public void ensamblar() {
+    public void assemble() {
         generarASM();
         //generarEXE();
     }
