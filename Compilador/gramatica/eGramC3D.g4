@@ -41,18 +41,6 @@ public void generate(Instruction.OP code, String op1, String op2, String destina
 	C3D.add(new Instruction(code, op1, op2, destination));
 }
 
-public void printC3D(){
-	Writer buffer;
-	File interFile = new File(directory+"_C3D.txt");
-	try {
-		buffer = new BufferedWriter(new FileWriter(interFile));
-		for(int i=0;i<C3D.size();i++) {
-			buffer.write(C3D.get(i).toString() + "\n");
-		}
-		buffer.close();
-	} catch(IOException e) {}
-}
-
 public void backpatch(Deque<Integer> list, Tag e){
 	if(list!=null) {
 		while(list.size()>0) {
@@ -116,7 +104,7 @@ public ProceduresTable getTp() {
 
 public TagsTable getTe(){
 	return te;
- }
+}
 
 }
 
@@ -139,10 +127,21 @@ program:
                 System.out.println("Error con la tabla de símbolos: "+e.getMessage());
             }
         }
-	(decl+ | main)+ EOF
+	(decl+ | main)+
+	    {
+
+	        //Llamar al main despues de leerlo todo
+            try {
+                s = ts.get("indice");//TODO: intentar llamada directa a la palabra
+                generate(Instruction.OP.call, null, null, s.getProcedure().toString());
+            } catch(SymbolTable.SymbolTableException e) {
+                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+            }
+
+	    }
+	    EOF
         {
             tv.calcDespOcupVL(tp);
-            printC3D();
         }
 ;
 
@@ -150,23 +149,42 @@ program:
 /*******************************************************************************************/
 /*                                       MAIN                                              */
 /*******************************************************************************************/
-main:
-    MAIN BEGIN decl* sents END
+main
+    returns[Procedure procedure, Symbol symbol]:
+    MAIN
         {
-            Symbol s=new Symbol();
-            int nv=0;
+            Symbol symbol = new Symbol();
+            Procedure procedure;
             try {
-                s=ts.get($MAIN.getText());
-                nv=tv.newVar(false,pproc.peek(),Symbol.Types.VAR, s.dataType());
-                tv.get(nv).setId(s.getId());
-                s.setVariableNumber(nv);
+                symbol = ts.get($MAIN.getText());
+                procedure = tp.newProc(depth, symbol.getType(), $MAIN.getText());
+                symbol.setProcedure(procedure);
+                $procedure = procedure;
             } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
             }
+        }
+        BEGIN
+        {
+            pproc.push($procedure.getNp());
+            depth ++;
+            /*try{
+                ts = ts.blockGoesDown();
+            } catch(SymbolTable.SymbolTableException e) {
+                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+            }*/
 
-            Tag e=te.get(te.newTag(false));
-            generate(Instruction.OP.skip, null, null, e.toString());
-            backpatch($sents.sents_seg,e);
+            Tag e=te.get(te.newTag(true));
+		    $procedure.setStartTag(e.getNe());
+            generate(Instruction.OP.skip, null, null, e.toString());//TODO: averiguar como saltar a esta etiqueta desde program
+		    generate(Instruction.OP.pmb, null, null, $procedure.toString());
+        }
+        decl* sents END
+        {
+		    C3D.get(pc-1).setInstFinal(true);
+            pproc.pop();
+            depth --;
+            //ts = ts.blockGoesUp();
         }
     ;
 

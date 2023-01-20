@@ -15,7 +15,6 @@ import java.io.Writer;
 public class ProceduresTable {
     private ArrayList<Procedure> tp;
     private int np;
-    private static Writer buffer;
 
     public ProceduresTable() {
         tp = new ArrayList<Procedure>();
@@ -54,47 +53,4 @@ public class ProceduresTable {
         this.np = np;
     }
 
-    public void HTMLTable(String directory) {
-        try {
-            File tsFile = new File(directory);
-            buffer = new BufferedWriter(new FileWriter(tsFile));
-            String table = "<!DOCTYPE html><html><head><head><style>table, th, td {  border: 1px solid black;  border-collapse: collapse;}th, td {  padding: 5px;  text-align: center;}</style></head><body><table style=\"width:100%; background-color:#727272; font-family:'Courier New'\"><tr style=\"color:white\"><th>tipo</th><th>nombre</th><th>prof</th><th>inicio</th><th>numParams</th><th>ocupVL</th></tr>";
-            Procedure proc;
-            String start, numParams;
-            for (int i = 0; i < tp.size(); i++) {
-                proc = tp.get(i);
-                table += "<tr style=\"background-color:";
-                switch (proc.getType()) {
-                    case FUNC:
-                        table += "#D1BCFF\">";
-                        break;
-                    case PROC:
-                        table += "#FFD1BC\">";
-                        break;
-                    default:
-                        break;
-                }
-                if (proc.getStartTag() != 0) {
-                    start = String.valueOf(proc.getStartTag());
-                } else {
-                    start = "-";
-                }
-                if (proc.getNumParams() != 0) {
-                    numParams = String.valueOf(proc.getNumParams());
-                } else {
-                    numParams = "-";
-                }
-                table += "<td>" + proc.getType() + "</td><td>" + proc.toString() + "</td><td>"
-                        + proc.getProf() + "</td><td>" + start + "</td><td>" + numParams
-                        + "</td><td>" + proc.getOcupVL() + "</td></tr>";
-            }
-            table += "</table></body></html>";
-            buffer.write(table);
-            buffer.close();
-        } catch (
-
-                IOException e) {
-            System.out.println("Error escribiendo la tabla de procedimientos: " + e.getMessage());
-        }
-    }
 }

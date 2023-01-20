@@ -67,7 +67,7 @@ public class Variable {
         this.value = value;
     }
 
-    public Symbol.DataTypes datatypes() {
+    public Symbol.DataTypes getDataType() {
         return dataType;
     }
 

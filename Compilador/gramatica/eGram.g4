@@ -10,17 +10,18 @@ grammar eGram;
 
 // Parser, sobreescribe el constructor para guardar el directorio y la salida de errores para su personalización
 @parser::members {
-    public SymbolTable symbolTable;
-    int depthCondition;
-    String errors="";
-    String folder;
-    Deque<Symbol> proceduresStack = new ArrayDeque<Symbol>();
+    private SymbolTable symbolTable;
+    private int depthCondition;
+    private String errors="";
+    private String folder;
+    private Deque<Symbol> proceduresStack = new ArrayDeque<Symbol>();
 
-    //El constructor aquí no hace nada (de momento)
     public eGramParser(TokenStream input, String folder){
         this(input);
         this.folder=folder;
     }
+
+    public SymbolTable getSymbolTable(){ return symbolTable; }
 
     // Se sobreescribe la salida del error otorgada por Antlr4 según el contenido de la misma
     @Override

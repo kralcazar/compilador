@@ -93,8 +93,8 @@ public class Assembler {
         // Integers y booleans constantes
         for (int x = 1; x <= tv.getNv(); x++) {
             Variable vx = tv.get(x);
-            if (vx.type() == Symbol.Types.CONST && vx.datatypes() != Symbol.DataTypes.STRING) {
-                switch (vx.datatypes()) {
+            if (vx.type() == Symbol.Types.CONST && vx.getDataType() != Symbol.DataTypes.STRING) {
+                switch (vx.getDataType()) {
                     case INT:
                         asm.add(vx + "  EQU  " + vx.getValue());
                         break;
@@ -115,7 +115,7 @@ public class Assembler {
         // Strings constantes
         for (int x = 1; x <= tv.getNv(); x++) {
             Variable vx = tv.get(x);
-            if (vx.type() == Symbol.Types.CONST && vx.datatypes() == Symbol.DataTypes.STRING) {
+            if (vx.type() == Symbol.Types.CONST && vx.getDataType() == Symbol.DataTypes.STRING) {
                 asm.add("\t" + vx + "  DB  " + vx.getValue() + ",0");
             }
         }
@@ -523,7 +523,7 @@ public class Assembler {
                 b = tv.get(ins.getOperating(1));
                 if (b == null) {
                     asm.add("\tmov eax, " + ins.getOperating(1));
-                } else if (b.type() == Types.CONST && b.datatypes() == DataTypes.STRING) {
+                } else if (b.type() == Types.CONST && b.getDataType() == DataTypes.STRING) {
                     loadAddrReg("eax", b);
                 } else {
                     loadMemReg("eax", b);
@@ -683,7 +683,7 @@ public class Assembler {
             case params:
                 // params a
                 a = tv.get(ins.destination());
-                if (a.type() == Types.CONST && a.datatypes() == DataTypes.STRING) {
+                if (a.type() == Types.CONST && a.getDataType() == DataTypes.STRING) {
                     loadAddrReg("eax", a);
                 } else {
                     loadMemReg("eax", a);
