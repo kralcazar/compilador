@@ -80,7 +80,19 @@ public class Main {
         //Ensamblado de código sin optimizar
         Assembler normal = new Assembler(buildPath + filename, parserC3D.getC3D(),
                 parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
-        normal.ensamblar();
+        normal.assemble();
+        //Optimización de código
+        parserC3D.getTv().HTMLTable(buildPath + "/tablavariables.html");
+        parserC3D.getTp().HTMLTable(buildPath + "/tablaprocedimientos.html");
 
+        Optimizer optimizer = new Optimizer(buildPath + filename + "_OPT", parserC3D.getC3D(),
+                parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
+        optimizer.optimize();
+        optimizer.getTv().HTMLTable(buildPath + "/tablavariables_OPT.html");
+        // Ensamblado de código optimizado
+        Assembler optimized = new Assembler(buildPath + filename + "_OPT",
+                optimizer.getC3D(), optimizer.getTv(), optimizer.getTp(),
+                optimizer.getTe());
+        optimized.assemble();
     }
 }

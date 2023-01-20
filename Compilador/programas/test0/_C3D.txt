@@ -1,8 +1,7 @@
 t$2 = 6
 i$1 = t$2
-e1: skip
-pmb test$5
 t$4 = 2
+<<<<<<< Updated upstream
 a$3 = t$4
 rtn 5, a$3
 e2: skip
@@ -38,3 +37,6 @@ param_s t$14
 call printi$3
 e12: skip
 e13: skip
+=======
+test$3 = t$4
+>>>>>>> Stashed changes

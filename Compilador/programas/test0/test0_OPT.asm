@@ -13,79 +13,13 @@ includelib \masm32\lib\masm32.lib
 	inputBuffer db 65536 dup(?)
 	DISP  DW  1000 DUP (?)
 	i$1  DD  ?
-	t$2  DD  ?
 	test$3  DD  ?
-	t$4  DD  ?
 .code
 start PROC
 	mov eax, 6
-	mov t$2, eax
-	mov eax, t$2  ; eax = t$2
 	mov i$1, eax
-<<<<<<< Updated upstream
-e1:
-	mov eax, 6
-	mov t$6, eax
-	mov eax, t$6  ; eax = t$6
-	mov i$5, eax
-	call test$5
-	add esp, 0
-	mov t$7, eax
-e3:
-e4:
-	mov eax, 5
-	mov t$8, eax
-	mov eax, i$5  ; eax = i$5
-	mov ebx, t$8  ; ebx = t$8
-	cmp eax, ebx
-	je e5
-	jmp e7
-e5:
-	mov eax, 1
-	mov t$9, eax
-	mov eax, i$5  ; eax = i$5
-	mov ebx, t$9  ; ebx = t$9
-	add eax, ebx
-	mov t$10, eax
-	mov eax, t$10  ; eax = t$10
-	mov i$5, eax
-e6:
-	jmp e4
-e7:
-e8:
-	mov eax, 1
-	mov t$11, eax
-	mov eax, i$5  ; eax = i$5
-	mov ebx, t$11  ; ebx = t$11
-	add eax, ebx
-	mov t$12, eax
-	mov eax, t$12  ; eax = t$12
-	mov i$5, eax
-e9:
-e10:
-	mov eax, 50
-	mov t$13, eax
-	mov eax, i$5  ; eax = i$5
-	mov ebx, t$13  ; ebx = t$13
-	cmp eax, ebx
-	jl e8
-	jmp e11
-	jmp e8
-e11:
-	mov eax, 5
-	mov t$14, eax
-	mov eax, t$14  ; eax = t$14
-	push eax
-	call printi$3
-	add esp, 0
-e12:
-e13:
-=======
 	mov eax, 2
-	mov t$4, eax
-	mov eax, t$4  ; eax = t$4
 	mov test$3, eax
->>>>>>> Stashed changes
 	invoke ExitProcess, 0
 start ENDP
 read$1:
