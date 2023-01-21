@@ -67,40 +67,39 @@ public class Main {
             throw e;
         }
 
+        printVariablesTable(buildPath, parserC3D.getTv(), "VariablesTable_NoOpt"); // Tabla de variables sin optimizar
 
         //Ensamblado de código sin optimizar
-        Assembler normal = new Assembler(buildPath + filename, parserC3D.getC3D(),
+        Assembler normal = new Assembler(buildPath + filename+ "_NoOpt", parserC3D.getC3D(),
                 parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
         normal.assemble();
 
 
         //Optimización de código
-        Optimizer optimizer = new Optimizer(buildPath + filename + "_OPT", parserC3D.getC3D(),
+        Optimizer optimizer = new Optimizer(buildPath + filename , parserC3D.getC3D(),
                 parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
         optimizer.optimize();
 
-        printVariablesTable(buildPath+"/Sin optimizar/", parserC3D.getTv()); // Tabla de variables sin optimizar
-
         // Ensamblado de código optimizado
-        Assembler optimized = new Assembler(buildPath + filename + "_OPT",
+        Assembler optimized = new Assembler(buildPath + filename,
                 optimizer.getC3D(), optimizer.getTv(), optimizer.getTp(),
                 optimizer.getTe());
         optimized.assemble();
 
-        // Imprimir ficheros de comprobación
+        // Imprimir ficheros para comprobación
         printFiles(buildPath, tokens, parser, parserC3D);
 
     }
 
     private static void printFiles(String folder, CommonTokenStream tokens, eGramParser parser, eGramC3D c3d){
-        printTokens(folder, tokens);
-        printProceduresTable(folder, c3d.getTp());
-        printVariablesTable(folder, c3d.getTv());
-        printC3D(folder, c3d);
+        printTokens(folder, tokens, "tokens");
+        printProceduresTable(folder, c3d.getTp(), "ProceduresTable");
+        printVariablesTable(folder, c3d.getTv(), "VariablesTable");
+        printC3D(folder, c3d, "C3D");
     }
 
-    private static void printTokens(String folder, CommonTokenStream tokens){
-        File tokensFile = new File(folder + "tokens.txt");
+    private static void printTokens(String folder, CommonTokenStream tokens, String name){
+        File tokensFile = new File(folder + name + ".txt");
         try {
             buffer = new BufferedWriter(new FileWriter(tokensFile));
             for (Token tok : tokens.getTokens()) {
@@ -110,8 +109,8 @@ public class Main {
         } catch(IOException e) {}
     }
 
-    private static void printC3D(String folder, eGramC3D c3d){
-        File interFile = new File(folder + "C3D.txt");
+    private static void printC3D(String folder, eGramC3D c3d, String name){
+        File interFile = new File(folder + name + ".txt");
         try {
             buffer = new BufferedWriter(new FileWriter(interFile));
             for(int i=0;i < c3d.getC3D().size();i++) {
@@ -120,9 +119,9 @@ public class Main {
             buffer.close();
         } catch(IOException e) {}
     }
-    private static void printProceduresTable(String folder, ProceduresTable pt){
+    private static void printProceduresTable(String folder, ProceduresTable pt, String name){
         try {
-            File tsFile = new File(folder + "ProceduresTable.html");
+            File tsFile = new File(folder + name + ".html");
             buffer = new BufferedWriter(new FileWriter(tsFile));
             String table = "<!DOCTYPE html><html><head><head><style>table, th, td {  border: 1px solid black;  border-collapse: collapse;}th, td {  padding: 5px;  text-align: center;}</style></head><body><table style=\"width:100%; background-color:#727272; font-family:'Courier New'\"><tr style=\"color:white\"><th>tipo</th><th>nombre</th><th>prof</th><th>inicio</th><th>numParams</th><th>ocupVL</th></tr>";
             Procedure proc;
@@ -164,9 +163,9 @@ public class Main {
         }
     }
 
-    private static void printVariablesTable(String folder, VariablesTable vt){
+    private static void printVariablesTable(String folder, VariablesTable vt, String name){
         try {
-            File tsFile = new File(folder + "VariablesTable.html");
+            File tsFile = new File(folder + name + ".html");
             buffer = new BufferedWriter(new FileWriter(tsFile));
             String table = "<!DOCTYPE html><html><head><head><style>table, th, td {  border: 1px solid\n"
                     + " black;  border-collapse: collapse;}th, td {  padding: 5px;  text-align:\n"

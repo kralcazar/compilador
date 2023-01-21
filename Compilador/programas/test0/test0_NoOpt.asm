@@ -9,18 +9,25 @@ includelib \masm32\lib\masm32.lib
 .const
 .data
 	inputPtr DD offset inputBuffer
+	t$8  DB  "found1",0
+	t$10  DB  "found2",0
+	t$11  DB  "notfound",0
 .data?
 	inputBuffer db 65536 dup(?)
 	DISP  DW  1000 DUP (?)
 	i$1  DD  ?
+	t$2  DD  ?
 .code
 start PROC
 	mov eax, 6
+	mov t$2, eax
+	mov eax, t$2  ; eax = t$2
 	mov i$1, eax
 e1:
 e3:
 	call indice$6
 	add esp, 0
+e22:
 	invoke ExitProcess, 0
 start ENDP
 read$1:
@@ -167,6 +174,8 @@ test$5:
 	mov [esi+0], ebp  ; DISP(prof) = BP
 	sub esp, 8  ; reserva memoria para las variables locales
 	mov eax, 2
+	mov [ebp-8], eax
+	mov eax, [ebp-8]
 	mov [ebp-4], eax
 	mov eax, [ebp-4]
 	mov esp, ebp  ; SP = BP
@@ -174,44 +183,102 @@ test$5:
 	lea edi, DISP  ; EDI = @DISP
 	pop [edi+0]  ; DISP[prof] = antiguo valor
 	ret
+e2:
 indice$6:
 	mov  esi, OFFSET DISP  ; ESI = @DISP
 	push [esi+0]
 	push ebp
 	mov ebp, esp  ; BP = SP
 	mov [esi+0], ebp  ; DISP(prof) = BP
-	sub esp, 40  ; reserva memoria para las variables locales
+	sub esp, 48  ; reserva memoria para las variables locales
 	mov eax, 6
+	mov [ebp-8], eax
+	mov eax, [ebp-8]
 	mov [ebp-4], eax
+	mov eax, 6
+	mov [ebp-12], eax
+	mov eax, [ebp-4]
+	mov ebx, [ebp-12]
+	cmp eax, ebx
+	je e4
+	jmp e6
+e4:
+	mov eax, OFFSET t$8  ; eax = @ t$8
+	push eax
+	call prints$4
+	add esp, 0
+e5:
+e6:
+	mov eax, 6
+	mov [ebp-16], eax
+	mov eax, [ebp-4]
+	mov ebx, [ebp-16]
+	cmp eax, ebx
+	je e7
+	jmp e9
+e7:
+	mov eax, OFFSET t$10  ; eax = @ t$10
+	push eax
+	call prints$4
+	add esp, 0
+e8:
+	jmp e11
+e9:
+	mov eax, OFFSET t$11  ; eax = @ t$11
+	push eax
+	call prints$4
+	add esp, 0
+e10:
+e11:
 	call test$5
 	add esp, 0
-	mov [ebp-12], eax
-e5:
-	mov eax, [ebp-4]
-	mov ebx, 5
-	cmp eax, ebx
-	jne e8
-	mov eax, [ebp-4]
-	mov ebx, 1
-	add eax, ebx
-	mov [ebp-4], eax
-	jmp e5
-e8:
-e9:
+	mov [ebp-20], eax
+e12:
+e13:
 	mov eax, 5
+	mov [ebp-24], eax
+	mov eax, [ebp-4]
+	mov ebx, [ebp-24]
+	cmp eax, ebx
+	je e14
+	jmp e16
+e14:
+	mov eax, 1
 	mov [ebp-28], eax
-	mov eax, [ebp-28]
+	mov eax, [ebp-4]
+	mov ebx, [ebp-28]
+	add eax, ebx
+	mov [ebp-32], eax
+	mov eax, [ebp-32]
+	mov [ebp-4], eax
+e15:
+	jmp e13
+e16:
+e17:
+	mov eax, 5
+	mov [ebp-36], eax
+	mov eax, [ebp-36]
 	push eax
 	call printi$3
 	add esp, 0
+e18:
+	mov eax, 1
+	mov [ebp-40], eax
 	mov eax, [ebp-4]
-	mov ebx, 1
+	mov ebx, [ebp-40]
 	add eax, ebx
+	mov [ebp-44], eax
+	mov eax, [ebp-44]
 	mov [ebp-4], eax
+e19:
+e20:
+	mov eax, 50
+	mov [ebp-48], eax
 	mov eax, [ebp-4]
-	mov ebx, 50
+	mov ebx, [ebp-48]
 	cmp eax, ebx
-	jge e13
-	jmp e9
-e13:
+	jl e17
+	jmp e21
+	jmp e17
+e21:
 END start

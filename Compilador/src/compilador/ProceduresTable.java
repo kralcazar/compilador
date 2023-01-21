@@ -36,7 +36,6 @@ public class ProceduresTable {
         return tp.get(Integer.parseInt(segments[1]) - 1);
     }
 
-    // Getters y setters
     public ArrayList<Procedure> getTP() {
         return tp;
     }

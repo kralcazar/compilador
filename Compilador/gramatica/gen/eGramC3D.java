@@ -329,8 +329,6 @@ public class eGramC3D extends Parser {
 			setState(78);
 			match(EOF);
 
-			            Tag e = te.get(te.newTag(false));
-			            generate(Instruction.OP.skip, null, null, e.toString());
 			            tv.calcDespOcupVL(tp);
 			        
 			}
@@ -351,6 +349,7 @@ public class eGramC3D extends Parser {
 		public Procedure procedure;
 		public Symbol symbol;
 		public Token MAIN;
+		public SentsContext sents;
 		public TerminalNode MAIN() { return getToken(eGramC3D.MAIN, 0); }
 		public TerminalNode BEGIN() { return getToken(eGramC3D.BEGIN, 0); }
 		public SentsContext sents() {
@@ -429,9 +428,13 @@ public class eGramC3D extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(91);
-			sents();
+			((MainContext)_localctx).sents = sents();
 			setState(92);
 			match(END);
+
+			            Etiqueta e=te.get(te.nuevaEtiqueta(false));
+			            genera(OP.skip, null, null, e.toString());
+			            backpatch(((MainContext)_localctx).sents.sents_seg,e); // por si sents.seg no se completa
 
 			            C3D.get(pc-1).setInstFinal(true);
 			            pproc.pop();
@@ -1450,9 +1453,9 @@ public class eGramC3D extends Parser {
 				match(WHILE);
 
 				            try{
-				            ts = ts.blockGoesDown();
+				                 ts = ts.blockGoesDown();
 				            } catch(SymbolTable.SymbolTableException e) {
-				            System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+				                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
 				            }
 				            Tag ei = te.get(te.newTag(false));
 				            generate(Instruction.OP.skip, null, null, ei.toString());

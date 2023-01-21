@@ -10,7 +10,14 @@ funcion ent test() {
 indice{
 
     ent i = 6;
-
+    si(i==6){
+        prints("found1");
+    }
+    si(i==6){
+        prints("found2");
+    }sino{
+        prints("notfound");
+    }
     test();
     mientras (i == 5) {
         i = i +1;

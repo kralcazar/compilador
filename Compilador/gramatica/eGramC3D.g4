@@ -130,8 +130,6 @@ program:
         }
         EOF
         {
-            Tag e = te.get(te.newTag(false));
-            generate(Instruction.OP.skip, null, null, e.toString());
             tv.calcDespOcupVL(tp);
         }
     ;
@@ -167,6 +165,10 @@ main
         }
         decl* sents END
         {
+            Etiqueta e=te.get(te.nuevaEtiqueta(false));
+            genera(OP.skip, null, null, e.toString());
+            backpatch($sents.sents_seg,e); // por si sents.seg no se completa
+
             C3D.get(pc-1).setInstFinal(true);
             pproc.pop();
             depth --;
@@ -395,9 +397,9 @@ sent[Deque<Integer> sents_seg]
 	| WHILE
         {
             try{
-            ts = ts.blockGoesDown();
+                 ts = ts.blockGoesDown();
             } catch(SymbolTable.SymbolTableException e) {
-            System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
             }
             Tag ei = te.get(te.newTag(false));
             generate(Instruction.OP.skip, null, null, ei.toString());
