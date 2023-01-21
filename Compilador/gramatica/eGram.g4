@@ -1022,10 +1022,9 @@ SEMI:           ';';
 COLON:          ':';
 DOUBLEDOT:      '..';
 
-OPREL:          EQUAL | NOTEQUAL | GT | LT ;
+OPREL:          EQUAL | GT | LT ;
 ASSIGN:         '=';
 EQUAL:          '==';
-NOTEQUAL:       '!=';
 GT:             '>';
 LT:             '<';
 ADD:            '+';

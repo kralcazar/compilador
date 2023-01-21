@@ -51,7 +51,7 @@ public class Table {
         int entradas = 0;
         Index i = first;
         while (i != null) {
-            entradas += i.d();
+            entradas += i.getDimension();
             i=i.getNextIndex();
         }
         this.entries = entradas;
@@ -66,7 +66,7 @@ public class Table {
             b = first.li();
             Index i = first.getNextIndex();
             while (i != null) {
-                b = b * i.d() + i.li();
+                b = b * i.getDimension() + i.li();
                 i = i.getNextIndex();
             }
         }

@@ -13,7 +13,7 @@ import java.util.ArrayDeque;
 }
 
 @parser::members {
-private Deque<Integer> pproc=new ArrayDeque<Integer>(); // Pila de procedimientos
+private Deque<Integer> pproc = new ArrayDeque<Integer>(); // Pila de procedimientos
 private SymbolTable ts;
 private VariablesTable tv;
 private ProceduresTable tp;
@@ -21,30 +21,30 @@ private TagsTable te;
 private String directory;
 private ArrayList<Instruction> C3D;
 private int pc = 0; // program counter
-private int depth=0;
+private int depth = 0;
 
 public eGramC3D(TokenStream input, String directory, SymbolTable ts){
 	this(input);
-	this.directory=directory;
-	this.ts=ts;
+	this.directory = directory;
+	this.ts = ts;
 	this.C3D = new ArrayList<Instruction>();
-	this.tv= new VariablesTable(directory);
-	this.tp= new ProceduresTable();
+	this.tv = new VariablesTable(directory);
+	this.tp = new ProceduresTable();
 	this.te = new TagsTable();
 }
 
 public void generate(Instruction.OP code, String op1, String op2, String destination){
 	pc++;
-	if(code==Instruction.OP.skip) {
+	if(code == Instruction.OP.skip) {
 		te.get(destination).setLine(pc);
 	}
 	C3D.add(new Instruction(code, op1, op2, destination));
 }
 
 public void backpatch(Deque<Integer> list, Tag e){
-	if(list!=null) {
+	if(list!= null) {
 		while(list.size()>0) {
-			int instruction=list.remove()-1;
+			int instruction = list.remove()-1;
 			C3D.get(instruction).setTag(e.toString());
 		}
 	}
@@ -55,9 +55,9 @@ public void backpatch(int line, Tag e){
 }
 
 public Deque<Integer> concat(Deque<Integer> dq1, Deque<Integer> dq2){
-	if(dq1==null) {
+	if(dq1 == null) {
 		return dq2;
-	} else if(dq2!=null) {
+	} else if(dq2!= null) {
 		while(dq2.size()>0) {
 			dq1.add(dq2.removeFirst());
 		}
@@ -71,20 +71,11 @@ public Instruction.OP condJumpValue(String s){
 		case "==":
 			op = Instruction.OP.ifEQ;
 			break;
-		case "!=":
-			op = Instruction.OP.ifNE;
-			break;
 		case "<":
 			op = Instruction.OP.ifLT;
 			break;
 		case ">":
 			op = Instruction.OP.ifGT;
-			break;
-		case ">=":
-			op = Instruction.OP.ifGE;
-			break;
-		case "<=":
-			op = Instruction.OP.ifLE;
 			break;
 	}
 	return op;
@@ -109,129 +100,129 @@ public TagsTable getTe(){
 }
 
 program:
-        {
-            // Poner los métodos de IO en la tabla de procedimientos
-            Symbol s;
-            try{
-                // Operación de entrada
-                s=ts.get("read");
-                s.setProcedure(tp.newProc(depth,s.getType(),"read"));
-                // Operaciones de salida
-                s=ts.get("printb");
-                s.setProcedure(tp.newProc(depth,s.getType(),"printb"));
-                s=ts.get("printi");
-                s.setProcedure(tp.newProc(depth,s.getType(),"printi"));
-                s=ts.get("prints");
-                s.setProcedure(tp.newProc(depth,s.getType(),"prints"));
-            } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
-            }
-        }
+    {
+      // Poner los métodos de IO en la tabla de procedimientos
+      Symbol symbol;
+      try{
+        // Operación de entrada
+        symbol = ts.get("read");
+        symbol.setProcedure(tp.newProc(depth, symbol.getType(), "read"));
+        // Operaciones de salida
+        symbol = ts.get("printb");
+        symbol.setProcedure(tp.newProc(depth, symbol.getType(), "printb"));
+        symbol = ts.get("printi");
+        symbol.setProcedure(tp.newProc(depth, symbol.getType(), "printi"));
+        symbol = ts.get("prints");
+        symbol.setProcedure(tp.newProc(depth, symbol.getType(), "prints"));
+      } catch(SymbolTable.SymbolTableException e) {
+        System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+      }
+    }
 	(decl+ | main)+
-	    {
+	  {
 
-	        //Llamar al main despues de leerlo todo
-            try {
-                s = ts.get("indice");//TODO: intentar llamada directa a la palabra
-                generate(Instruction.OP.call, null, null, s.getProcedure().toString());
-            } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-            }
+	    //Llamar al main despues de leerlo todo
+      try {
+        symbol = ts.get("indice");//TODO: intentar llamada directa a la palabra
+        generate(Instruction.OP.call, null, null, symbol.getProcedure().toString());
+      } catch(SymbolTable.SymbolTableException e) {
+        System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+      }
 
-	    }
-	    EOF
-        {
-            Tag e=te.get(te.newTag(false));
-            generate(Instruction.OP.skip, null, null, e.toString());
-            tv.calcDespOcupVL(tp);
-        }
+	  }
+	  EOF
+    {
+      Tag e = te.get(te.newTag(false));
+      generate(Instruction.OP.skip, null, null, e.toString());
+      tv.calcDespOcupVL(tp);
+    }
 ;
 
 
 /*******************************************************************************************/
-/*                                       MAIN                                              */
+/*                    MAIN                       */
 /*******************************************************************************************/
 main
-    returns[Procedure procedure, Symbol symbol]:
-    MAIN
-        {
-            Symbol symbol = new Symbol();
-            Procedure procedure;
-            try {
-                symbol = ts.get($MAIN.getText());
-                procedure = tp.newProc(depth, symbol.getType(), $MAIN.getText());
-                symbol.setProcedure(procedure);
-                $procedure = procedure;
-            } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-            }
-        }
-        BEGIN
-        {
-            pproc.push($procedure.getNp());
-            depth ++;
-            /*try{
-                ts = ts.blockGoesDown();
-            } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-            }*/
+  returns[Procedure procedure, Symbol symbol]:
+  MAIN
+    {
+      Symbol symbol = new Symbol();
+      Procedure procedure;
+      try {
+        symbol = ts.get($MAIN.getText());
+        procedure = tp.newProc(depth, symbol.getType(), $MAIN.getText());
+        symbol.setProcedure(procedure);
+        $procedure = procedure;
+      } catch(SymbolTable.SymbolTableException e) {
+        System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+      }
+    }
+    BEGIN
+    {
+      pproc.push($procedure.getNp());
+      depth ++;
+      /*try{
+        ts = ts.blockGoesDown();
+      } catch(SymbolTable.SymbolTableException e) {
+        System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+      }*/
 
-            Tag e=te.get(te.newTag(true));
-		    $procedure.setStartTag(e.getNe());
-            generate(Instruction.OP.skip, null, null, e.toString());//TODO: averiguar como saltar a esta etiqueta desde program
-		    generate(Instruction.OP.pmb, null, null, $procedure.toString());
-        }
-        decl* sents END
-        {
-		    C3D.get(pc-1).setInstFinal(true);
-            pproc.pop();
-            depth --;
-            //ts = ts.blockGoesUp();
-        }
-    ;
+      Tag e = te.get(te.newTag(true));
+		  $procedure.setStartTag(e.getNe());
+      generate(Instruction.OP.skip, null, null, e.toString());//TODO: averiguar como saltar a esta etiqueta desde program
+		  generate(Instruction.OP.pmb, null, null, $procedure.toString());
+    }
+    decl* sents END
+    {
+		  C3D.get(pc-1).setInstFinal(true);
+      pproc.pop();
+      depth --;
+      //ts = ts.blockGoesUp();
+    }
+  ;
 
 /*******************************************************************************************/
-/*                                   DECLARACIONES                                         */
+/*                  DECLARACIONES                     */
 /*******************************************************************************************/
 decl:
 	tipo ID {
-		Symbol s=new Symbol();
-		int nv=0;
+		Symbol symbol = new Symbol();
+		int nv = 0;
 		try {
-			s=ts.get($ID.getText());
-			nv=tv.newVar(false,pproc.peek(),Symbol.Types.VAR, s.dataType());
-			tv.get(nv).setId(s.getId());
-			s.setVariableNumber(nv);
+			symbol = ts.get($ID.getText());
+			nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, symbol.dataType());
+			tv.get(nv).setId(symbol.getId());
+			symbol.setVariableNumber(nv);
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
 	} (
 		ASSIGN expr {
-			if(s.dataType()==Symbol.DataTypes.BOOLEAN) {
-				Tag ec=te.get(te.newTag(false));
-				Tag ef=te.get(te.newTag(false));
-				Tag efin=te.get(te.newTag(false));
+			if(symbol.dataType() == Symbol.DataTypes.BOOLEAN) {
+				Tag ec = te.get(te.newTag(false));
+				Tag ef = te.get(te.newTag(false));
+				Tag efin = te.get(te.newTag(false));
 				generate(Instruction.OP.skip, null, null, ec.toString());
 				generate(Instruction.OP.copy, "-1", null, tv.get(nv).toString());
 				generate(Instruction.OP.jump, null, null, efin.toString());
 				generate(Instruction.OP.skip, null, null, ef.toString());
 				generate(Instruction.OP.copy, "0", null, tv.get(nv).toString());
 				generate(Instruction.OP.skip, null, null, efin.toString());
-				backpatch($expr.cierto,ec);
-				backpatch($expr.falso,ef);
+				backpatch($expr.true_, ec);
+				backpatch($expr.false_, ef);
 			} else {
-				generate(Instruction.OP.copy, $expr.r.toString(), null, tv.get(nv).toString());
+				generate(Instruction.OP.copy, $expr.variable.toString(), null, tv.get(nv).toString());
 			}
 	}
 	)? SEMI
 	| CONSTANT tipo ID ASSIGN literal SEMI {
-		Symbol s;
+		Symbol symbol;
 		try {
-			s = ts.get($ID.getText());
-			int nv=tv.newVar(false,pproc.peek(),Symbol.Types.CONST, s.dataType());
-			tv.get(nv).setId(s.getId());
-			tv.get(nv).setValue(s.getValue());
-			s.setVariableNumber(nv);
+			symbol = ts.get($ID.getText());
+			int nv = tv.newVar(false, pproc.peek(), Symbol.Types.CONST, symbol.dataType());
+			tv.get(nv).setId(symbol.getId());
+			tv.get(nv).setValue(symbol.getValue());
+			symbol.setVariableNumber(nv);
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
@@ -240,48 +231,48 @@ decl:
 	| FUNCTION tipo encabezado BEGIN {
 		depth++;
 		try{
-			ts=ts.blockGoesDown();
+			ts = ts.blockGoesDown();
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
-		pproc.push($encabezado.met.getNp());
+		pproc.push($encabezado.procedure.getNp());
 		// Crear variables para los parámetros
-		Symbol aux=$encabezado.s.getNext();
-		int nparam=1;
-		while(aux!=null) {
+		Symbol aux = $encabezado.symbol.getNext();
+		int nparam = 1;
+		while(aux!= null) {
 			try {
-				int nv=tv.newVar(false,pproc.peek(),Symbol.Types.VAR, aux.dataType());
+				int nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, aux.dataType());
 				tv.get(nv).setNparam(nparam);
 				tv.get(nv).setId(aux.getId());
 				ts.get(aux.getId()).setVariableNumber(nv);
 			} catch(SymbolTable.SymbolTableException e) {
 				System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 			}
-			aux=aux.getNext();
+			aux = aux.getNext();
 			nparam++;
 		}
-		Tag e=te.get(te.newTag(true));
-		$encabezado.met.setStartTag(e.getNe());
-		$encabezado.met.setNumParams(nparam-1);
+		Tag e = te.get(te.newTag(true));
+		$encabezado.procedure.setStartTag(e.getNe());
+		$encabezado.procedure.setNumParams(nparam-1);
 		generate(Instruction.OP.skip, null, null, e.toString());
-		generate(Instruction.OP.pmb, null, null, $encabezado.met.toString());
+		generate(Instruction.OP.pmb, null, null, $encabezado.procedure.toString());
 	} decl* sents END{
 		C3D.get(pc-1).setInstFinal(true);
 		pproc.pop();
 		depth--;
-		ts=ts.blockGoesUp();
+		ts = ts.blockGoesUp();
 	};
 
 declArray:
 	tipo ID LBRACK (numero DOUBLEDOT)? numero declArray_ {
-	Symbol s=null;
-	int nv=0;
+	Symbol symbol = null;
+	int nv = 0;
 	try {
-		s=ts.get($ID.getText());
-		Table dt = s.getTable();
-		nv=tv.newVar(false,pproc.peek(),Symbol.Types.VAR, dt.dataType());
-		tv.get(nv).setId(s.getId());
-		s.setVariableNumber(nv);
+		symbol = ts.get($ID.getText());
+		Table dt = symbol.getTable();
+		nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, dt.dataType());
+		tv.get(nv).setId(symbol.getId());
+		symbol.setVariableNumber(nv);
 		tv.get(nv).setElements(dt.getEntries());
 	} catch(SymbolTable.SymbolTableException e) {
 		System.out.println("Error con la tabla de símbolos: "+e.getMessage());
@@ -298,16 +289,16 @@ numero
 	| ID;
 
 encabezado
-	returns[Procedure met, Symbol s]:
+	returns[Procedure procedure, Symbol symbol]:
 	ID LPAREN parametros? RPAREN {
-		Symbol s=new Symbol();
-		Procedure met;
+		Symbol symbol = new Symbol();
+		Procedure procedure;
 		try {
-			s=ts.get($ID.getText());
-			met=tp.newProc(depth,s.getType(),$ID.getText());
-			s.setProcedure(met);
-			$met = met;
-			$s=s;
+			symbol = ts.get($ID.getText());
+			procedure = tp.newProc(depth, symbol.getType(), $ID.getText());
+			symbol.setProcedure(procedure);
+			$procedure = procedure;
+			$symbol = symbol;
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
@@ -324,10 +315,10 @@ sents
 		generate(Instruction.OP.skip, null, null, ec.toString());
 	} sents_[$sents_seg] {
 		backpatch($sent.sent_seg, ec);
-		if($sents_.sents_seg_!=null) {
+		if($sents_.sents_seg_!= null) {
 			$sents_seg = $sents_.sents_seg_;
 		} else{
-			$sents_seg= $sent.sent_seg;
+			$sents_seg = $sent.sent_seg;
 		}
 	};
 
@@ -338,10 +329,10 @@ sents_[Deque<Integer> sents_seg]
 		generate(Instruction.OP.skip, null, null, ec.toString());
 	} sents_[$sents_seg] {
 		backpatch($sent.sent_seg, ec);
-		if($sents_.sents_seg_!=null) {
+		if($sents_.sents_seg_!= null) {
 			$sents_seg_ = $sents_.sents_seg_;
 		} else{
-			$sents_seg_= $sent.sent_seg;
+			$sents_seg_ = $sent.sent_seg;
 		}
 	}
 	|;
@@ -350,20 +341,20 @@ sent[Deque<Integer> sents_seg]
 	returns[Deque<Integer> sent_seg]:
 	IF expr BEGIN {
 		try{
-			ts=ts.blockGoesDown();
+			ts = ts.blockGoesDown();
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
 		Tag ec = te.get(te.newTag(false));
 		generate(Instruction.OP.skip, null, null, ec.toString());
 	} decl* sents {
-		ts=ts.blockGoesUp();
-		backpatch($expr.cierto, ec);
-		$sent_seg = concat($expr.falso, $sents.sents_seg);
+		ts = ts.blockGoesUp();
+		backpatch($expr.true_, ec);
+		$sent_seg = concat($expr.false_, $sents.sents_seg);
 	} END
 	| IF expr BEGIN {
 		try{
-			ts=ts.blockGoesDown();
+			ts = ts.blockGoesDown();
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
@@ -378,23 +369,23 @@ sent[Deque<Integer> sents_seg]
 		generate(Instruction.OP.skip, null, null, ef.toString());
 	} ELSE BEGIN {
 	} decl* sents END {
-		ts=ts.blockGoesUp();
-		backpatch($expr.cierto, ec);
-		backpatch($expr.falso, ef);
+		ts = ts.blockGoesUp();
+		backpatch($expr.true_, ec);
+		backpatch($expr.false_, ef);
 		$sent_seg = concat(sents_seg1, $sents.sents_seg);
 	}
 	| contcase endcase END {
 		generate(Instruction.OP.skip, null, null, $contcase.etest.toString());
-		while($contcase.pilacond.size()!=0) {
+		while($contcase.pilacond.size()!= 0) {
 			Tag econd = $contcase.pilacond.remove();
 			Tag etest = $contcase.pilatest.remove();
 			Variable v = tv.get($contcase.pilavar.remove());
 			Tag esent = $contcase.pilasent.remove();
 			generate(Instruction.OP.jump, null, null, econd.toString());
 			generate(Instruction.OP.skip, null, null, etest.toString());
-			generate(Instruction.OP.ifEQ, $contcase.r.toString(), v.toString(), esent.toString());
+			generate(Instruction.OP.ifEQ, $contcase.variable.toString(), v.toString(), esent.toString());
 		}
-		if($endcase.e!=null) {
+		if($endcase.e!= null) {
 			if(!$contcase.acababreak && $contcase.pilaefi.size()>0) {
 				int seg = $contcase.pilaefi.removeLast();
 				backpatch(seg, $endcase.e);
@@ -407,129 +398,129 @@ sent[Deque<Integer> sents_seg]
 		generate(Instruction.OP.skip, null, null, efi.toString());
 	}
 	| WHILE
-	    {
-            try{
-                ts=ts.blockGoesDown();
-            } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
-            }
-            Tag ei = te.get(te.newTag(false));
-            generate(Instruction.OP.skip, null, null, ei.toString());
-        } expr BEGIN {
-            Tag eis = te.get(te.newTag(false));
-            generate(Instruction.OP.skip, null, null, eis.toString());
-        } decl* sents {
-            ts=ts.blockGoesUp();
-            backpatch($expr.cierto,eis);
-            backpatch($sent_seg,ei);
-            $sent_seg=$expr.falso;
-            generate(Instruction.OP.jump, null, null, ei.toString());
-        }
-	    END
+	  {
+      try{
+        ts = ts.blockGoesDown();
+      } catch(SymbolTable.SymbolTableException e) {
+        System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+      }
+      Tag ei = te.get(te.newTag(false));
+      generate(Instruction.OP.skip, null, null, ei.toString());
+    } expr BEGIN {
+      Tag eis = te.get(te.newTag(false));
+      generate(Instruction.OP.skip, null, null, eis.toString());
+    } decl* sents {
+      ts = ts.blockGoesUp();
+      backpatch($expr.true_, eis);
+      backpatch($sent_seg, ei);
+      $sent_seg = $expr.false_;
+      generate(Instruction.OP.jump, null, null, ei.toString());
+    }
+	  END
 	| DO
-	    {
-            try{
-                ts=ts.blockGoesDown();
-            } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
-            }
-	    }
-	    BEGIN
-	    {
-            Tag eis = te.get(te.newTag(false));
-            generate(Instruction.OP.skip, null, null, eis.toString());
-        }
-	    decl* sents
-	    {
-            ts=ts.blockGoesUp();
-        }
-	    END WHILE
-	    {
-            Tag ei = te.get(te.newTag(false));
-            generate(Instruction.OP.skip, null, null, ei.toString());
-	    }
-	    expr SEMI
-	    {
-            backpatch($expr.cierto, eis);
-            backpatch($sent_seg, ei);
-            $sent_seg=$expr.falso;
-            generate(Instruction.OP.jump, null, null, eis.toString());
-	    }
+	  {
+      try{
+        ts = ts.blockGoesDown();
+      } catch(SymbolTable.SymbolTableException e) {
+        System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+      }
+	  }
+	  BEGIN
+	  {
+      Tag eis = te.get(te.newTag(false));
+      generate(Instruction.OP.skip, null, null, eis.toString());
+    }
+	  decl* sents
+	  {
+      ts = ts.blockGoesUp();
+    }
+	  END WHILE
+	  {
+      Tag ei = te.get(te.newTag(false));
+      generate(Instruction.OP.skip, null, null, ei.toString());
+	  }
+	  expr SEMI
+	  {
+      backpatch($expr.true_, eis);
+      backpatch($sent_seg, ei);
+      $sent_seg = $expr.false_;
+      generate(Instruction.OP.jump, null, null, eis.toString());
+	  }
 	| RETURN expr SEMI {
-		if($expr.cierto!=null || $expr.falso!=null) {//cambiar
-			Tag ec=te.get(te.newTag(false));
-			Tag ef=te.get(te.newTag(false));
-			Tag efin=te.get(te.newTag(false));
+		if($expr.true_!= null || $expr.false_!= null) {//cambiar
+			Tag ec = te.get(te.newTag(false));
+			Tag ef = te.get(te.newTag(false));
+			Tag efin = te.get(te.newTag(false));
 			generate(Instruction.OP.skip, null, null, ec.toString());
-			generate(Instruction.OP.copy, "-1", null, $expr.r.toString());
-			$expr.r.setValue("-1");
+			generate(Instruction.OP.copy, "-1", null, $expr.variable.toString());
+			$expr.variable.setValue("-1");
 			generate(Instruction.OP.jump, null, null, efin.toString());
 			generate(Instruction.OP.skip, null, null, ef.toString());
-			generate(Instruction.OP.copy, "0", null, $expr.r.toString());
-			$expr.r.setValue("0");
+			generate(Instruction.OP.copy, "0", null, $expr.variable.toString());
+			$expr.variable.setValue("0");
 			generate(Instruction.OP.skip, null, null, efin.toString());
-			backpatch($expr.cierto,ec);
-			backpatch($expr.falso,ef);
+			backpatch($expr.true_, ec);
+			backpatch($expr.false_, ef);
 		}
-		generate(Instruction.OP.ret, $expr.r.toString(), null, pproc.peek().toString());
+		generate(Instruction.OP.ret, $expr.variable.toString(), null, pproc.peek().toString());
 	}
 	| RETURN SEMI {
 		generate(Instruction.OP.ret, null, null, pproc.peek().toString());
 	}
 	| referencia ASSIGN expr SEMI {
-		if($referencia.d!=null) {
-			if($referencia.datatypes==Symbol.DataTypes.BOOLEAN) {
-				Tag ec=te.get(te.newTag(false));
-				Tag ef=te.get(te.newTag(false));
-				Tag efin=te.get(te.newTag(false));
+		if($referencia.offset!= null) {
+			if($referencia.dataType == Symbol.DataTypes.BOOLEAN) {
+				Tag ec = te.get(te.newTag(false));
+				Tag ef = te.get(te.newTag(false));
+				Tag efin = te.get(te.newTag(false));
 				generate(Instruction.OP.skip, null, null, ec.toString());
-				generate(Instruction.OP.ind_ass, $referencia.d.toString(),"-1", $referencia.r.toString());
+				generate(Instruction.OP.ind_ass, $referencia.offset.toString(), "-1", $referencia.variable.toString());
 				generate(Instruction.OP.jump, null, null, efin.toString());
 				generate(Instruction.OP.skip, null, null, ef.toString());
-				generate(Instruction.OP.ind_ass, $referencia.d.toString(), "0", $referencia.r.toString());
+				generate(Instruction.OP.ind_ass, $referencia.offset.toString(), "0", $referencia.variable.toString());
 				generate(Instruction.OP.skip, null, null, efin.toString());
-				backpatch($expr.cierto,ec);
-				backpatch($expr.falso,ef);
+				backpatch($expr.true_, ec);
+				backpatch($expr.false_, ef);
 			} else {
-				generate(Instruction.OP.ind_ass, $referencia.d.toString(), $expr.r.toString(), $referencia.r.toString());
+				generate(Instruction.OP.ind_ass, $referencia.offset.toString(), $expr.variable.toString(), $referencia.variable.toString());
 			}
 		} else {
-			if($referencia.datatypes==Symbol.DataTypes.BOOLEAN) {
-				Tag ec=te.get(te.newTag(false));
-				Tag ef=te.get(te.newTag(false));
-				Tag efin=te.get(te.newTag(false));
+			if($referencia.dataType == Symbol.DataTypes.BOOLEAN) {
+				Tag ec = te.get(te.newTag(false));
+				Tag ef = te.get(te.newTag(false));
+				Tag efin = te.get(te.newTag(false));
 				generate(Instruction.OP.skip, null, null, ec.toString());
-				generate(Instruction.OP.copy, "-1", null, $referencia.r.toString());
+				generate(Instruction.OP.copy, "-1", null, $referencia.variable.toString());
 				generate(Instruction.OP.jump, null, null, efin.toString());
 				generate(Instruction.OP.skip, null, null, ef.toString());
-				generate(Instruction.OP.copy, "0", null, $referencia.r.toString());
+				generate(Instruction.OP.copy, "0", null, $referencia.variable.toString());
 				generate(Instruction.OP.skip, null, null, efin.toString());
-				backpatch($expr.cierto,ec);
-				backpatch($expr.falso,ef);
+				backpatch($expr.true_, ec);
+				backpatch($expr.false_, ef);
 			} else {
-				generate(Instruction.OP.copy, $expr.r.toString(), null, $referencia.r.toString());
+				generate(Instruction.OP.copy, $expr.variable.toString(), null, $referencia.variable.toString());
 			}
 		}
 	}
 	| referencia SEMI;
 
 contcase
-	returns[Variable r, boolean acababreak, Tag etest, Deque<Integer> pilaefi, Deque<Tag> pilasent, Deque<Integer> pilavar, Deque<Tag> pilacond, Deque<Tag> pilatest]
+	returns[Variable variable, boolean acababreak, Tag etest, Deque<Integer> pilaefi, Deque<Tag> pilasent, Deque<Integer> pilavar, Deque<Tag> pilacond, Deque<Tag> pilatest]
 		:
 	SWITCH expr BEGIN {
 		$etest = te.get(te.newTag(false));
 		generate(Instruction.OP.jump, null, null, $etest.toString());
-		$r = $expr.r;
+		$variable = $expr.variable;
 		$pilaefi = new ArrayDeque<>();
 		$pilasent = new ArrayDeque<Tag>();
 		$pilavar = new ArrayDeque<Integer>();
 		$pilacond = new ArrayDeque<Tag>();
 		$pilatest = new ArrayDeque<Tag>();
-	} contcase_[$r, true, $etest, $pilaefi, $pilasent, $pilavar, $pilacond, $pilatest] {
+	} contcase_[$variable, true, $etest, $pilaefi, $pilasent, $pilavar, $pilacond, $pilatest] {
 		$acababreak = $contcase_.acababreak;
 	};
 
-contcase_[Variable r, boolean acababreak1, Tag etest, Deque<Integer> pilaefi, Deque<Tag> pilasent, Deque<Integer> pilavar, Deque<Tag> pilacond, Deque<Tag> pilatest]
+contcase_[Variable variable, boolean acababreak1, Tag etest, Deque<Integer> pilaefi, Deque<Tag> pilasent, Deque<Integer> pilavar, Deque<Tag> pilacond, Deque<Tag> pilatest]
 	returns[boolean acababreak]:
 	caso {
 		if(!$acababreak1 && $pilaefi.size()>0) {
@@ -538,18 +529,18 @@ contcase_[Variable r, boolean acababreak1, Tag etest, Deque<Integer> pilaefi, De
 		}
 		$pilaefi.add($caso.seg);
 		$pilacond.add($caso.econd);
-		$pilavar.add($caso.r.nv());
+		$pilavar.add($caso.variable.nv());
 		$pilatest.add($caso.etest);
 		$pilasent.add($caso.esent);
-	} contcase_[$r, $caso.acababreak, $etest, $pilaefi, $pilasent, $pilavar, $pilacond, $pilatest] {
-		$acababreak=$contcase_.acababreak;
+	} contcase_[$variable, $caso.acababreak, $etest, $pilaefi, $pilasent, $pilavar, $pilacond, $pilatest] {
+		$acababreak = $contcase_.acababreak;
 	}
 	| {
-		$acababreak=$acababreak1;
+		$acababreak = $acababreak1;
 	}; // lambda
 
 caso
-	returns[Variable r, Tag econd, Tag etest, Tag esent, int seg, boolean acababreak]
+	returns[Variable variable, Tag econd, Tag etest, Tag esent, int seg, boolean acababreak]
 		:
 	CASE {
 		$econd = te.get(te.newTag(false));
@@ -560,13 +551,13 @@ caso
 		$esent = te.get(te.newTag(false));
 		generate(Instruction.OP.skip, null, null, $esent.toString());
 	} sents {
-		$acababreak=false;
+		$acababreak = false;
 	} (
 		BREAK SEMI {
-		$acababreak=true;
+		$acababreak = true;
 	}
 	)? {
-		$r = $expr.r;
+		$variable = $expr.variable;
 		generate(Instruction.OP.jump, null, null, null);
 		$seg = pc;
 	};
@@ -583,67 +574,67 @@ endcase
 	|; // lambda
 
 referencia
-	returns[Variable r, Variable d, Symbol.DataTypes datatypes]:
+	returns[Variable variable, Variable offset, Symbol.DataTypes dataType]:
 	ID {
-		Symbol s;
-		int t;
+		Symbol symbol;
+		int vn;
 		try {
-			s = ts.get($ID.getText());
-			if (s.getType() == Symbol.Types.CONST){
-				t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,s.dataType());
-				switch(s.dataType()) {
+			symbol = ts.get($ID.getText());
+			if (symbol.getType()  ==  Symbol.Types.CONST){
+				vn = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, symbol.dataType());
+				switch(symbol.dataType()) {
 					case BOOLEAN:
-						generate(Instruction.OP.copy, s.getValue(), null, tv.get(t).toString());
-						if(s.getValue().equals("true")){
-							tv.get(t).setValue("-1");
+						generate(Instruction.OP.copy, symbol.getValue(), null, tv.get(vn).toString());
+						if(symbol.getValue().equals("true")){
+							tv.get(vn).setValue("-1");
 						} else {
-							tv.get(t).setValue("0");
+							tv.get(vn).setValue("0");
 						}
 						break;
 					case INT:
-						generate(Instruction.OP.copy, s.getValue(), null, tv.get(t).toString());
-						tv.get(t).setValue(s.getValue());
+						generate(Instruction.OP.copy, symbol.getValue(), null, tv.get(vn).toString());
+						tv.get(vn).setValue(symbol.getValue());
 						break;
 					case STRING:
-						generate(Instruction.OP.copy, tv.get(s.getVariableNumber()).toString(), null, tv.get(t).toString());
-						tv.get(t).setValue(s.getValue());
+						generate(Instruction.OP.copy, tv.get(symbol.getVariableNumber()).toString(), null, tv.get(vn).toString());
+						tv.get(vn).setValue(symbol.getValue());
 						break;
 				}
-				$r = tv.get(t);
+				$variable = tv.get(vn);
 			} else {
-				$r = tv.get(s.getVariableNumber());
+				$variable = tv.get(symbol.getVariableNumber());
 			}
-			$datatypes=s.dataType();
+			$dataType = symbol.dataType();
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
 	}
 	| idx RBRACK {
 		Variable t2;
-		String nbytes = String.valueOf($idx.dt.getItemSize());
-		if($idx.dt.getOffset()==0) {
+		String nbytes = String.valueOf($idx.table.getItemSize());
+		if($idx.table.getOffset() == 0) {
 			t2 = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-			generate(Instruction.OP.mult, $idx.d.toString(), nbytes, t2.toString());
+			generate(Instruction.OP.mult, $idx.offset.toString(), nbytes, t2.toString());
 		} else {
-			String b = String.valueOf($idx.dt.getOffset());
+			String tableOffsetComp = String.valueOf($idx.table.getOffset());
 			Variable t1 = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-			generate(Instruction.OP.sub, $idx.d.toString(), b, t1.toString());
+			generate(Instruction.OP.sub, $idx.offset.toString(), tableOffsetComp, t1.toString());
 			t2 = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
 			generate(Instruction.OP.mult, t1.toString(), nbytes, t2.toString());
 		}
-		$r = $idx.r;
-		$d = t2;
+		$variable = $idx.variable;
+		$offset = t2;
 	}
 	| ID LPAREN RPAREN {
-		Symbol s;
+		Symbol symbol;
 		int t;
 		try {
-			s = ts.get($ID.getText());
-			generate(Instruction.OP.call, null, null, s.getProcedure().toString());
-			if(s.getType()==Symbol.Types.FUNC) {
-				t = tv.newVar(true, pproc.peek(),Symbol.Types.VAR,s.dataType());
-				$r = tv.get(t);
-				$datatypes=s.dataType();
+			symbol = ts.get($ID.getText());
+			generate(Instruction.OP.call, null, null, symbol.getProcedure().toString());
+			if(symbol.getType()  ==  Symbol.Types.FUNC) {
+				t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, symbol.dataType());
+				$variable = tv.get(t);
+				$dataType = symbol.dataType();
 				generate(Instruction.OP.st, null, null, tv.get(t).toString());
 			}
 		} catch(SymbolTable.SymbolTableException e) {
@@ -652,72 +643,74 @@ referencia
 	}
 	| contIdx RPAREN {
 		int t;
-		while($contIdx.pparams.size()>0)
-		generate(Instruction.OP.params, null, null, $contIdx.pparams.pop().toString());
-		generate(Instruction.OP.call, null, null, $contIdx.met.toString());
-		if($contIdx.s.getType()==Symbol.Types.FUNC) {
-			t = tv.newVar(true, pproc.peek(),Symbol.Types.VAR,$contIdx.s.dataType());
-			$r = tv.get(t);
-			$datatypes = $contIdx.s.dataType();
+		while($contIdx.pparams.size() > 0)
+		{
+		  Variable parameter = $contIdx.pparams.pop();
+		  generate(Instruction.OP.params, null, null, parameter.toString());
+    }
+		generate(Instruction.OP.call, null, null, $contIdx.procedure.toString());
+		if($contIdx.symbol.getType()  ==  Symbol.Types.FUNC) {
+			t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, $contIdx.symbol.dataType());
+			$variable = tv.get(t);
+			$dataType = $contIdx.symbol.dataType();
 			generate(Instruction.OP.st, null, null, tv.get(t).toString());
 		}
 	};
 
 idx
-	returns[Table dt, Variable r, Variable d]:
+	returns[Table table, Variable variable, Variable offset]:
 	ID LBRACK expr {
-		Symbol dv = null;
+		Symbol symbol = null;
 		try {
-			dv = ts.get($ID.getText());
+			symbol = ts.get($ID.getText());
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 		}
-		$dt = dv.getTable();
-		Index idx = $dt.getFirst();
-		$r = tv.get(dv.getVariableNumber());
-		Variable d = $expr.r;
-	} idx_[idx, d] {
-		$d = $idx_.d;
+		$table = symbol.getTable();
+		Index idx = $table.getFirst();
+		$variable = tv.get(symbol.getVariableNumber());
+		Variable offset = $expr.variable;
+	} idx_[idx, offset] {
+		$offset = $idx_.offset;
 	};
 
-idx_[Index idx1, Variable d1]
-	returns[Variable d]:
+idx_[Index idx1, Variable offset1]
+	returns[Variable offset]:
 	RBRACK LBRACK expr {
 		Index idx = idx1.getNextIndex();
 		Variable t1 = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-		generate(Instruction.OP.mult, $d1.toString(), String.valueOf(idx.d()), t1.toString());
+		generate(Instruction.OP.mult, $offset1.toString(), String.valueOf(idx.getDimension()), t1.toString());
 		Variable t2 = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-		generate(Instruction.OP.add, t1.toString(), $expr.r.toString(), t2.toString());
+		generate(Instruction.OP.add, t1.toString(), $expr.variable.toString(), t2.toString());
 	} idx_[idx, t2] {
-		$d=$idx_.d;
+		$offset = $idx_.offset;
 	}
 	| {
-		$d=$d1; // Devuelve la misma variable que recibe
+		$offset = $offset1; // Devuelve la misma variable que recibe
 	};
 
 contIdx
-	returns[Deque<Variable> pparams, Procedure met, Symbol s]:
+	returns[Deque<Variable> pparams, Procedure procedure, Symbol symbol]:
 	ID LPAREN expr {
-		Symbol s=new Symbol();
+		Symbol symbol = new Symbol();
 		$pparams = new ArrayDeque<Variable>();
 		try {
-			s = ts.get($ID.getText());
-			$s = s;
-			$met = s.getProcedure();
-			$pparams.push($expr.r);
-			// Boolean parámetro
-			if($expr.cierto!=null || $expr.falso!=null) {
-				Tag ec=te.get(te.newTag(false));
-				Tag ef=te.get(te.newTag(false));
-				Tag efin=te.get(te.newTag(false));
+			symbol = ts.get($ID.getText());
+			$symbol = symbol;
+			$procedure = symbol.getProcedure();
+			$pparams.push($expr.variable);
+			if($expr.true_ != null || $expr.false_ != null) { // Booleano
+				Tag ec = te.get(te.newTag(false));
+				Tag ef = te.get(te.newTag(false));
+				Tag efin = te.get(te.newTag(false));
 				generate(Instruction.OP.skip, null, null, ec.toString());
-				generate(Instruction.OP.copy, "-1", null, $expr.r.toString());
+				generate(Instruction.OP.copy, "-1", null, $expr.variable.toString());
 				generate(Instruction.OP.jump, null, null, efin.toString());
 				generate(Instruction.OP.skip, null, null, ef.toString());
-				generate(Instruction.OP.copy, "0", null, $expr.r.toString());
+				generate(Instruction.OP.copy, "0", null, $expr.variable.toString());
 				generate(Instruction.OP.skip, null, null, efin.toString());
-				backpatch($expr.cierto,ec);
-				backpatch($expr.falso,ef);
+				backpatch($expr.true_, ec);
+				backpatch($expr.false_, ef);
 			}
 		} catch(SymbolTable.SymbolTableException e) {
 			System.out.println("Error con la tabla de símbolos: "+e.getMessage());
@@ -726,341 +719,334 @@ contIdx
 
 contIdx_[Deque<Variable> pparams]:
 	COMMA expr {
-		$pparams.push($expr.r);
-		// Boolean parámetro
-		if($expr.cierto!=null || $expr.falso!=null) {
-			Tag ec=te.get(te.newTag(false));
-			Tag ef=te.get(te.newTag(false));
-			Tag efin=te.get(te.newTag(false));
+		$pparams.push($expr.variable);
+		if($expr.true_ != null || $expr.false_ != null) { // Boolean
+			Tag ec = te.get(te.newTag(false));
+			Tag ef = te.get(te.newTag(false));
+			Tag efin = te.get(te.newTag(false));
 			generate(Instruction.OP.skip, null, null, ec.toString());
-			generate(Instruction.OP.copy, "-1", null, $expr.r.toString());
+			generate(Instruction.OP.copy, "-1", null, $expr.variable.toString());
 			generate(Instruction.OP.jump, null, null, efin.toString());
 			generate(Instruction.OP.skip, null, null, ef.toString());
-			generate(Instruction.OP.copy, "0", null, $expr.r.toString());
+			generate(Instruction.OP.copy, "0", null, $expr.variable.toString());
 			generate(Instruction.OP.skip, null, null, efin.toString());
-			backpatch($expr.cierto,ec);
-			backpatch($expr.falso,ef);
+      backpatch($expr.true_, ec);
+      backpatch($expr.false_, ef);
 		}
 	} contIdx_[$pparams]
 	|; // lambda
 
 expr
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	exprOr {
-		$r=$exprOr.r;
-		$cierto=$exprOr.cierto;
-		$falso=$exprOr.falso;
+		$variable = $exprOr.variable;
+		$true_ = $exprOr.true_;
+		$false_ = $exprOr.false_;
 	};
 
-// Expresión de OR
 exprOr
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	exprAnd {
-		$r=$exprAnd.r;
-		$cierto=$exprAnd.cierto;
-		$falso=$exprAnd.falso;
-	} exprOr_[$r,$cierto,$falso] {
-		if($exprOr_.cierto!=null || $exprOr_.falso!=null) {
-			$r = $exprOr_.r;
-			$cierto=$exprOr_.cierto;
-			$falso=$exprOr_.falso;
+		$variable = $exprAnd.variable;
+		$true_ = $exprAnd.true_;
+		$false_ = $exprAnd.false_;
+	} exprOr_[$variable, $true_, $false_] {
+		if($exprOr_.true_ != null || $exprOr_.false_ != null) {
+			$variable = $exprOr_.variable;
+			$true_ = $exprOr_.true_;
+			$false_ = $exprOr_.false_;
 		}
 	};
 
-exprOr_[Variable t1, Deque<Integer> cierto1, Deque<Integer> falso1]
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+exprOr_[Variable variable1, Deque<Integer> true_1, Deque<Integer> false_1]
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	OR {
 		Tag e = te.get(te.newTag(false));
 		generate(Instruction.OP.skip, null, null, e.toString());
 	} exprAnd {
-		backpatch($falso1, e);
-		$cierto = concat($cierto1, $exprAnd.cierto);
-		$falso = $exprAnd.falso;
-	} exprOr_[$r,$cierto,$falso]{
-		if($exprOr_.cierto!=null || $exprOr_.falso!=null) {
-			$r = $exprOr_.r;
-			$cierto=$exprOr_.cierto;
-			$falso=$exprOr_.falso;
+		backpatch($false_1, e);
+		$true_ = concat($true_1, $exprAnd.true_);
+		$false_ = $exprAnd.false_;
+	} exprOr_[$variable, $true_, $false_]{
+		if($exprOr_.true_!= null || $exprOr_.false_!= null) {
+			$variable = $exprOr_.variable;
+			$true_ = $exprOr_.true_;
+			$false_ = $exprOr_.false_;
 		}
 	}
 	|; //lambda
 
-// Expresión de AND
 exprAnd
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	exprNot {
-		$r=$exprNot.r;
-		$cierto=$exprNot.cierto;
-		$falso=$exprNot.falso;
-	} exprAnd_[$r,$cierto,$falso] {
-		if($exprAnd_.cierto!=null || $exprAnd_.falso!=null) {
-			$r = $exprAnd_.r;
-			$cierto=$exprAnd_.cierto;
-			$falso=$exprAnd_.falso;
+		$variable = $exprNot.variable;
+		$true_ = $exprNot.true_;
+		$false_ = $exprNot.false_;
+	} exprAnd_[$variable, $true_, $false_] {
+		if($exprAnd_.true_!= null || $exprAnd_.false_!= null) {
+			$variable = $exprAnd_.variable;
+			$true_ = $exprAnd_.true_;
+			$false_ = $exprAnd_.false_;
 		}
 	};
 
-exprAnd_[Variable t1, Deque<Integer> cierto1, Deque<Integer> falso1]
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+exprAnd_[Variable variable1, Deque<Integer> true_1, Deque<Integer> false_1]
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	AND {
 		Tag e = te.get(te.newTag(false));
 		generate(Instruction.OP.skip, null, null, e.toString());
 	} exprNot {
-		backpatch($cierto1, e);
-		$falso = concat($falso1, $exprNot.falso);
-		$cierto = $exprNot.cierto;
-	} exprAnd_[$r, $cierto, $falso]{
-		if($exprAnd_.cierto!=null || $exprAnd_.falso!=null) {
-			$r = $exprAnd_.r;
-			$cierto=$exprAnd_.cierto;
-			$falso=$exprAnd_.falso;
+		backpatch($true_1, e);
+		$false_ = concat($false_1, $exprNot.false_);
+		$true_ = $exprNot.true_;
+	} exprAnd_[$variable, $true_, $false_]{
+		if($exprAnd_.true_ != null || $exprAnd_.false_ != null) {
+			$variable = $exprAnd_.variable;
+			$true_ = $exprAnd_.true_;
+			$false_ = $exprAnd_.false_;
 		}
 	}
 	|; //lambda
 
-// Expresión de NOT
 exprNot
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	NOT exprComp {
-		$cierto=$exprComp.falso;
-		$falso=$exprComp.cierto;
-		$r=$exprComp.r;
+		$true_ = $exprComp.false_;
+		$false_ = $exprComp.true_;
+		$variable = $exprComp.variable;
 	}
 	| exprComp {
-		$cierto=$exprComp.cierto;
-		$falso=$exprComp.falso;
-		$r=$exprComp.r;
+		$true_ = $exprComp.true_;
+		$false_ = $exprComp.false_;
+		$variable = $exprComp.variable;
 	};
 
 // Expresión comparativa
 exprComp
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	exprAdd {
-		$r=$exprAdd.r;
-		$cierto=$exprAdd.cierto;
-		$falso=$exprAdd.falso;
-	} exprComp_[$r]{
-		if($exprComp_.cierto!=null || $exprComp_.falso!=null) {
-			$cierto=$exprComp_.cierto;
-			$falso=$exprComp_.falso;
+		$variable = $exprAdd.variable;
+		$true_ = $exprAdd.true_;
+		$false_ = $exprAdd.false_;
+	} exprComp_[$variable]{
+		if($exprComp_.true_!= null || $exprComp_.false_!= null) {
+			$true_ = $exprComp_.true_;
+			$false_ = $exprComp_.false_;
 		}
 	};
 
-exprComp_[Variable t1]
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+exprComp_[Variable e1]
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	OPREL exprAdd {
-		generate(condJumpValue($OPREL.getText()), $t1.toString(), $exprAdd.r.toString(), null);
-		$cierto=new ArrayDeque<Integer>();
- 		$cierto.add(pc);
+		generate(condJumpValue($OPREL.getText()), $e1.toString(), $exprAdd.variable.toString(), null);
+		$true_ = new ArrayDeque<Integer>();
+ 		$true_.add(pc);
 		generate(Instruction.OP.jump, null, null, null);
-		$falso=new ArrayDeque<Integer>();
- 		$falso.add(pc);
-		$r = $exprAdd.r;
-    }
+		$false_ = new ArrayDeque<Integer>();
+ 		$false_.add(pc);
+		$variable = $exprAdd.variable;
+  }
 	//exprComp_
 	|; //lambda
 
-// Expresión aditiva
 exprAdd
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	exprMult {
-		$r = $exprMult.r;
-		$cierto=$exprMult.cierto;
-		$falso=$exprMult.falso;
-	} exprAdd_[$r] {
-		if($exprAdd_.cierto!=null || $exprAdd_.falso!=null || $exprAdd_.r!=null) {
-			$r=$exprAdd_.r;
-			$cierto=$exprAdd_.cierto;
-			$falso=$exprAdd_.falso;
+		$variable = $exprMult.variable;
+		$true_ = $exprMult.true_;
+		$false_ = $exprMult.false_;
+	} exprAdd_[$variable] {
+		if($exprAdd_.true_!= null || $exprAdd_.false_!= null || $exprAdd_.variable!= null) {
+			$variable = $exprAdd_.variable;
+			$true_ = $exprAdd_.true_;
+			$false_ = $exprAdd_.false_;
 		}
 	};
 
 exprAdd_[Variable t1]
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer falso>]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	ADD exprMult {
-		int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-		generate(Instruction.OP.add, $t1.toString(), $exprMult.r.toString(), tv.get(t).toString());
-		$r=tv.get(t);
-		$cierto=$exprMult.cierto;
-		$falso=$exprMult.falso;
-	} exprAdd_[$r] {
-		if($exprAdd_.r!=null || $exprAdd_.cierto!=null || $exprAdd_.falso!=null) {
-			$r=$exprAdd_.r;
-			$cierto=$exprAdd_.cierto;
-			$falso=$exprAdd_.falso;
+		int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+		generate(Instruction.OP.add, $t1.toString(), $exprMult.variable.toString(), tv.get(t).toString());
+		$variable = tv.get(t);
+		$true_ = $exprMult.true_;
+		$false_ = $exprMult.false_;
+	} exprAdd_[$variable] {
+		if($exprAdd_.variable!= null || $exprAdd_.true_!= null || $exprAdd_.false_!= null) {
+			$variable = $exprAdd_.variable;
+			$true_ = $exprAdd_.true_;
+			$false_ = $exprAdd_.false_;
 		}
 	}
 	| SUB exprMult {
-		int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-		generate(Instruction.OP.sub, $t1.toString(), $exprMult.r.toString(), tv.get(t).toString());
-		$r=tv.get(t);
-		$cierto=$exprMult.cierto;
-		$falso=$exprMult.falso;
-	} exprAdd_[$r] {
-		if($exprAdd_.r!=null || $exprAdd_.cierto!=null || $exprAdd_.falso!=null) {
-			$r=$exprAdd_.r;
-			$cierto=$exprAdd_.cierto;
-			$falso=$exprAdd_.falso;
+		int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+		generate(Instruction.OP.sub, $t1.toString(), $exprMult.variable.toString(), tv.get(t).toString());
+		$variable = tv.get(t);
+		$true_ = $exprMult.true_;
+		$false_ = $exprMult.false_;
+	} exprAdd_[$variable] {
+		if($exprAdd_.variable!= null || $exprAdd_.true_!= null || $exprAdd_.false_!= null) {
+			$variable = $exprAdd_.variable;
+			$true_ = $exprAdd_.true_;
+			$false_ = $exprAdd_.false_;
 		}
 	}
 	|; //lambda
 
-// Expresión multiplicativa
 exprMult
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	exprNeg {
-		$r = $exprNeg.r;
-		$cierto=$exprNeg.cierto;
-		$falso=$exprNeg.falso;
-	} exprMult_[$r] {
-		if($exprMult_.r!=null || $exprMult_.cierto!=null || $exprMult_.falso!=null) {
-			$r=$exprMult_.r;
-			$cierto=$exprMult_.cierto;
-			$falso=$exprMult_.falso;
+		$variable = $exprNeg.variable;
+		$true_ = $exprNeg.true_;
+		$false_ = $exprNeg.false_;
+	} exprMult_[$variable] {
+		if($exprMult_.variable!= null || $exprMult_.true_!= null || $exprMult_.false_!= null) {
+			$variable = $exprMult_.variable;
+			$true_ = $exprMult_.true_;
+			$false_ = $exprMult_.false_;
 		}
 	};
 
 exprMult_[Variable t1]
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	MULT exprNeg {
-		int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-		generate(Instruction.OP.mult, $t1.toString(), $exprNeg.r.toString(), tv.get(t).toString());
-		$r=tv.get(t);
-		$cierto=$exprNeg.cierto;
-		$falso=$exprNeg.falso;
-	} exprMult_[$r] {
-		if($exprMult_.r!=null || $exprMult_.cierto!=null || $exprMult_.falso!=null) {
-			$r=$exprMult_.r;
-			$cierto=$exprMult_.cierto;
-			$falso=$exprMult_.falso;
+		int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+		generate(Instruction.OP.mult, $t1.toString(), $exprNeg.variable.toString(), tv.get(t).toString());
+		$variable = tv.get(t);
+		$true_ = $exprNeg.true_;
+		$false_ = $exprNeg.false_;
+	} exprMult_[$variable] {
+		if($exprMult_.variable!= null || $exprMult_.true_!= null || $exprMult_.false_!= null) {
+			$variable = $exprMult_.variable;
+			$true_ = $exprMult_.true_;
+			$false_ = $exprMult_.false_;
 		}
 	}
 	| DIV exprNeg {
-		int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-		generate(Instruction.OP.div, $t1.toString(), $exprNeg.r.toString(), tv.get(t).toString());
-		$r=tv.get(t);
-		$cierto=$exprNeg.cierto;
-		$falso=$exprNeg.falso;
-	} exprMult_[$r] {
-		if($exprMult_.r!=null || $exprMult_.cierto!=null || $exprMult_.falso!=null) {
-			$r=$exprMult_.r;
-			$cierto=$exprMult_.cierto;
-			$falso=$exprMult_.falso;
+		int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+		generate(Instruction.OP.div, $t1.toString(), $exprNeg.variable.toString(), tv.get(t).toString());
+		$variable = tv.get(t);
+		$true_ = $exprNeg.true_;
+		$false_ = $exprNeg.false_;
+	} exprMult_[$variable] {
+		if($exprMult_.variable!= null || $exprMult_.true_!= null || $exprMult_.false_!= null) {
+			$variable = $exprMult_.variable;
+			$true_ = $exprMult_.true_;
+			$false_ = $exprMult_.false_;
 		}
 	}
 	| MOD exprNeg{
-		int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-		generate(Instruction.OP.mod, $t1.toString(), $exprNeg.r.toString(), tv.get(t).toString());
-		$r=tv.get(t);
-		$cierto=$exprNeg.cierto;
-		$falso=$exprNeg.falso;
-	} exprMult_[$r] {
-		if($exprMult_.r!=null || $exprMult_.cierto!=null || $exprMult_.falso!=null) {
-			$r=$exprMult_.r;
-			$cierto=$exprMult_.cierto;
-			$falso=$exprMult_.falso;
+		int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+		generate(Instruction.OP.mod, $t1.toString(), $exprNeg.variable.toString(), tv.get(t).toString());
+		$variable = tv.get(t);
+		$true_ = $exprNeg.true_;
+		$false_ = $exprNeg.false_;
+	} exprMult_[$variable] {
+		if($exprMult_.variable!= null || $exprMult_.true_!= null || $exprMult_.false_!= null) {
+			$variable = $exprMult_.variable;
+			$true_ = $exprMult_.true_;
+			$false_ = $exprMult_.false_;
 		}
 	}
 	|; //lambda
 
-// Expresión de negación
 exprNeg
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	SUB primario {
-		int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-		generate(Instruction.OP.neg, $primario.r.toString(), null, tv.get(t).toString());
-		$r = tv.get(t);
-		$cierto = $primario.cierto;
-		$falso = $primario.falso;
+		int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+		generate(Instruction.OP.neg, $primario.variable.toString(), null, tv.get(t).toString());
+		$variable = tv.get(t);
+		$true_ = $primario.true_;
+		$false_ = $primario.false_;
 	}
 	| primario {
-		$r = $primario.r;
-		$cierto = $primario.cierto;
-		$falso = $primario.falso;
+		$variable = $primario.variable;
+		$true_ = $primario.true_;
+		$false_ = $primario.false_;
 	};
 
 primario
-	returns[Variable r, Deque<Integer> cierto, Deque<Integer> falso]:
+	returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	LPAREN expr RPAREN {
-		$r = $expr.r;
-		$cierto = $expr.cierto;
-		$falso = $expr.falso;
+		$variable = $expr.variable;
+		$true_ = $expr.true_;
+		$false_ = $expr.false_;
 	}
 	| referencia {
-		if($referencia.d!=null) {
+		if($referencia.offset!= null) {
 			// Caso para cuando hay desplazamiento
 			Variable t = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-			generate(Instruction.OP.ind_val, $referencia.r.toString(), $referencia.d.toString(), t.toString());
-			$r = t;
+			generate(Instruction.OP.ind_val, $referencia.variable.toString(), $referencia.offset.toString(), t.toString());
+			$variable = t;
 		} else {
-			$r = $referencia.r;
+			$variable = $referencia.variable;
 		}
-		if($referencia.datatypes==Symbol.DataTypes.BOOLEAN) {
-			generate(Instruction.OP.ifEQ, $r.toString(), "-1", null);
-			$cierto=new ArrayDeque<Integer>();
-			$cierto.add(pc);
+		if($referencia.dataType == Symbol.DataTypes.BOOLEAN) {
+			generate(Instruction.OP.ifEQ, $variable.toString(), "-1", null);
+			$true_ = new ArrayDeque<Integer>();
+			$true_.add(pc);
 			generate(Instruction.OP.jump, null, null, null);
-			$falso=new ArrayDeque<Integer>();
-			$falso.add(pc);
+			$false_ = new ArrayDeque<Integer>();
+			$false_.add(pc);
 		}
 	}
 	| literal {
-		int t=0;
+		int t = 0;
 		switch($literal.datatypes) {
 			case BOOLEAN:
-				t = tv.newVar(true,pproc.peek(), Symbol.Types.VAR,Symbol.DataTypes.BOOLEAN);
+				t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.BOOLEAN);
 				if($literal.text.equals("true")) {
 					generate(Instruction.OP.copy, "-1", null, tv.get(t).toString());
 					tv.get(t).setValue("-1");
 					generate(Instruction.OP.jump, null, null, null);
-					$cierto=new ArrayDeque<Integer>();
-					$cierto.add(pc);
-					$falso = null;
+					$true_ = new ArrayDeque<Integer>();
+					$true_.add(pc);
+					$false_ = null;
 				} else {
 					generate(Instruction.OP.copy, "0", null, tv.get(t).toString());
 					tv.get(t).setValue("0");
 					generate(Instruction.OP.jump, null, null, null);
-					$falso=new ArrayDeque<Integer>();
-					$falso.add(pc);
-					$cierto = null;
+					$false_ = new ArrayDeque<Integer>();
+					$false_.add(pc);
+					$true_ = null;
 				}
 				break;
 			case STRING:
-				t = tv.newVar(true,pproc.peek(), Symbol.Types.CONST,Symbol.DataTypes.STRING);
+				t = tv.newVar(true, pproc.peek(), Symbol.Types.CONST, Symbol.DataTypes.STRING);
 				tv.get(t).setValue($literal.text);
 				break;
 			case INT:
-				t = tv.newVar(true,pproc.peek(), Symbol.Types.VAR,Symbol.DataTypes.INT);
+				t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
 				generate(Instruction.OP.copy, $literal.text, null, tv.get(t).toString());
 				tv.get(t).setValue($literal.text);
 				break;
 			default:
 				break;
 		}
-		$r = tv.get(t);
+		$variable = tv.get(t);
 	};
 
 tipo
 	returns[Symbol.DataTypes datatypes]:
 	INTEGER {
-		$datatypes=Symbol.DataTypes.INT;
+		$datatypes = Symbol.DataTypes.INT;
 	}
 	| BOOLEAN {
-		$datatypes=Symbol.DataTypes.BOOLEAN;
+		$datatypes = Symbol.DataTypes.BOOLEAN;
 	}
 	| STRING {
-		$datatypes=Symbol.DataTypes.STRING;
+		$datatypes = Symbol.DataTypes.STRING;
 	};
 
 literal
 	returns[Symbol.DataTypes datatypes]:
 	LiteralInteger {
-		$datatypes=Symbol.DataTypes.INT;
+		$datatypes = Symbol.DataTypes.INT;
 	}
 	| LiteralBoolean {
-		$datatypes=Symbol.DataTypes.BOOLEAN;
+		$datatypes = Symbol.DataTypes.BOOLEAN;
 	}
 	| LiteralString {
-		$datatypes=Symbol.DataTypes.STRING;
+		$datatypes = Symbol.DataTypes.STRING;
 	};
 

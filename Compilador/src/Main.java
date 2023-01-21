@@ -79,7 +79,7 @@ public class Main {
         Optimizer optimizer = new Optimizer(buildPath + filename + "_OPT", parserC3D.getC3D(),
                 parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
         optimizer.optimize();
-        //optimizer.getTv().HTMLTable(buildPath + "/tablavariables_OPT.html");
+        //optimizer.getTv().HTMLTable(buildPath + "/tablavariables_OPT.html");//TODO: pasar este método al main 
         // Ensamblado de código optimizado
         Assembler optimized = new Assembler(buildPath + filename + "_OPT",
                 optimizer.getC3D(), optimizer.getTv(), optimizer.getTp(),

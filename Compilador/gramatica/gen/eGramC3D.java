@@ -27,9 +27,9 @@ public class eGramC3D extends Parser {
 		STRING=8, WHILE=9, DO=10, IF=11, ELSE=12, SWITCH=13, CASE=14, DEFAULT=15, 
 		BREAK=16, LiteralInteger=17, LiteralBoolean=18, LiteralString=19, LPAREN=20, 
 		RPAREN=21, LBRACK=22, RBRACK=23, BEGIN=24, END=25, COMMA=26, SEMI=27, 
-		COLON=28, DOUBLEDOT=29, OPREL=30, ASSIGN=31, EQUAL=32, NOTEQUAL=33, GT=34, 
-		LT=35, ADD=36, SUB=37, MULT=38, DIV=39, MOD=40, AND=41, OR=42, NOT=43, 
-		ID=44, WS=45, BLOCK_COMMENT=46, LINE_COMMENT=47;
+		COLON=28, DOUBLEDOT=29, OPREL=30, ASSIGN=31, EQUAL=32, GT=33, LT=34, ADD=35, 
+		SUB=36, MULT=37, DIV=38, MOD=39, AND=40, OR=41, NOT=42, ID=43, WS=44, 
+		BLOCK_COMMENT=45, LINE_COMMENT=46;
 	public static final int
 		RULE_program = 0, RULE_main = 1, RULE_decl = 2, RULE_declArray = 3, RULE_declArray_ = 4, 
 		RULE_numero = 5, RULE_encabezado = 6, RULE_parametros = 7, RULE_parametro = 8, 
@@ -58,8 +58,7 @@ public class eGramC3D extends Parser {
 			"'logico'", "'palabra'", "'mientras'", "'hacer'", "'si'", "'sino'", "'switch'", 
 			"'case'", "'default'", "'break'", null, null, null, "'('", "')'", "'['", 
 			"']'", "'{'", "'}'", "','", "';'", "':'", "'..'", null, "'='", "'=='", 
-			"'!='", "'>'", "'<'", "'+'", "'-'", "'*'", "'/'", "'%'", "'&&'", "'||'", 
-			"'!'"
+			"'>'", "'<'", "'+'", "'-'", "'*'", "'/'", "'%'", "'&&'", "'||'", "'!'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -69,9 +68,8 @@ public class eGramC3D extends Parser {
 			"BOOLEAN", "STRING", "WHILE", "DO", "IF", "ELSE", "SWITCH", "CASE", "DEFAULT", 
 			"BREAK", "LiteralInteger", "LiteralBoolean", "LiteralString", "LPAREN", 
 			"RPAREN", "LBRACK", "RBRACK", "BEGIN", "END", "COMMA", "SEMI", "COLON", 
-			"DOUBLEDOT", "OPREL", "ASSIGN", "EQUAL", "NOTEQUAL", "GT", "LT", "ADD", 
-			"SUB", "MULT", "DIV", "MOD", "AND", "OR", "NOT", "ID", "WS", "BLOCK_COMMENT", 
-			"LINE_COMMENT"
+			"DOUBLEDOT", "OPREL", "ASSIGN", "EQUAL", "GT", "LT", "ADD", "SUB", "MULT", 
+			"DIV", "MOD", "AND", "OR", "NOT", "ID", "WS", "BLOCK_COMMENT", "LINE_COMMENT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -121,7 +119,7 @@ public class eGramC3D extends Parser {
 	public ATN getATN() { return _ATN; }
 
 
-	private Deque<Integer> pproc=new ArrayDeque<Integer>(); // Pila de procedimientos
+	private Deque<Integer> pproc = new ArrayDeque<Integer>(); // Pila de procedimientos
 	private SymbolTable ts;
 	private VariablesTable tv;
 	private ProceduresTable tp;
@@ -129,30 +127,30 @@ public class eGramC3D extends Parser {
 	private String directory;
 	private ArrayList<Instruction> C3D;
 	private int pc = 0; // program counter
-	private int depth=0;
+	private int depth = 0;
 
 	public eGramC3D(TokenStream input, String directory, SymbolTable ts){
 		this(input);
-		this.directory=directory;
-		this.ts=ts;
+		this.directory = directory;
+		this.ts = ts;
 		this.C3D = new ArrayList<Instruction>();
-		this.tv= new VariablesTable(directory);
-		this.tp= new ProceduresTable();
+		this.tv = new VariablesTable(directory);
+		this.tp = new ProceduresTable();
 		this.te = new TagsTable();
 	}
 
 	public void generate(Instruction.OP code, String op1, String op2, String destination){
 		pc++;
-		if(code==Instruction.OP.skip) {
+		if(code == Instruction.OP.skip) {
 			te.get(destination).setLine(pc);
 		}
 		C3D.add(new Instruction(code, op1, op2, destination));
 	}
 
 	public void backpatch(Deque<Integer> list, Tag e){
-		if(list!=null) {
+		if(list!= null) {
 			while(list.size()>0) {
-				int instruction=list.remove()-1;
+				int instruction = list.remove()-1;
 				C3D.get(instruction).setTag(e.toString());
 			}
 		}
@@ -163,9 +161,9 @@ public class eGramC3D extends Parser {
 	}
 
 	public Deque<Integer> concat(Deque<Integer> dq1, Deque<Integer> dq2){
-		if(dq1==null) {
+		if(dq1 == null) {
 			return dq2;
-		} else if(dq2!=null) {
+		} else if(dq2!= null) {
 			while(dq2.size()>0) {
 				dq1.add(dq2.removeFirst());
 			}
@@ -179,20 +177,11 @@ public class eGramC3D extends Parser {
 			case "==":
 				op = Instruction.OP.ifEQ;
 				break;
-			case "!=":
-				op = Instruction.OP.ifNE;
-				break;
 			case "<":
 				op = Instruction.OP.ifLT;
 				break;
 			case ">":
 				op = Instruction.OP.ifGT;
-				break;
-			case ">=":
-				op = Instruction.OP.ifGE;
-				break;
-			case "<=":
-				op = Instruction.OP.ifLE;
 				break;
 		}
 		return op;
@@ -263,23 +252,23 @@ public class eGramC3D extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 
-			            // Poner los métodos de IO en la tabla de procedimientos
-			            Symbol s;
-			            try{
-			                // Operación de entrada
-			                s=ts.get("read");
-			                s.setProcedure(tp.newProc(depth,s.getType(),"read"));
-			                // Operaciones de salida
-			                s=ts.get("printb");
-			                s.setProcedure(tp.newProc(depth,s.getType(),"printb"));
-			                s=ts.get("printi");
-			                s.setProcedure(tp.newProc(depth,s.getType(),"printi"));
-			                s=ts.get("prints");
-			                s.setProcedure(tp.newProc(depth,s.getType(),"prints"));
-			            } catch(SymbolTable.SymbolTableException e) {
-			                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
-			            }
-			        
+			      // Poner los métodos de IO en la tabla de procedimientos
+			      Symbol symbol;
+			      try{
+			        // Operación de entrada
+			        symbol = ts.get("read");
+			        symbol.setProcedure(tp.newProc(depth, symbol.getType(), "read"));
+			        // Operaciones de salida
+			        symbol = ts.get("printb");
+			        symbol.setProcedure(tp.newProc(depth, symbol.getType(), "printb"));
+			        symbol = ts.get("printi");
+			        symbol.setProcedure(tp.newProc(depth, symbol.getType(), "printi"));
+			        symbol = ts.get("prints");
+			        symbol.setProcedure(tp.newProc(depth, symbol.getType(), "prints"));
+			      } catch(SymbolTable.SymbolTableException e) {
+			        System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+			      }
+			    
 			setState(81); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -332,22 +321,22 @@ public class eGramC3D extends Parser {
 			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 474L) != 0 );
 
 
-				        //Llamar al main despues de leerlo todo
-			            try {
-			                s = ts.get("indice");//TODO: intentar llamada directa a la palabra
-			                generate(Instruction.OP.call, null, null, s.getProcedure().toString());
-			            } catch(SymbolTable.SymbolTableException e) {
-			                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-			            }
+				    //Llamar al main despues de leerlo todo
+			      try {
+			        symbol = ts.get("indice");//TODO: intentar llamada directa a la palabra
+			        generate(Instruction.OP.call, null, null, symbol.getProcedure().toString());
+			      } catch(SymbolTable.SymbolTableException e) {
+			        System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+			      }
 
-				    
+				  
 			setState(86);
 			match(EOF);
 
-			            Tag e=te.get(te.newTag(false));
-			            generate(Instruction.OP.skip, null, null, e.toString());
-			            tv.calcDespOcupVL(tp);
-			        
+			      Tag e = te.get(te.newTag(false));
+			      generate(Instruction.OP.skip, null, null, e.toString());
+			      tv.calcDespOcupVL(tp);
+			    
 			}
 		}
 		catch (RecognitionException re) {
@@ -407,33 +396,33 @@ public class eGramC3D extends Parser {
 			setState(89);
 			((MainContext)_localctx).MAIN = match(MAIN);
 
-			            Symbol symbol = new Symbol();
-			            Procedure procedure;
-			            try {
-			                symbol = ts.get(((MainContext)_localctx).MAIN.getText());
-			                procedure = tp.newProc(depth, symbol.getType(), ((MainContext)_localctx).MAIN.getText());
-			                symbol.setProcedure(procedure);
-			                ((MainContext)_localctx).procedure =  procedure;
-			            } catch(SymbolTable.SymbolTableException e) {
-			                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-			            }
-			        
+			      Symbol symbol = new Symbol();
+			      Procedure procedure;
+			      try {
+			        symbol = ts.get(((MainContext)_localctx).MAIN.getText());
+			        procedure = tp.newProc(depth, symbol.getType(), ((MainContext)_localctx).MAIN.getText());
+			        symbol.setProcedure(procedure);
+			        ((MainContext)_localctx).procedure =  procedure;
+			      } catch(SymbolTable.SymbolTableException e) {
+			        System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+			      }
+			    
 			setState(91);
 			match(BEGIN);
 
-			            pproc.push(_localctx.procedure.getNp());
-			            depth ++;
-			            /*try{
-			                ts = ts.blockGoesDown();
-			            } catch(SymbolTable.SymbolTableException e) {
-			                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-			            }*/
+			      pproc.push(_localctx.procedure.getNp());
+			      depth ++;
+			      /*try{
+			        ts = ts.blockGoesDown();
+			      } catch(SymbolTable.SymbolTableException e) {
+			        System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+			      }*/
 
-			            Tag e=te.get(te.newTag(true));
-					    _localctx.procedure.setStartTag(e.getNe());
-			            generate(Instruction.OP.skip, null, null, e.toString());//TODO: averiguar como saltar a esta etiqueta desde program
-					    generate(Instruction.OP.pmb, null, null, _localctx.procedure.toString());
-			        
+			      Tag e = te.get(te.newTag(true));
+					  _localctx.procedure.setStartTag(e.getNe());
+			      generate(Instruction.OP.skip, null, null, e.toString());//TODO: averiguar como saltar a esta etiqueta desde program
+					  generate(Instruction.OP.pmb, null, null, _localctx.procedure.toString());
+			    
 			setState(96);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -453,11 +442,11 @@ public class eGramC3D extends Parser {
 			setState(100);
 			match(END);
 
-					    C3D.get(pc-1).setInstFinal(true);
-			            pproc.pop();
-			            depth --;
-			            //ts = ts.blockGoesUp();
-			        
+					  C3D.get(pc-1).setInstFinal(true);
+			      pproc.pop();
+			      depth --;
+			      //ts = ts.blockGoesUp();
+			    
 			}
 		}
 		catch (RecognitionException re) {
@@ -543,13 +532,13 @@ public class eGramC3D extends Parser {
 				setState(104);
 				((DeclContext)_localctx).ID = match(ID);
 
-						Symbol s=new Symbol();
-						int nv=0;
+						Symbol symbol = new Symbol();
+						int nv = 0;
 						try {
-							s=ts.get(((DeclContext)_localctx).ID.getText());
-							nv=tv.newVar(false,pproc.peek(),Symbol.Types.VAR, s.dataType());
-							tv.get(nv).setId(s.getId());
-							s.setVariableNumber(nv);
+							symbol = ts.get(((DeclContext)_localctx).ID.getText());
+							nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, symbol.dataType());
+							tv.get(nv).setId(symbol.getId());
+							symbol.setVariableNumber(nv);
 						} catch(SymbolTable.SymbolTableException e) {
 							System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 						}
@@ -564,20 +553,20 @@ public class eGramC3D extends Parser {
 					setState(107);
 					((DeclContext)_localctx).expr = expr();
 
-								if(s.dataType()==Symbol.DataTypes.BOOLEAN) {
-									Tag ec=te.get(te.newTag(false));
-									Tag ef=te.get(te.newTag(false));
-									Tag efin=te.get(te.newTag(false));
+								if(symbol.dataType() == Symbol.DataTypes.BOOLEAN) {
+									Tag ec = te.get(te.newTag(false));
+									Tag ef = te.get(te.newTag(false));
+									Tag efin = te.get(te.newTag(false));
 									generate(Instruction.OP.skip, null, null, ec.toString());
 									generate(Instruction.OP.copy, "-1", null, tv.get(nv).toString());
 									generate(Instruction.OP.jump, null, null, efin.toString());
 									generate(Instruction.OP.skip, null, null, ef.toString());
 									generate(Instruction.OP.copy, "0", null, tv.get(nv).toString());
 									generate(Instruction.OP.skip, null, null, efin.toString());
-									backpatch(((DeclContext)_localctx).expr.cierto,ec);
-									backpatch(((DeclContext)_localctx).expr.falso,ef);
+									backpatch(((DeclContext)_localctx).expr.true_, ec);
+									backpatch(((DeclContext)_localctx).expr.false_, ef);
 								} else {
-									generate(Instruction.OP.copy, ((DeclContext)_localctx).expr.r.toString(), null, tv.get(nv).toString());
+									generate(Instruction.OP.copy, ((DeclContext)_localctx).expr.variable.toString(), null, tv.get(nv).toString());
 								}
 						
 					}
@@ -603,13 +592,13 @@ public class eGramC3D extends Parser {
 				setState(119);
 				match(SEMI);
 
-						Symbol s;
+						Symbol symbol;
 						try {
-							s = ts.get(((DeclContext)_localctx).ID.getText());
-							int nv=tv.newVar(false,pproc.peek(),Symbol.Types.CONST, s.dataType());
-							tv.get(nv).setId(s.getId());
-							tv.get(nv).setValue(s.getValue());
-							s.setVariableNumber(nv);
+							symbol = ts.get(((DeclContext)_localctx).ID.getText());
+							int nv = tv.newVar(false, pproc.peek(), Symbol.Types.CONST, symbol.dataType());
+							tv.get(nv).setId(symbol.getId());
+							tv.get(nv).setValue(symbol.getValue());
+							symbol.setVariableNumber(nv);
 						} catch(SymbolTable.SymbolTableException e) {
 							System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 						}
@@ -641,31 +630,31 @@ public class eGramC3D extends Parser {
 
 						depth++;
 						try{
-							ts=ts.blockGoesDown();
+							ts = ts.blockGoesDown();
 						} catch(SymbolTable.SymbolTableException e) {
 							System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 						}
-						pproc.push(((DeclContext)_localctx).encabezado.met.getNp());
+						pproc.push(((DeclContext)_localctx).encabezado.procedure.getNp());
 						// Crear variables para los parámetros
-						Symbol aux=((DeclContext)_localctx).encabezado.s.getNext();
-						int nparam=1;
-						while(aux!=null) {
+						Symbol aux = ((DeclContext)_localctx).encabezado.symbol.getNext();
+						int nparam = 1;
+						while(aux!= null) {
 							try {
-								int nv=tv.newVar(false,pproc.peek(),Symbol.Types.VAR, aux.dataType());
+								int nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, aux.dataType());
 								tv.get(nv).setNparam(nparam);
 								tv.get(nv).setId(aux.getId());
 								ts.get(aux.getId()).setVariableNumber(nv);
 							} catch(SymbolTable.SymbolTableException e) {
 								System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 							}
-							aux=aux.getNext();
+							aux = aux.getNext();
 							nparam++;
 						}
-						Tag e=te.get(te.newTag(true));
-						((DeclContext)_localctx).encabezado.met.setStartTag(e.getNe());
-						((DeclContext)_localctx).encabezado.met.setNumParams(nparam-1);
+						Tag e = te.get(te.newTag(true));
+						((DeclContext)_localctx).encabezado.procedure.setStartTag(e.getNe());
+						((DeclContext)_localctx).encabezado.procedure.setNumParams(nparam-1);
 						generate(Instruction.OP.skip, null, null, e.toString());
-						generate(Instruction.OP.pmb, null, null, ((DeclContext)_localctx).encabezado.met.toString());
+						generate(Instruction.OP.pmb, null, null, ((DeclContext)_localctx).encabezado.procedure.toString());
 					
 				setState(134);
 				_errHandler.sync(this);
@@ -689,7 +678,7 @@ public class eGramC3D extends Parser {
 						C3D.get(pc-1).setInstFinal(true);
 						pproc.pop();
 						depth--;
-						ts=ts.blockGoesUp();
+						ts = ts.blockGoesUp();
 					
 				}
 				break;
@@ -772,14 +761,14 @@ public class eGramC3D extends Parser {
 			setState(152);
 			declArray_();
 
-				Symbol s=null;
-				int nv=0;
+				Symbol symbol = null;
+				int nv = 0;
 				try {
-					s=ts.get(((DeclArrayContext)_localctx).ID.getText());
-					Table dt = s.getTable();
-					nv=tv.newVar(false,pproc.peek(),Symbol.Types.VAR, dt.dataType());
-					tv.get(nv).setId(s.getId());
-					s.setVariableNumber(nv);
+					symbol = ts.get(((DeclArrayContext)_localctx).ID.getText());
+					Table dt = symbol.getTable();
+					nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, dt.dataType());
+					tv.get(nv).setId(symbol.getId());
+					symbol.setVariableNumber(nv);
 					tv.get(nv).setElements(dt.getEntries());
 				} catch(SymbolTable.SymbolTableException e) {
 					System.out.println("Error con la tabla de símbolos: "+e.getMessage());
@@ -938,8 +927,8 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class EncabezadoContext extends ParserRuleContext {
-		public Procedure met;
-		public Symbol s;
+		public Procedure procedure;
+		public Symbol symbol;
 		public Token ID;
 		public TerminalNode ID() { return getToken(eGramC3D.ID, 0); }
 		public TerminalNode LPAREN() { return getToken(eGramC3D.LPAREN, 0); }
@@ -990,14 +979,14 @@ public class eGramC3D extends Parser {
 			setState(175);
 			match(RPAREN);
 
-					Symbol s=new Symbol();
-					Procedure met;
+					Symbol symbol = new Symbol();
+					Procedure procedure;
 					try {
-						s=ts.get(((EncabezadoContext)_localctx).ID.getText());
-						met=tp.newProc(depth,s.getType(),((EncabezadoContext)_localctx).ID.getText());
-						s.setProcedure(met);
-						((EncabezadoContext)_localctx).met =  met;
-						((EncabezadoContext)_localctx).s = s;
+						symbol = ts.get(((EncabezadoContext)_localctx).ID.getText());
+						procedure = tp.newProc(depth, symbol.getType(), ((EncabezadoContext)_localctx).ID.getText());
+						symbol.setProcedure(procedure);
+						((EncabezadoContext)_localctx).procedure =  procedure;
+						((EncabezadoContext)_localctx).symbol =  symbol;
 					} catch(SymbolTable.SymbolTableException e) {
 						System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 					}
@@ -1175,7 +1164,7 @@ public class eGramC3D extends Parser {
 			((SentsContext)_localctx).sents_ = sents_(_localctx.sents_seg);
 
 					backpatch(((SentsContext)_localctx).sent.sent_seg, ec);
-					if(((SentsContext)_localctx).sents_.sents_seg_!=null) {
+					if(((SentsContext)_localctx).sents_.sents_seg_!= null) {
 						((SentsContext)_localctx).sents_seg =  ((SentsContext)_localctx).sents_.sents_seg_;
 					} else{
 						((SentsContext)_localctx).sents_seg =  ((SentsContext)_localctx).sent.sent_seg;
@@ -1252,7 +1241,7 @@ public class eGramC3D extends Parser {
 				((Sents_Context)_localctx).sents_ = sents_(_localctx.sents_seg);
 
 						backpatch(((Sents_Context)_localctx).sent.sent_seg, ec);
-						if(((Sents_Context)_localctx).sents_.sents_seg_!=null) {
+						if(((Sents_Context)_localctx).sents_.sents_seg_!= null) {
 							((Sents_Context)_localctx).sents_seg_ =  ((Sents_Context)_localctx).sents_.sents_seg_;
 						} else{
 							((Sents_Context)_localctx).sents_seg_ =  ((Sents_Context)_localctx).sent.sent_seg;
@@ -1371,7 +1360,7 @@ public class eGramC3D extends Parser {
 				match(BEGIN);
 
 						try{
-							ts=ts.blockGoesDown();
+							ts = ts.blockGoesDown();
 						} catch(SymbolTable.SymbolTableException e) {
 							System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 						}
@@ -1395,9 +1384,9 @@ public class eGramC3D extends Parser {
 				setState(211);
 				((SentContext)_localctx).sents = sents();
 
-						ts=ts.blockGoesUp();
-						backpatch(((SentContext)_localctx).expr.cierto, ec);
-						((SentContext)_localctx).sent_seg =  concat(((SentContext)_localctx).expr.falso, ((SentContext)_localctx).sents.sents_seg);
+						ts = ts.blockGoesUp();
+						backpatch(((SentContext)_localctx).expr.true_, ec);
+						((SentContext)_localctx).sent_seg =  concat(((SentContext)_localctx).expr.false_, ((SentContext)_localctx).sents.sents_seg);
 					
 				setState(213);
 				match(END);
@@ -1414,7 +1403,7 @@ public class eGramC3D extends Parser {
 				match(BEGIN);
 
 						try{
-							ts=ts.blockGoesDown();
+							ts = ts.blockGoesDown();
 						} catch(SymbolTable.SymbolTableException e) {
 							System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 						}
@@ -1473,9 +1462,9 @@ public class eGramC3D extends Parser {
 				setState(239);
 				match(END);
 
-						ts=ts.blockGoesUp();
-						backpatch(((SentContext)_localctx).expr.cierto, ec);
-						backpatch(((SentContext)_localctx).expr.falso, ef);
+						ts = ts.blockGoesUp();
+						backpatch(((SentContext)_localctx).expr.true_, ec);
+						backpatch(((SentContext)_localctx).expr.false_, ef);
 						((SentContext)_localctx).sent_seg =  concat(sents_seg1, ((SentContext)_localctx).sents.sents_seg);
 					
 				}
@@ -1491,16 +1480,16 @@ public class eGramC3D extends Parser {
 				match(END);
 
 						generate(Instruction.OP.skip, null, null, ((SentContext)_localctx).contcase.etest.toString());
-						while(((SentContext)_localctx).contcase.pilacond.size()!=0) {
+						while(((SentContext)_localctx).contcase.pilacond.size()!= 0) {
 							Tag econd = ((SentContext)_localctx).contcase.pilacond.remove();
 							Tag etest = ((SentContext)_localctx).contcase.pilatest.remove();
 							Variable v = tv.get(((SentContext)_localctx).contcase.pilavar.remove());
 							Tag esent = ((SentContext)_localctx).contcase.pilasent.remove();
 							generate(Instruction.OP.jump, null, null, econd.toString());
 							generate(Instruction.OP.skip, null, null, etest.toString());
-							generate(Instruction.OP.ifEQ, ((SentContext)_localctx).contcase.r.toString(), v.toString(), esent.toString());
+							generate(Instruction.OP.ifEQ, ((SentContext)_localctx).contcase.variable.toString(), v.toString(), esent.toString());
 						}
-						if(((SentContext)_localctx).endcase.e!=null) {
+						if(((SentContext)_localctx).endcase.e!= null) {
 							if(!((SentContext)_localctx).contcase.acababreak && ((SentContext)_localctx).contcase.pilaefi.size()>0) {
 								int seg = ((SentContext)_localctx).contcase.pilaefi.removeLast();
 								backpatch(seg, ((SentContext)_localctx).endcase.e);
@@ -1520,22 +1509,22 @@ public class eGramC3D extends Parser {
 				setState(247);
 				match(WHILE);
 
-				            try{
-				                ts=ts.blockGoesDown();
-				            } catch(SymbolTable.SymbolTableException e) {
-				                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
-				            }
-				            Tag ei = te.get(te.newTag(false));
-				            generate(Instruction.OP.skip, null, null, ei.toString());
-				        
+				      try{
+				        ts = ts.blockGoesDown();
+				      } catch(SymbolTable.SymbolTableException e) {
+				        System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+				      }
+				      Tag ei = te.get(te.newTag(false));
+				      generate(Instruction.OP.skip, null, null, ei.toString());
+				    
 				setState(249);
 				((SentContext)_localctx).expr = expr();
 				setState(250);
 				match(BEGIN);
 
-				            Tag eis = te.get(te.newTag(false));
-				            generate(Instruction.OP.skip, null, null, eis.toString());
-				        
+				      Tag eis = te.get(te.newTag(false));
+				      generate(Instruction.OP.skip, null, null, eis.toString());
+				    
 				setState(255);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
@@ -1553,12 +1542,12 @@ public class eGramC3D extends Parser {
 				setState(258);
 				sents();
 
-				            ts=ts.blockGoesUp();
-				            backpatch(((SentContext)_localctx).expr.cierto,eis);
-				            backpatch(_localctx.sent_seg,ei);
-				            ((SentContext)_localctx).sent_seg = ((SentContext)_localctx).expr.falso;
-				            generate(Instruction.OP.jump, null, null, ei.toString());
-				        
+				      ts = ts.blockGoesUp();
+				      backpatch(((SentContext)_localctx).expr.true_, eis);
+				      backpatch(_localctx.sent_seg, ei);
+				      ((SentContext)_localctx).sent_seg =  ((SentContext)_localctx).expr.false_;
+				      generate(Instruction.OP.jump, null, null, ei.toString());
+				    
 				setState(260);
 				match(END);
 				}
@@ -1569,18 +1558,18 @@ public class eGramC3D extends Parser {
 				setState(262);
 				match(DO);
 
-				            try{
-				                ts=ts.blockGoesDown();
-				            } catch(SymbolTable.SymbolTableException e) {
-				                System.out.println("Error con la tabla de símbolos: "+e.getMessage());
-				            }
-					    
+				      try{
+				        ts = ts.blockGoesDown();
+				      } catch(SymbolTable.SymbolTableException e) {
+				        System.out.println("Error con la tabla de símbolos: "+e.getMessage());
+				      }
+					  
 				setState(264);
 				match(BEGIN);
 
-				            Tag eis = te.get(te.newTag(false));
-				            generate(Instruction.OP.skip, null, null, eis.toString());
-				        
+				      Tag eis = te.get(te.newTag(false));
+				      generate(Instruction.OP.skip, null, null, eis.toString());
+				    
 				setState(269);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
@@ -1598,26 +1587,26 @@ public class eGramC3D extends Parser {
 				setState(272);
 				sents();
 
-				            ts=ts.blockGoesUp();
-				        
+				      ts = ts.blockGoesUp();
+				    
 				setState(274);
 				match(END);
 				setState(275);
 				match(WHILE);
 
-				            Tag ei = te.get(te.newTag(false));
-				            generate(Instruction.OP.skip, null, null, ei.toString());
-					    
+				      Tag ei = te.get(te.newTag(false));
+				      generate(Instruction.OP.skip, null, null, ei.toString());
+					  
 				setState(277);
 				((SentContext)_localctx).expr = expr();
 				setState(278);
 				match(SEMI);
 
-				            backpatch(((SentContext)_localctx).expr.cierto, eis);
-				            backpatch(_localctx.sent_seg, ei);
-				            ((SentContext)_localctx).sent_seg = ((SentContext)_localctx).expr.falso;
-				            generate(Instruction.OP.jump, null, null, eis.toString());
-					    
+				      backpatch(((SentContext)_localctx).expr.true_, eis);
+				      backpatch(_localctx.sent_seg, ei);
+				      ((SentContext)_localctx).sent_seg =  ((SentContext)_localctx).expr.false_;
+				      generate(Instruction.OP.jump, null, null, eis.toString());
+					  
 				}
 				break;
 			case 6:
@@ -1630,22 +1619,22 @@ public class eGramC3D extends Parser {
 				setState(283);
 				match(SEMI);
 
-						if(((SentContext)_localctx).expr.cierto!=null || ((SentContext)_localctx).expr.falso!=null) {//cambiar
-							Tag ec=te.get(te.newTag(false));
-							Tag ef=te.get(te.newTag(false));
-							Tag efin=te.get(te.newTag(false));
+						if(((SentContext)_localctx).expr.true_!= null || ((SentContext)_localctx).expr.false_!= null) {//cambiar
+							Tag ec = te.get(te.newTag(false));
+							Tag ef = te.get(te.newTag(false));
+							Tag efin = te.get(te.newTag(false));
 							generate(Instruction.OP.skip, null, null, ec.toString());
-							generate(Instruction.OP.copy, "-1", null, ((SentContext)_localctx).expr.r.toString());
-							((SentContext)_localctx).expr.r.setValue("-1");
+							generate(Instruction.OP.copy, "-1", null, ((SentContext)_localctx).expr.variable.toString());
+							((SentContext)_localctx).expr.variable.setValue("-1");
 							generate(Instruction.OP.jump, null, null, efin.toString());
 							generate(Instruction.OP.skip, null, null, ef.toString());
-							generate(Instruction.OP.copy, "0", null, ((SentContext)_localctx).expr.r.toString());
-							((SentContext)_localctx).expr.r.setValue("0");
+							generate(Instruction.OP.copy, "0", null, ((SentContext)_localctx).expr.variable.toString());
+							((SentContext)_localctx).expr.variable.setValue("0");
 							generate(Instruction.OP.skip, null, null, efin.toString());
-							backpatch(((SentContext)_localctx).expr.cierto,ec);
-							backpatch(((SentContext)_localctx).expr.falso,ef);
+							backpatch(((SentContext)_localctx).expr.true_, ec);
+							backpatch(((SentContext)_localctx).expr.false_, ef);
 						}
-						generate(Instruction.OP.ret, ((SentContext)_localctx).expr.r.toString(), null, pproc.peek().toString());
+						generate(Instruction.OP.ret, ((SentContext)_localctx).expr.variable.toString(), null, pproc.peek().toString());
 					
 				}
 				break;
@@ -1673,37 +1662,37 @@ public class eGramC3D extends Parser {
 				setState(292);
 				match(SEMI);
 
-						if(((SentContext)_localctx).referencia.d!=null) {
-							if(((SentContext)_localctx).referencia.datatypes==Symbol.DataTypes.BOOLEAN) {
-								Tag ec=te.get(te.newTag(false));
-								Tag ef=te.get(te.newTag(false));
-								Tag efin=te.get(te.newTag(false));
+						if(((SentContext)_localctx).referencia.offset!= null) {
+							if(((SentContext)_localctx).referencia.dataType == Symbol.DataTypes.BOOLEAN) {
+								Tag ec = te.get(te.newTag(false));
+								Tag ef = te.get(te.newTag(false));
+								Tag efin = te.get(te.newTag(false));
 								generate(Instruction.OP.skip, null, null, ec.toString());
-								generate(Instruction.OP.ind_ass, ((SentContext)_localctx).referencia.d.toString(),"-1", ((SentContext)_localctx).referencia.r.toString());
+								generate(Instruction.OP.ind_ass, ((SentContext)_localctx).referencia.offset.toString(), "-1", ((SentContext)_localctx).referencia.variable.toString());
 								generate(Instruction.OP.jump, null, null, efin.toString());
 								generate(Instruction.OP.skip, null, null, ef.toString());
-								generate(Instruction.OP.ind_ass, ((SentContext)_localctx).referencia.d.toString(), "0", ((SentContext)_localctx).referencia.r.toString());
+								generate(Instruction.OP.ind_ass, ((SentContext)_localctx).referencia.offset.toString(), "0", ((SentContext)_localctx).referencia.variable.toString());
 								generate(Instruction.OP.skip, null, null, efin.toString());
-								backpatch(((SentContext)_localctx).expr.cierto,ec);
-								backpatch(((SentContext)_localctx).expr.falso,ef);
+								backpatch(((SentContext)_localctx).expr.true_, ec);
+								backpatch(((SentContext)_localctx).expr.false_, ef);
 							} else {
-								generate(Instruction.OP.ind_ass, ((SentContext)_localctx).referencia.d.toString(), ((SentContext)_localctx).expr.r.toString(), ((SentContext)_localctx).referencia.r.toString());
+								generate(Instruction.OP.ind_ass, ((SentContext)_localctx).referencia.offset.toString(), ((SentContext)_localctx).expr.variable.toString(), ((SentContext)_localctx).referencia.variable.toString());
 							}
 						} else {
-							if(((SentContext)_localctx).referencia.datatypes==Symbol.DataTypes.BOOLEAN) {
-								Tag ec=te.get(te.newTag(false));
-								Tag ef=te.get(te.newTag(false));
-								Tag efin=te.get(te.newTag(false));
+							if(((SentContext)_localctx).referencia.dataType == Symbol.DataTypes.BOOLEAN) {
+								Tag ec = te.get(te.newTag(false));
+								Tag ef = te.get(te.newTag(false));
+								Tag efin = te.get(te.newTag(false));
 								generate(Instruction.OP.skip, null, null, ec.toString());
-								generate(Instruction.OP.copy, "-1", null, ((SentContext)_localctx).referencia.r.toString());
+								generate(Instruction.OP.copy, "-1", null, ((SentContext)_localctx).referencia.variable.toString());
 								generate(Instruction.OP.jump, null, null, efin.toString());
 								generate(Instruction.OP.skip, null, null, ef.toString());
-								generate(Instruction.OP.copy, "0", null, ((SentContext)_localctx).referencia.r.toString());
+								generate(Instruction.OP.copy, "0", null, ((SentContext)_localctx).referencia.variable.toString());
 								generate(Instruction.OP.skip, null, null, efin.toString());
-								backpatch(((SentContext)_localctx).expr.cierto,ec);
-								backpatch(((SentContext)_localctx).expr.falso,ef);
+								backpatch(((SentContext)_localctx).expr.true_, ec);
+								backpatch(((SentContext)_localctx).expr.false_, ef);
 							} else {
-								generate(Instruction.OP.copy, ((SentContext)_localctx).expr.r.toString(), null, ((SentContext)_localctx).referencia.r.toString());
+								generate(Instruction.OP.copy, ((SentContext)_localctx).expr.variable.toString(), null, ((SentContext)_localctx).referencia.variable.toString());
 							}
 						}
 					
@@ -1733,7 +1722,7 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ContcaseContext extends ParserRuleContext {
-		public Variable r;
+		public Variable variable;
 		public boolean acababreak;
 		public Tag etest;
 		public Deque<Integer> pilaefi;
@@ -1785,7 +1774,7 @@ public class eGramC3D extends Parser {
 
 					((ContcaseContext)_localctx).etest =  te.get(te.newTag(false));
 					generate(Instruction.OP.jump, null, null, _localctx.etest.toString());
-					((ContcaseContext)_localctx).r =  ((ContcaseContext)_localctx).expr.r;
+					((ContcaseContext)_localctx).variable =  ((ContcaseContext)_localctx).expr.variable;
 					((ContcaseContext)_localctx).pilaefi =  new ArrayDeque<>();
 					((ContcaseContext)_localctx).pilasent =  new ArrayDeque<Tag>();
 					((ContcaseContext)_localctx).pilavar =  new ArrayDeque<Integer>();
@@ -1793,7 +1782,7 @@ public class eGramC3D extends Parser {
 					((ContcaseContext)_localctx).pilatest =  new ArrayDeque<Tag>();
 				
 			setState(304);
-			((ContcaseContext)_localctx).contcase_ = contcase_(_localctx.r, true, _localctx.etest, _localctx.pilaefi, _localctx.pilasent, _localctx.pilavar, _localctx.pilacond, _localctx.pilatest);
+			((ContcaseContext)_localctx).contcase_ = contcase_(_localctx.variable, true, _localctx.etest, _localctx.pilaefi, _localctx.pilasent, _localctx.pilavar, _localctx.pilacond, _localctx.pilatest);
 
 					((ContcaseContext)_localctx).acababreak =  ((ContcaseContext)_localctx).contcase_.acababreak;
 				
@@ -1812,7 +1801,7 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Contcase_Context extends ParserRuleContext {
-		public Variable r;
+		public Variable variable;
 		public boolean acababreak1;
 		public Tag etest;
 		public Deque<Integer> pilaefi;
@@ -1830,9 +1819,9 @@ public class eGramC3D extends Parser {
 			return getRuleContext(Contcase_Context.class,0);
 		}
 		public Contcase_Context(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public Contcase_Context(ParserRuleContext parent, int invokingState, Variable r, boolean acababreak1, Tag etest, Deque<Integer> pilaefi, Deque<Tag> pilasent, Deque<Integer> pilavar, Deque<Tag> pilacond, Deque<Tag> pilatest) {
+		public Contcase_Context(ParserRuleContext parent, int invokingState, Variable variable, boolean acababreak1, Tag etest, Deque<Integer> pilaefi, Deque<Tag> pilasent, Deque<Integer> pilavar, Deque<Tag> pilacond, Deque<Tag> pilatest) {
 			super(parent, invokingState);
-			this.r = r;
+			this.variable = variable;
 			this.acababreak1 = acababreak1;
 			this.etest = etest;
 			this.pilaefi = pilaefi;
@@ -1857,8 +1846,8 @@ public class eGramC3D extends Parser {
 		}
 	}
 
-	public final Contcase_Context contcase_(Variable r,boolean acababreak1,Tag etest,Deque<Integer> pilaefi,Deque<Tag> pilasent,Deque<Integer> pilavar,Deque<Tag> pilacond,Deque<Tag> pilatest) throws RecognitionException {
-		Contcase_Context _localctx = new Contcase_Context(_ctx, getState(), r, acababreak1, etest, pilaefi, pilasent, pilavar, pilacond, pilatest);
+	public final Contcase_Context contcase_(Variable variable,boolean acababreak1,Tag etest,Deque<Integer> pilaefi,Deque<Tag> pilasent,Deque<Integer> pilavar,Deque<Tag> pilacond,Deque<Tag> pilatest) throws RecognitionException {
+		Contcase_Context _localctx = new Contcase_Context(_ctx, getState(), variable, acababreak1, etest, pilaefi, pilasent, pilavar, pilacond, pilatest);
 		enterRule(_localctx, 26, RULE_contcase_);
 		try {
 			setState(313);
@@ -1876,14 +1865,14 @@ public class eGramC3D extends Parser {
 						}
 						_localctx.pilaefi.add(((Contcase_Context)_localctx).caso.seg);
 						_localctx.pilacond.add(((Contcase_Context)_localctx).caso.econd);
-						_localctx.pilavar.add(((Contcase_Context)_localctx).caso.r.nv());
+						_localctx.pilavar.add(((Contcase_Context)_localctx).caso.variable.nv());
 						_localctx.pilatest.add(((Contcase_Context)_localctx).caso.etest);
 						_localctx.pilasent.add(((Contcase_Context)_localctx).caso.esent);
 					
 				setState(309);
-				((Contcase_Context)_localctx).contcase_ = contcase_(_localctx.r, ((Contcase_Context)_localctx).caso.acababreak, _localctx.etest, _localctx.pilaefi, _localctx.pilasent, _localctx.pilavar, _localctx.pilacond, _localctx.pilatest);
+				((Contcase_Context)_localctx).contcase_ = contcase_(_localctx.variable, ((Contcase_Context)_localctx).caso.acababreak, _localctx.etest, _localctx.pilaefi, _localctx.pilasent, _localctx.pilavar, _localctx.pilacond, _localctx.pilatest);
 
-						((Contcase_Context)_localctx).acababreak = ((Contcase_Context)_localctx).contcase_.acababreak;
+						((Contcase_Context)_localctx).acababreak =  ((Contcase_Context)_localctx).contcase_.acababreak;
 					
 				}
 				break;
@@ -1892,7 +1881,7 @@ public class eGramC3D extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 
-						((Contcase_Context)_localctx).acababreak = _localctx.acababreak1;
+						((Contcase_Context)_localctx).acababreak =  _localctx.acababreak1;
 					
 				}
 				break;
@@ -1913,7 +1902,7 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CasoContext extends ParserRuleContext {
-		public Variable r;
+		public Variable variable;
 		public Tag econd;
 		public Tag etest;
 		public Tag esent;
@@ -1975,7 +1964,7 @@ public class eGramC3D extends Parser {
 			setState(320);
 			sents();
 
-					((CasoContext)_localctx).acababreak = false;
+					((CasoContext)_localctx).acababreak =  false;
 				
 			setState(325);
 			_errHandler.sync(this);
@@ -1987,13 +1976,13 @@ public class eGramC3D extends Parser {
 				setState(323);
 				match(SEMI);
 
-						((CasoContext)_localctx).acababreak = true;
+						((CasoContext)_localctx).acababreak =  true;
 					
 				}
 			}
 
 
-					((CasoContext)_localctx).r =  ((CasoContext)_localctx).expr.r;
+					((CasoContext)_localctx).variable =  ((CasoContext)_localctx).expr.variable;
 					generate(Instruction.OP.jump, null, null, null);
 					((CasoContext)_localctx).seg =  pc;
 				
@@ -2086,9 +2075,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ReferenciaContext extends ParserRuleContext {
-		public Variable r;
-		public Variable d;
-		public Symbol.DataTypes datatypes;
+		public Variable variable;
+		public Variable offset;
+		public Symbol.DataTypes dataType;
 		public Token ID;
 		public IdxContext idx;
 		public ContIdxContext contIdx;
@@ -2134,35 +2123,35 @@ public class eGramC3D extends Parser {
 				setState(338);
 				((ReferenciaContext)_localctx).ID = match(ID);
 
-						Symbol s;
-						int t;
+						Symbol symbol;
+						int vn;
 						try {
-							s = ts.get(((ReferenciaContext)_localctx).ID.getText());
-							if (s.getType() == Symbol.Types.CONST){
-								t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,s.dataType());
-								switch(s.dataType()) {
+							symbol = ts.get(((ReferenciaContext)_localctx).ID.getText());
+							if (symbol.getType()  ==  Symbol.Types.CONST){
+								vn = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, symbol.dataType());
+								switch(symbol.dataType()) {
 									case BOOLEAN:
-										generate(Instruction.OP.copy, s.getValue(), null, tv.get(t).toString());
-										if(s.getValue().equals("true")){
-											tv.get(t).setValue("-1");
+										generate(Instruction.OP.copy, symbol.getValue(), null, tv.get(vn).toString());
+										if(symbol.getValue().equals("true")){
+											tv.get(vn).setValue("-1");
 										} else {
-											tv.get(t).setValue("0");
+											tv.get(vn).setValue("0");
 										}
 										break;
 									case INT:
-										generate(Instruction.OP.copy, s.getValue(), null, tv.get(t).toString());
-										tv.get(t).setValue(s.getValue());
+										generate(Instruction.OP.copy, symbol.getValue(), null, tv.get(vn).toString());
+										tv.get(vn).setValue(symbol.getValue());
 										break;
 									case STRING:
-										generate(Instruction.OP.copy, tv.get(s.getVariableNumber()).toString(), null, tv.get(t).toString());
-										tv.get(t).setValue(s.getValue());
+										generate(Instruction.OP.copy, tv.get(symbol.getVariableNumber()).toString(), null, tv.get(vn).toString());
+										tv.get(vn).setValue(symbol.getValue());
 										break;
 								}
-								((ReferenciaContext)_localctx).r =  tv.get(t);
+								((ReferenciaContext)_localctx).variable =  tv.get(vn);
 							} else {
-								((ReferenciaContext)_localctx).r =  tv.get(s.getVariableNumber());
+								((ReferenciaContext)_localctx).variable =  tv.get(symbol.getVariableNumber());
 							}
-							((ReferenciaContext)_localctx).datatypes = s.dataType();
+							((ReferenciaContext)_localctx).dataType =  symbol.dataType();
 						} catch(SymbolTable.SymbolTableException e) {
 							System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 						}
@@ -2178,19 +2167,19 @@ public class eGramC3D extends Parser {
 				match(RBRACK);
 
 						Variable t2;
-						String nbytes = String.valueOf(((ReferenciaContext)_localctx).idx.dt.getItemSize());
-						if(((ReferenciaContext)_localctx).idx.dt.getOffset()==0) {
+						String nbytes = String.valueOf(((ReferenciaContext)_localctx).idx.table.getItemSize());
+						if(((ReferenciaContext)_localctx).idx.table.getOffset() == 0) {
 							t2 = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-							generate(Instruction.OP.mult, ((ReferenciaContext)_localctx).idx.d.toString(), nbytes, t2.toString());
+							generate(Instruction.OP.mult, ((ReferenciaContext)_localctx).idx.offset.toString(), nbytes, t2.toString());
 						} else {
-							String b = String.valueOf(((ReferenciaContext)_localctx).idx.dt.getOffset());
+							String tableOffsetComp = String.valueOf(((ReferenciaContext)_localctx).idx.table.getOffset());
 							Variable t1 = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-							generate(Instruction.OP.sub, ((ReferenciaContext)_localctx).idx.d.toString(), b, t1.toString());
+							generate(Instruction.OP.sub, ((ReferenciaContext)_localctx).idx.offset.toString(), tableOffsetComp, t1.toString());
 							t2 = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
 							generate(Instruction.OP.mult, t1.toString(), nbytes, t2.toString());
 						}
-						((ReferenciaContext)_localctx).r =  ((ReferenciaContext)_localctx).idx.r;
-						((ReferenciaContext)_localctx).d =  t2;
+						((ReferenciaContext)_localctx).variable =  ((ReferenciaContext)_localctx).idx.variable;
+						((ReferenciaContext)_localctx).offset =  t2;
 					
 				}
 				break;
@@ -2204,15 +2193,15 @@ public class eGramC3D extends Parser {
 				setState(346);
 				match(RPAREN);
 
-						Symbol s;
+						Symbol symbol;
 						int t;
 						try {
-							s = ts.get(((ReferenciaContext)_localctx).ID.getText());
-							generate(Instruction.OP.call, null, null, s.getProcedure().toString());
-							if(s.getType()==Symbol.Types.FUNC) {
-								t = tv.newVar(true, pproc.peek(),Symbol.Types.VAR,s.dataType());
-								((ReferenciaContext)_localctx).r =  tv.get(t);
-								((ReferenciaContext)_localctx).datatypes = s.dataType();
+							symbol = ts.get(((ReferenciaContext)_localctx).ID.getText());
+							generate(Instruction.OP.call, null, null, symbol.getProcedure().toString());
+							if(symbol.getType()  ==  Symbol.Types.FUNC) {
+								t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, symbol.dataType());
+								((ReferenciaContext)_localctx).variable =  tv.get(t);
+								((ReferenciaContext)_localctx).dataType =  symbol.dataType();
 								generate(Instruction.OP.st, null, null, tv.get(t).toString());
 							}
 						} catch(SymbolTable.SymbolTableException e) {
@@ -2230,13 +2219,16 @@ public class eGramC3D extends Parser {
 				match(RPAREN);
 
 						int t;
-						while(((ReferenciaContext)_localctx).contIdx.pparams.size()>0)
-						generate(Instruction.OP.params, null, null, ((ReferenciaContext)_localctx).contIdx.pparams.pop().toString());
-						generate(Instruction.OP.call, null, null, ((ReferenciaContext)_localctx).contIdx.met.toString());
-						if(((ReferenciaContext)_localctx).contIdx.s.getType()==Symbol.Types.FUNC) {
-							t = tv.newVar(true, pproc.peek(),Symbol.Types.VAR,((ReferenciaContext)_localctx).contIdx.s.dataType());
-							((ReferenciaContext)_localctx).r =  tv.get(t);
-							((ReferenciaContext)_localctx).datatypes =  ((ReferenciaContext)_localctx).contIdx.s.dataType();
+						while(((ReferenciaContext)_localctx).contIdx.pparams.size() > 0)
+						{
+						  Variable parameter = ((ReferenciaContext)_localctx).contIdx.pparams.pop();
+						  generate(Instruction.OP.params, null, null, parameter.toString());
+				    }
+						generate(Instruction.OP.call, null, null, ((ReferenciaContext)_localctx).contIdx.procedure.toString());
+						if(((ReferenciaContext)_localctx).contIdx.symbol.getType()  ==  Symbol.Types.FUNC) {
+							t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, ((ReferenciaContext)_localctx).contIdx.symbol.dataType());
+							((ReferenciaContext)_localctx).variable =  tv.get(t);
+							((ReferenciaContext)_localctx).dataType =  ((ReferenciaContext)_localctx).contIdx.symbol.dataType();
 							generate(Instruction.OP.st, null, null, tv.get(t).toString());
 						}
 					
@@ -2257,9 +2249,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class IdxContext extends ParserRuleContext {
-		public Table dt;
-		public Variable r;
-		public Variable d;
+		public Table table;
+		public Variable variable;
+		public Variable offset;
 		public Token ID;
 		public ExprContext expr;
 		public Idx_Context idx_;
@@ -2303,21 +2295,21 @@ public class eGramC3D extends Parser {
 			setState(356);
 			((IdxContext)_localctx).expr = expr();
 
-					Symbol dv = null;
+					Symbol symbol = null;
 					try {
-						dv = ts.get(((IdxContext)_localctx).ID.getText());
+						symbol = ts.get(((IdxContext)_localctx).ID.getText());
 					} catch(SymbolTable.SymbolTableException e) {
 						System.out.println("Error con la tabla de símbolos: "+e.getMessage());
 					}
-					((IdxContext)_localctx).dt =  dv.getTable();
-					Index idx = _localctx.dt.getFirst();
-					((IdxContext)_localctx).r =  tv.get(dv.getVariableNumber());
-					Variable d = ((IdxContext)_localctx).expr.r;
+					((IdxContext)_localctx).table =  symbol.getTable();
+					Index idx = _localctx.table.getFirst();
+					((IdxContext)_localctx).variable =  tv.get(symbol.getVariableNumber());
+					Variable offset = ((IdxContext)_localctx).expr.variable;
 				
 			setState(358);
-			((IdxContext)_localctx).idx_ = idx_(idx, d);
+			((IdxContext)_localctx).idx_ = idx_(idx, offset);
 
-					((IdxContext)_localctx).d =  ((IdxContext)_localctx).idx_.d;
+					((IdxContext)_localctx).offset =  ((IdxContext)_localctx).idx_.offset;
 				
 			}
 		}
@@ -2335,8 +2327,8 @@ public class eGramC3D extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class Idx_Context extends ParserRuleContext {
 		public Index idx1;
-		public Variable d1;
-		public Variable d;
+		public Variable offset1;
+		public Variable offset;
 		public ExprContext expr;
 		public Idx_Context idx_;
 		public TerminalNode RBRACK() { return getToken(eGramC3D.RBRACK, 0); }
@@ -2348,10 +2340,10 @@ public class eGramC3D extends Parser {
 			return getRuleContext(Idx_Context.class,0);
 		}
 		public Idx_Context(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public Idx_Context(ParserRuleContext parent, int invokingState, Index idx1, Variable d1) {
+		public Idx_Context(ParserRuleContext parent, int invokingState, Index idx1, Variable offset1) {
 			super(parent, invokingState);
 			this.idx1 = idx1;
-			this.d1 = d1;
+			this.offset1 = offset1;
 		}
 		@Override public int getRuleIndex() { return RULE_idx_; }
 		@Override
@@ -2369,8 +2361,8 @@ public class eGramC3D extends Parser {
 		}
 	}
 
-	public final Idx_Context idx_(Index idx1,Variable d1) throws RecognitionException {
-		Idx_Context _localctx = new Idx_Context(_ctx, getState(), idx1, d1);
+	public final Idx_Context idx_(Index idx1,Variable offset1) throws RecognitionException {
+		Idx_Context _localctx = new Idx_Context(_ctx, getState(), idx1, offset1);
 		enterRule(_localctx, 36, RULE_idx_);
 		try {
 			setState(369);
@@ -2388,14 +2380,14 @@ public class eGramC3D extends Parser {
 
 						Index idx = idx1.getNextIndex();
 						Variable t1 = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-						generate(Instruction.OP.mult, _localctx.d1.toString(), String.valueOf(idx.d()), t1.toString());
+						generate(Instruction.OP.mult, _localctx.offset1.toString(), String.valueOf(idx.getDimension()), t1.toString());
 						Variable t2 = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-						generate(Instruction.OP.add, t1.toString(), ((Idx_Context)_localctx).expr.r.toString(), t2.toString());
+						generate(Instruction.OP.add, t1.toString(), ((Idx_Context)_localctx).expr.variable.toString(), t2.toString());
 					
 				setState(365);
 				((Idx_Context)_localctx).idx_ = idx_(idx, t2);
 
-						((Idx_Context)_localctx).d = ((Idx_Context)_localctx).idx_.d;
+						((Idx_Context)_localctx).offset =  ((Idx_Context)_localctx).idx_.offset;
 					
 				}
 				break;
@@ -2403,7 +2395,7 @@ public class eGramC3D extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 
-						((Idx_Context)_localctx).d = _localctx.d1; // Devuelve la misma variable que recibe
+						((Idx_Context)_localctx).offset =  _localctx.offset1; // Devuelve la misma variable que recibe
 					
 				}
 				break;
@@ -2423,8 +2415,8 @@ public class eGramC3D extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class ContIdxContext extends ParserRuleContext {
 		public Deque<Variable> pparams;
-		public Procedure met;
-		public Symbol s;
+		public Procedure procedure;
+		public Symbol symbol;
 		public Token ID;
 		public ExprContext expr;
 		public TerminalNode ID() { return getToken(eGramC3D.ID, 0); }
@@ -2467,26 +2459,25 @@ public class eGramC3D extends Parser {
 			setState(373);
 			((ContIdxContext)_localctx).expr = expr();
 
-					Symbol s=new Symbol();
+					Symbol symbol = new Symbol();
 					((ContIdxContext)_localctx).pparams =  new ArrayDeque<Variable>();
 					try {
-						s = ts.get(((ContIdxContext)_localctx).ID.getText());
-						((ContIdxContext)_localctx).s =  s;
-						((ContIdxContext)_localctx).met =  s.getProcedure();
-						_localctx.pparams.push(((ContIdxContext)_localctx).expr.r);
-						// Boolean parámetro
-						if(((ContIdxContext)_localctx).expr.cierto!=null || ((ContIdxContext)_localctx).expr.falso!=null) {
-							Tag ec=te.get(te.newTag(false));
-							Tag ef=te.get(te.newTag(false));
-							Tag efin=te.get(te.newTag(false));
+						symbol = ts.get(((ContIdxContext)_localctx).ID.getText());
+						((ContIdxContext)_localctx).symbol =  symbol;
+						((ContIdxContext)_localctx).procedure =  symbol.getProcedure();
+						_localctx.pparams.push(((ContIdxContext)_localctx).expr.variable);
+						if(((ContIdxContext)_localctx).expr.true_ != null || ((ContIdxContext)_localctx).expr.false_ != null) { // Booleano
+							Tag ec = te.get(te.newTag(false));
+							Tag ef = te.get(te.newTag(false));
+							Tag efin = te.get(te.newTag(false));
 							generate(Instruction.OP.skip, null, null, ec.toString());
-							generate(Instruction.OP.copy, "-1", null, ((ContIdxContext)_localctx).expr.r.toString());
+							generate(Instruction.OP.copy, "-1", null, ((ContIdxContext)_localctx).expr.variable.toString());
 							generate(Instruction.OP.jump, null, null, efin.toString());
 							generate(Instruction.OP.skip, null, null, ef.toString());
-							generate(Instruction.OP.copy, "0", null, ((ContIdxContext)_localctx).expr.r.toString());
+							generate(Instruction.OP.copy, "0", null, ((ContIdxContext)_localctx).expr.variable.toString());
 							generate(Instruction.OP.skip, null, null, efin.toString());
-							backpatch(((ContIdxContext)_localctx).expr.cierto,ec);
-							backpatch(((ContIdxContext)_localctx).expr.falso,ef);
+							backpatch(((ContIdxContext)_localctx).expr.true_, ec);
+							backpatch(((ContIdxContext)_localctx).expr.false_, ef);
 						}
 					} catch(SymbolTable.SymbolTableException e) {
 						System.out.println("Error con la tabla de símbolos: "+e.getMessage());
@@ -2554,20 +2545,19 @@ public class eGramC3D extends Parser {
 				setState(378);
 				((ContIdx_Context)_localctx).expr = expr();
 
-						_localctx.pparams.push(((ContIdx_Context)_localctx).expr.r);
-						// Boolean parámetro
-						if(((ContIdx_Context)_localctx).expr.cierto!=null || ((ContIdx_Context)_localctx).expr.falso!=null) {
-							Tag ec=te.get(te.newTag(false));
-							Tag ef=te.get(te.newTag(false));
-							Tag efin=te.get(te.newTag(false));
+						_localctx.pparams.push(((ContIdx_Context)_localctx).expr.variable);
+						if(((ContIdx_Context)_localctx).expr.true_ != null || ((ContIdx_Context)_localctx).expr.false_ != null) { // Boolean
+							Tag ec = te.get(te.newTag(false));
+							Tag ef = te.get(te.newTag(false));
+							Tag efin = te.get(te.newTag(false));
 							generate(Instruction.OP.skip, null, null, ec.toString());
-							generate(Instruction.OP.copy, "-1", null, ((ContIdx_Context)_localctx).expr.r.toString());
+							generate(Instruction.OP.copy, "-1", null, ((ContIdx_Context)_localctx).expr.variable.toString());
 							generate(Instruction.OP.jump, null, null, efin.toString());
 							generate(Instruction.OP.skip, null, null, ef.toString());
-							generate(Instruction.OP.copy, "0", null, ((ContIdx_Context)_localctx).expr.r.toString());
+							generate(Instruction.OP.copy, "0", null, ((ContIdx_Context)_localctx).expr.variable.toString());
 							generate(Instruction.OP.skip, null, null, efin.toString());
-							backpatch(((ContIdx_Context)_localctx).expr.cierto,ec);
-							backpatch(((ContIdx_Context)_localctx).expr.falso,ef);
+				      backpatch(((ContIdx_Context)_localctx).expr.true_, ec);
+				      backpatch(((ContIdx_Context)_localctx).expr.false_, ef);
 						}
 					
 				setState(380);
@@ -2596,9 +2586,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprContext extends ParserRuleContext {
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprOrContext exprOr;
 		public ExprOrContext exprOr() {
 			return getRuleContext(ExprOrContext.class,0);
@@ -2631,9 +2621,9 @@ public class eGramC3D extends Parser {
 			setState(385);
 			((ExprContext)_localctx).exprOr = exprOr();
 
-					((ExprContext)_localctx).r = ((ExprContext)_localctx).exprOr.r;
-					((ExprContext)_localctx).cierto = ((ExprContext)_localctx).exprOr.cierto;
-					((ExprContext)_localctx).falso = ((ExprContext)_localctx).exprOr.falso;
+					((ExprContext)_localctx).variable =  ((ExprContext)_localctx).exprOr.variable;
+					((ExprContext)_localctx).true_ =  ((ExprContext)_localctx).exprOr.true_;
+					((ExprContext)_localctx).false_ =  ((ExprContext)_localctx).exprOr.false_;
 				
 			}
 		}
@@ -2650,9 +2640,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprOrContext extends ParserRuleContext {
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprAndContext exprAnd;
 		public ExprOr_Context exprOr_;
 		public ExprAndContext exprAnd() {
@@ -2689,17 +2679,17 @@ public class eGramC3D extends Parser {
 			setState(388);
 			((ExprOrContext)_localctx).exprAnd = exprAnd();
 
-					((ExprOrContext)_localctx).r = ((ExprOrContext)_localctx).exprAnd.r;
-					((ExprOrContext)_localctx).cierto = ((ExprOrContext)_localctx).exprAnd.cierto;
-					((ExprOrContext)_localctx).falso = ((ExprOrContext)_localctx).exprAnd.falso;
+					((ExprOrContext)_localctx).variable =  ((ExprOrContext)_localctx).exprAnd.variable;
+					((ExprOrContext)_localctx).true_ =  ((ExprOrContext)_localctx).exprAnd.true_;
+					((ExprOrContext)_localctx).false_ =  ((ExprOrContext)_localctx).exprAnd.false_;
 				
 			setState(390);
-			((ExprOrContext)_localctx).exprOr_ = exprOr_(_localctx.r,_localctx.cierto,_localctx.falso);
+			((ExprOrContext)_localctx).exprOr_ = exprOr_(_localctx.variable, _localctx.true_, _localctx.false_);
 
-					if(((ExprOrContext)_localctx).exprOr_.cierto!=null || ((ExprOrContext)_localctx).exprOr_.falso!=null) {
-						((ExprOrContext)_localctx).r =  ((ExprOrContext)_localctx).exprOr_.r;
-						((ExprOrContext)_localctx).cierto = ((ExprOrContext)_localctx).exprOr_.cierto;
-						((ExprOrContext)_localctx).falso = ((ExprOrContext)_localctx).exprOr_.falso;
+					if(((ExprOrContext)_localctx).exprOr_.true_ != null || ((ExprOrContext)_localctx).exprOr_.false_ != null) {
+						((ExprOrContext)_localctx).variable =  ((ExprOrContext)_localctx).exprOr_.variable;
+						((ExprOrContext)_localctx).true_ =  ((ExprOrContext)_localctx).exprOr_.true_;
+						((ExprOrContext)_localctx).false_ =  ((ExprOrContext)_localctx).exprOr_.false_;
 					}
 				
 			}
@@ -2717,12 +2707,12 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprOr_Context extends ParserRuleContext {
-		public Variable t1;
-		public Deque<Integer> cierto1;
-		public Deque<Integer> falso1;
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable1;
+		public Deque<Integer> true_1;
+		public Deque<Integer> false_1;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprAndContext exprAnd;
 		public ExprOr_Context exprOr_;
 		public TerminalNode OR() { return getToken(eGramC3D.OR, 0); }
@@ -2733,11 +2723,11 @@ public class eGramC3D extends Parser {
 			return getRuleContext(ExprOr_Context.class,0);
 		}
 		public ExprOr_Context(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public ExprOr_Context(ParserRuleContext parent, int invokingState, Variable t1, Deque<Integer> cierto1, Deque<Integer> falso1) {
+		public ExprOr_Context(ParserRuleContext parent, int invokingState, Variable variable1, Deque<Integer> true_1, Deque<Integer> false_1) {
 			super(parent, invokingState);
-			this.t1 = t1;
-			this.cierto1 = cierto1;
-			this.falso1 = falso1;
+			this.variable1 = variable1;
+			this.true_1 = true_1;
+			this.false_1 = false_1;
 		}
 		@Override public int getRuleIndex() { return RULE_exprOr_; }
 		@Override
@@ -2755,8 +2745,8 @@ public class eGramC3D extends Parser {
 		}
 	}
 
-	public final ExprOr_Context exprOr_(Variable t1,Deque<Integer> cierto1,Deque<Integer> falso1) throws RecognitionException {
-		ExprOr_Context _localctx = new ExprOr_Context(_ctx, getState(), t1, cierto1, falso1);
+	public final ExprOr_Context exprOr_(Variable variable1,Deque<Integer> true_1,Deque<Integer> false_1) throws RecognitionException {
+		ExprOr_Context _localctx = new ExprOr_Context(_ctx, getState(), variable1, true_1, false_1);
 		enterRule(_localctx, 46, RULE_exprOr_);
 		try {
 			setState(401);
@@ -2774,17 +2764,17 @@ public class eGramC3D extends Parser {
 				setState(395);
 				((ExprOr_Context)_localctx).exprAnd = exprAnd();
 
-						backpatch(_localctx.falso1, e);
-						((ExprOr_Context)_localctx).cierto =  concat(_localctx.cierto1, ((ExprOr_Context)_localctx).exprAnd.cierto);
-						((ExprOr_Context)_localctx).falso =  ((ExprOr_Context)_localctx).exprAnd.falso;
+						backpatch(_localctx.false_1, e);
+						((ExprOr_Context)_localctx).true_ =  concat(_localctx.true_1, ((ExprOr_Context)_localctx).exprAnd.true_);
+						((ExprOr_Context)_localctx).false_ =  ((ExprOr_Context)_localctx).exprAnd.false_;
 					
 				setState(397);
-				((ExprOr_Context)_localctx).exprOr_ = exprOr_(_localctx.r,_localctx.cierto,_localctx.falso);
+				((ExprOr_Context)_localctx).exprOr_ = exprOr_(_localctx.variable, _localctx.true_, _localctx.false_);
 
-						if(((ExprOr_Context)_localctx).exprOr_.cierto!=null || ((ExprOr_Context)_localctx).exprOr_.falso!=null) {
-							((ExprOr_Context)_localctx).r =  ((ExprOr_Context)_localctx).exprOr_.r;
-							((ExprOr_Context)_localctx).cierto = ((ExprOr_Context)_localctx).exprOr_.cierto;
-							((ExprOr_Context)_localctx).falso = ((ExprOr_Context)_localctx).exprOr_.falso;
+						if(((ExprOr_Context)_localctx).exprOr_.true_!= null || ((ExprOr_Context)_localctx).exprOr_.false_!= null) {
+							((ExprOr_Context)_localctx).variable =  ((ExprOr_Context)_localctx).exprOr_.variable;
+							((ExprOr_Context)_localctx).true_ =  ((ExprOr_Context)_localctx).exprOr_.true_;
+							((ExprOr_Context)_localctx).false_ =  ((ExprOr_Context)_localctx).exprOr_.false_;
 						}
 					
 				}
@@ -2816,9 +2806,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprAndContext extends ParserRuleContext {
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprNotContext exprNot;
 		public ExprAnd_Context exprAnd_;
 		public ExprNotContext exprNot() {
@@ -2855,17 +2845,17 @@ public class eGramC3D extends Parser {
 			setState(403);
 			((ExprAndContext)_localctx).exprNot = exprNot();
 
-					((ExprAndContext)_localctx).r = ((ExprAndContext)_localctx).exprNot.r;
-					((ExprAndContext)_localctx).cierto = ((ExprAndContext)_localctx).exprNot.cierto;
-					((ExprAndContext)_localctx).falso = ((ExprAndContext)_localctx).exprNot.falso;
+					((ExprAndContext)_localctx).variable =  ((ExprAndContext)_localctx).exprNot.variable;
+					((ExprAndContext)_localctx).true_ =  ((ExprAndContext)_localctx).exprNot.true_;
+					((ExprAndContext)_localctx).false_ =  ((ExprAndContext)_localctx).exprNot.false_;
 				
 			setState(405);
-			((ExprAndContext)_localctx).exprAnd_ = exprAnd_(_localctx.r,_localctx.cierto,_localctx.falso);
+			((ExprAndContext)_localctx).exprAnd_ = exprAnd_(_localctx.variable, _localctx.true_, _localctx.false_);
 
-					if(((ExprAndContext)_localctx).exprAnd_.cierto!=null || ((ExprAndContext)_localctx).exprAnd_.falso!=null) {
-						((ExprAndContext)_localctx).r =  ((ExprAndContext)_localctx).exprAnd_.r;
-						((ExprAndContext)_localctx).cierto = ((ExprAndContext)_localctx).exprAnd_.cierto;
-						((ExprAndContext)_localctx).falso = ((ExprAndContext)_localctx).exprAnd_.falso;
+					if(((ExprAndContext)_localctx).exprAnd_.true_!= null || ((ExprAndContext)_localctx).exprAnd_.false_!= null) {
+						((ExprAndContext)_localctx).variable =  ((ExprAndContext)_localctx).exprAnd_.variable;
+						((ExprAndContext)_localctx).true_ =  ((ExprAndContext)_localctx).exprAnd_.true_;
+						((ExprAndContext)_localctx).false_ =  ((ExprAndContext)_localctx).exprAnd_.false_;
 					}
 				
 			}
@@ -2883,12 +2873,12 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprAnd_Context extends ParserRuleContext {
-		public Variable t1;
-		public Deque<Integer> cierto1;
-		public Deque<Integer> falso1;
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable1;
+		public Deque<Integer> true_1;
+		public Deque<Integer> false_1;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprNotContext exprNot;
 		public ExprAnd_Context exprAnd_;
 		public TerminalNode AND() { return getToken(eGramC3D.AND, 0); }
@@ -2899,11 +2889,11 @@ public class eGramC3D extends Parser {
 			return getRuleContext(ExprAnd_Context.class,0);
 		}
 		public ExprAnd_Context(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public ExprAnd_Context(ParserRuleContext parent, int invokingState, Variable t1, Deque<Integer> cierto1, Deque<Integer> falso1) {
+		public ExprAnd_Context(ParserRuleContext parent, int invokingState, Variable variable1, Deque<Integer> true_1, Deque<Integer> false_1) {
 			super(parent, invokingState);
-			this.t1 = t1;
-			this.cierto1 = cierto1;
-			this.falso1 = falso1;
+			this.variable1 = variable1;
+			this.true_1 = true_1;
+			this.false_1 = false_1;
 		}
 		@Override public int getRuleIndex() { return RULE_exprAnd_; }
 		@Override
@@ -2921,8 +2911,8 @@ public class eGramC3D extends Parser {
 		}
 	}
 
-	public final ExprAnd_Context exprAnd_(Variable t1,Deque<Integer> cierto1,Deque<Integer> falso1) throws RecognitionException {
-		ExprAnd_Context _localctx = new ExprAnd_Context(_ctx, getState(), t1, cierto1, falso1);
+	public final ExprAnd_Context exprAnd_(Variable variable1,Deque<Integer> true_1,Deque<Integer> false_1) throws RecognitionException {
+		ExprAnd_Context _localctx = new ExprAnd_Context(_ctx, getState(), variable1, true_1, false_1);
 		enterRule(_localctx, 50, RULE_exprAnd_);
 		try {
 			setState(416);
@@ -2940,17 +2930,17 @@ public class eGramC3D extends Parser {
 				setState(410);
 				((ExprAnd_Context)_localctx).exprNot = exprNot();
 
-						backpatch(_localctx.cierto1, e);
-						((ExprAnd_Context)_localctx).falso =  concat(_localctx.falso1, ((ExprAnd_Context)_localctx).exprNot.falso);
-						((ExprAnd_Context)_localctx).cierto =  ((ExprAnd_Context)_localctx).exprNot.cierto;
+						backpatch(_localctx.true_1, e);
+						((ExprAnd_Context)_localctx).false_ =  concat(_localctx.false_1, ((ExprAnd_Context)_localctx).exprNot.false_);
+						((ExprAnd_Context)_localctx).true_ =  ((ExprAnd_Context)_localctx).exprNot.true_;
 					
 				setState(412);
-				((ExprAnd_Context)_localctx).exprAnd_ = exprAnd_(_localctx.r, _localctx.cierto, _localctx.falso);
+				((ExprAnd_Context)_localctx).exprAnd_ = exprAnd_(_localctx.variable, _localctx.true_, _localctx.false_);
 
-						if(((ExprAnd_Context)_localctx).exprAnd_.cierto!=null || ((ExprAnd_Context)_localctx).exprAnd_.falso!=null) {
-							((ExprAnd_Context)_localctx).r =  ((ExprAnd_Context)_localctx).exprAnd_.r;
-							((ExprAnd_Context)_localctx).cierto = ((ExprAnd_Context)_localctx).exprAnd_.cierto;
-							((ExprAnd_Context)_localctx).falso = ((ExprAnd_Context)_localctx).exprAnd_.falso;
+						if(((ExprAnd_Context)_localctx).exprAnd_.true_ != null || ((ExprAnd_Context)_localctx).exprAnd_.false_ != null) {
+							((ExprAnd_Context)_localctx).variable =  ((ExprAnd_Context)_localctx).exprAnd_.variable;
+							((ExprAnd_Context)_localctx).true_ =  ((ExprAnd_Context)_localctx).exprAnd_.true_;
+							((ExprAnd_Context)_localctx).false_ =  ((ExprAnd_Context)_localctx).exprAnd_.false_;
 						}
 					
 				}
@@ -2983,9 +2973,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprNotContext extends ParserRuleContext {
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprCompContext exprComp;
 		public TerminalNode NOT() { return getToken(eGramC3D.NOT, 0); }
 		public ExprCompContext exprComp() {
@@ -3025,9 +3015,9 @@ public class eGramC3D extends Parser {
 				setState(419);
 				((ExprNotContext)_localctx).exprComp = exprComp();
 
-						((ExprNotContext)_localctx).cierto = ((ExprNotContext)_localctx).exprComp.falso;
-						((ExprNotContext)_localctx).falso = ((ExprNotContext)_localctx).exprComp.cierto;
-						((ExprNotContext)_localctx).r = ((ExprNotContext)_localctx).exprComp.r;
+						((ExprNotContext)_localctx).true_ =  ((ExprNotContext)_localctx).exprComp.false_;
+						((ExprNotContext)_localctx).false_ =  ((ExprNotContext)_localctx).exprComp.true_;
+						((ExprNotContext)_localctx).variable =  ((ExprNotContext)_localctx).exprComp.variable;
 					
 				}
 				break;
@@ -3042,9 +3032,9 @@ public class eGramC3D extends Parser {
 				setState(422);
 				((ExprNotContext)_localctx).exprComp = exprComp();
 
-						((ExprNotContext)_localctx).cierto = ((ExprNotContext)_localctx).exprComp.cierto;
-						((ExprNotContext)_localctx).falso = ((ExprNotContext)_localctx).exprComp.falso;
-						((ExprNotContext)_localctx).r = ((ExprNotContext)_localctx).exprComp.r;
+						((ExprNotContext)_localctx).true_ =  ((ExprNotContext)_localctx).exprComp.true_;
+						((ExprNotContext)_localctx).false_ =  ((ExprNotContext)_localctx).exprComp.false_;
+						((ExprNotContext)_localctx).variable =  ((ExprNotContext)_localctx).exprComp.variable;
 					
 				}
 				break;
@@ -3065,9 +3055,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprCompContext extends ParserRuleContext {
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprAddContext exprAdd;
 		public ExprComp_Context exprComp_;
 		public ExprAddContext exprAdd() {
@@ -3104,16 +3094,16 @@ public class eGramC3D extends Parser {
 			setState(427);
 			((ExprCompContext)_localctx).exprAdd = exprAdd();
 
-					((ExprCompContext)_localctx).r = ((ExprCompContext)_localctx).exprAdd.r;
-					((ExprCompContext)_localctx).cierto = ((ExprCompContext)_localctx).exprAdd.cierto;
-					((ExprCompContext)_localctx).falso = ((ExprCompContext)_localctx).exprAdd.falso;
+					((ExprCompContext)_localctx).variable =  ((ExprCompContext)_localctx).exprAdd.variable;
+					((ExprCompContext)_localctx).true_ =  ((ExprCompContext)_localctx).exprAdd.true_;
+					((ExprCompContext)_localctx).false_ =  ((ExprCompContext)_localctx).exprAdd.false_;
 				
 			setState(429);
-			((ExprCompContext)_localctx).exprComp_ = exprComp_(_localctx.r);
+			((ExprCompContext)_localctx).exprComp_ = exprComp_(_localctx.variable);
 
-					if(((ExprCompContext)_localctx).exprComp_.cierto!=null || ((ExprCompContext)_localctx).exprComp_.falso!=null) {
-						((ExprCompContext)_localctx).cierto = ((ExprCompContext)_localctx).exprComp_.cierto;
-						((ExprCompContext)_localctx).falso = ((ExprCompContext)_localctx).exprComp_.falso;
+					if(((ExprCompContext)_localctx).exprComp_.true_!= null || ((ExprCompContext)_localctx).exprComp_.false_!= null) {
+						((ExprCompContext)_localctx).true_ =  ((ExprCompContext)_localctx).exprComp_.true_;
+						((ExprCompContext)_localctx).false_ =  ((ExprCompContext)_localctx).exprComp_.false_;
 					}
 				
 			}
@@ -3131,10 +3121,10 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprComp_Context extends ParserRuleContext {
-		public Variable t1;
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable e1;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public Token OPREL;
 		public ExprAddContext exprAdd;
 		public TerminalNode OPREL() { return getToken(eGramC3D.OPREL, 0); }
@@ -3142,9 +3132,9 @@ public class eGramC3D extends Parser {
 			return getRuleContext(ExprAddContext.class,0);
 		}
 		public ExprComp_Context(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public ExprComp_Context(ParserRuleContext parent, int invokingState, Variable t1) {
+		public ExprComp_Context(ParserRuleContext parent, int invokingState, Variable e1) {
 			super(parent, invokingState);
-			this.t1 = t1;
+			this.e1 = e1;
 		}
 		@Override public int getRuleIndex() { return RULE_exprComp_; }
 		@Override
@@ -3162,8 +3152,8 @@ public class eGramC3D extends Parser {
 		}
 	}
 
-	public final ExprComp_Context exprComp_(Variable t1) throws RecognitionException {
-		ExprComp_Context _localctx = new ExprComp_Context(_ctx, getState(), t1);
+	public final ExprComp_Context exprComp_(Variable e1) throws RecognitionException {
+		ExprComp_Context _localctx = new ExprComp_Context(_ctx, getState(), e1);
 		enterRule(_localctx, 56, RULE_exprComp_);
 		try {
 			setState(437);
@@ -3177,14 +3167,14 @@ public class eGramC3D extends Parser {
 				setState(433);
 				((ExprComp_Context)_localctx).exprAdd = exprAdd();
 
-						generate(condJumpValue(((ExprComp_Context)_localctx).OPREL.getText()), _localctx.t1.toString(), ((ExprComp_Context)_localctx).exprAdd.r.toString(), null);
-						((ExprComp_Context)_localctx).cierto = new ArrayDeque<Integer>();
-				 		_localctx.cierto.add(pc);
+						generate(condJumpValue(((ExprComp_Context)_localctx).OPREL.getText()), _localctx.e1.toString(), ((ExprComp_Context)_localctx).exprAdd.variable.toString(), null);
+						((ExprComp_Context)_localctx).true_ =  new ArrayDeque<Integer>();
+				 		_localctx.true_.add(pc);
 						generate(Instruction.OP.jump, null, null, null);
-						((ExprComp_Context)_localctx).falso = new ArrayDeque<Integer>();
-				 		_localctx.falso.add(pc);
-						((ExprComp_Context)_localctx).r =  ((ExprComp_Context)_localctx).exprAdd.r;
-				    
+						((ExprComp_Context)_localctx).false_ =  new ArrayDeque<Integer>();
+				 		_localctx.false_.add(pc);
+						((ExprComp_Context)_localctx).variable =  ((ExprComp_Context)_localctx).exprAdd.variable;
+				  
 				}
 				break;
 			case RPAREN:
@@ -3216,9 +3206,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprAddContext extends ParserRuleContext {
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprMultContext exprMult;
 		public ExprAdd_Context exprAdd_;
 		public ExprMultContext exprMult() {
@@ -3255,17 +3245,17 @@ public class eGramC3D extends Parser {
 			setState(439);
 			((ExprAddContext)_localctx).exprMult = exprMult();
 
-					((ExprAddContext)_localctx).r =  ((ExprAddContext)_localctx).exprMult.r;
-					((ExprAddContext)_localctx).cierto = ((ExprAddContext)_localctx).exprMult.cierto;
-					((ExprAddContext)_localctx).falso = ((ExprAddContext)_localctx).exprMult.falso;
+					((ExprAddContext)_localctx).variable =  ((ExprAddContext)_localctx).exprMult.variable;
+					((ExprAddContext)_localctx).true_ =  ((ExprAddContext)_localctx).exprMult.true_;
+					((ExprAddContext)_localctx).false_ =  ((ExprAddContext)_localctx).exprMult.false_;
 				
 			setState(441);
-			((ExprAddContext)_localctx).exprAdd_ = exprAdd_(_localctx.r);
+			((ExprAddContext)_localctx).exprAdd_ = exprAdd_(_localctx.variable);
 
-					if(((ExprAddContext)_localctx).exprAdd_.cierto!=null || ((ExprAddContext)_localctx).exprAdd_.falso!=null || ((ExprAddContext)_localctx).exprAdd_.r!=null) {
-						((ExprAddContext)_localctx).r = ((ExprAddContext)_localctx).exprAdd_.r;
-						((ExprAddContext)_localctx).cierto = ((ExprAddContext)_localctx).exprAdd_.cierto;
-						((ExprAddContext)_localctx).falso = ((ExprAddContext)_localctx).exprAdd_.falso;
+					if(((ExprAddContext)_localctx).exprAdd_.true_!= null || ((ExprAddContext)_localctx).exprAdd_.false_!= null || ((ExprAddContext)_localctx).exprAdd_.variable!= null) {
+						((ExprAddContext)_localctx).variable =  ((ExprAddContext)_localctx).exprAdd_.variable;
+						((ExprAddContext)_localctx).true_ =  ((ExprAddContext)_localctx).exprAdd_.true_;
+						((ExprAddContext)_localctx).false_ =  ((ExprAddContext)_localctx).exprAdd_.false_;
 					}
 				
 			}
@@ -3284,9 +3274,9 @@ public class eGramC3D extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprAdd_Context extends ParserRuleContext {
 		public Variable t1;
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer > falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprMultContext exprMult;
 		public ExprAdd_Context exprAdd_;
 		public TerminalNode ADD() { return getToken(eGramC3D.ADD, 0); }
@@ -3333,19 +3323,19 @@ public class eGramC3D extends Parser {
 				setState(445);
 				((ExprAdd_Context)_localctx).exprMult = exprMult();
 
-						int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-						generate(Instruction.OP.add, _localctx.t1.toString(), ((ExprAdd_Context)_localctx).exprMult.r.toString(), tv.get(t).toString());
-						((ExprAdd_Context)_localctx).r = tv.get(t);
-						((ExprAdd_Context)_localctx).cierto = ((ExprAdd_Context)_localctx).exprMult.cierto;
-						((ExprAdd_Context)_localctx).falso = ((ExprAdd_Context)_localctx).exprMult.falso;
+						int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+						generate(Instruction.OP.add, _localctx.t1.toString(), ((ExprAdd_Context)_localctx).exprMult.variable.toString(), tv.get(t).toString());
+						((ExprAdd_Context)_localctx).variable =  tv.get(t);
+						((ExprAdd_Context)_localctx).true_ =  ((ExprAdd_Context)_localctx).exprMult.true_;
+						((ExprAdd_Context)_localctx).false_ =  ((ExprAdd_Context)_localctx).exprMult.false_;
 					
 				setState(447);
-				((ExprAdd_Context)_localctx).exprAdd_ = exprAdd_(_localctx.r);
+				((ExprAdd_Context)_localctx).exprAdd_ = exprAdd_(_localctx.variable);
 
-						if(((ExprAdd_Context)_localctx).exprAdd_.r!=null || ((ExprAdd_Context)_localctx).exprAdd_.cierto!=null || ((ExprAdd_Context)_localctx).exprAdd_.falso!=null) {
-							((ExprAdd_Context)_localctx).r = ((ExprAdd_Context)_localctx).exprAdd_.r;
-							((ExprAdd_Context)_localctx).cierto = ((ExprAdd_Context)_localctx).exprAdd_.cierto;
-							((ExprAdd_Context)_localctx).falso = ((ExprAdd_Context)_localctx).exprAdd_.falso;
+						if(((ExprAdd_Context)_localctx).exprAdd_.variable!= null || ((ExprAdd_Context)_localctx).exprAdd_.true_!= null || ((ExprAdd_Context)_localctx).exprAdd_.false_!= null) {
+							((ExprAdd_Context)_localctx).variable =  ((ExprAdd_Context)_localctx).exprAdd_.variable;
+							((ExprAdd_Context)_localctx).true_ =  ((ExprAdd_Context)_localctx).exprAdd_.true_;
+							((ExprAdd_Context)_localctx).false_ =  ((ExprAdd_Context)_localctx).exprAdd_.false_;
 						}
 					
 				}
@@ -3358,19 +3348,19 @@ public class eGramC3D extends Parser {
 				setState(451);
 				((ExprAdd_Context)_localctx).exprMult = exprMult();
 
-						int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-						generate(Instruction.OP.sub, _localctx.t1.toString(), ((ExprAdd_Context)_localctx).exprMult.r.toString(), tv.get(t).toString());
-						((ExprAdd_Context)_localctx).r = tv.get(t);
-						((ExprAdd_Context)_localctx).cierto = ((ExprAdd_Context)_localctx).exprMult.cierto;
-						((ExprAdd_Context)_localctx).falso = ((ExprAdd_Context)_localctx).exprMult.falso;
+						int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+						generate(Instruction.OP.sub, _localctx.t1.toString(), ((ExprAdd_Context)_localctx).exprMult.variable.toString(), tv.get(t).toString());
+						((ExprAdd_Context)_localctx).variable =  tv.get(t);
+						((ExprAdd_Context)_localctx).true_ =  ((ExprAdd_Context)_localctx).exprMult.true_;
+						((ExprAdd_Context)_localctx).false_ =  ((ExprAdd_Context)_localctx).exprMult.false_;
 					
 				setState(453);
-				((ExprAdd_Context)_localctx).exprAdd_ = exprAdd_(_localctx.r);
+				((ExprAdd_Context)_localctx).exprAdd_ = exprAdd_(_localctx.variable);
 
-						if(((ExprAdd_Context)_localctx).exprAdd_.r!=null || ((ExprAdd_Context)_localctx).exprAdd_.cierto!=null || ((ExprAdd_Context)_localctx).exprAdd_.falso!=null) {
-							((ExprAdd_Context)_localctx).r = ((ExprAdd_Context)_localctx).exprAdd_.r;
-							((ExprAdd_Context)_localctx).cierto = ((ExprAdd_Context)_localctx).exprAdd_.cierto;
-							((ExprAdd_Context)_localctx).falso = ((ExprAdd_Context)_localctx).exprAdd_.falso;
+						if(((ExprAdd_Context)_localctx).exprAdd_.variable!= null || ((ExprAdd_Context)_localctx).exprAdd_.true_!= null || ((ExprAdd_Context)_localctx).exprAdd_.false_!= null) {
+							((ExprAdd_Context)_localctx).variable =  ((ExprAdd_Context)_localctx).exprAdd_.variable;
+							((ExprAdd_Context)_localctx).true_ =  ((ExprAdd_Context)_localctx).exprAdd_.true_;
+							((ExprAdd_Context)_localctx).false_ =  ((ExprAdd_Context)_localctx).exprAdd_.false_;
 						}
 					
 				}
@@ -3405,9 +3395,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprMultContext extends ParserRuleContext {
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprNegContext exprNeg;
 		public ExprMult_Context exprMult_;
 		public ExprNegContext exprNeg() {
@@ -3444,17 +3434,17 @@ public class eGramC3D extends Parser {
 			setState(459);
 			((ExprMultContext)_localctx).exprNeg = exprNeg();
 
-					((ExprMultContext)_localctx).r =  ((ExprMultContext)_localctx).exprNeg.r;
-					((ExprMultContext)_localctx).cierto = ((ExprMultContext)_localctx).exprNeg.cierto;
-					((ExprMultContext)_localctx).falso = ((ExprMultContext)_localctx).exprNeg.falso;
+					((ExprMultContext)_localctx).variable =  ((ExprMultContext)_localctx).exprNeg.variable;
+					((ExprMultContext)_localctx).true_ =  ((ExprMultContext)_localctx).exprNeg.true_;
+					((ExprMultContext)_localctx).false_ =  ((ExprMultContext)_localctx).exprNeg.false_;
 				
 			setState(461);
-			((ExprMultContext)_localctx).exprMult_ = exprMult_(_localctx.r);
+			((ExprMultContext)_localctx).exprMult_ = exprMult_(_localctx.variable);
 
-					if(((ExprMultContext)_localctx).exprMult_.r!=null || ((ExprMultContext)_localctx).exprMult_.cierto!=null || ((ExprMultContext)_localctx).exprMult_.falso!=null) {
-						((ExprMultContext)_localctx).r = ((ExprMultContext)_localctx).exprMult_.r;
-						((ExprMultContext)_localctx).cierto = ((ExprMultContext)_localctx).exprMult_.cierto;
-						((ExprMultContext)_localctx).falso = ((ExprMultContext)_localctx).exprMult_.falso;
+					if(((ExprMultContext)_localctx).exprMult_.variable!= null || ((ExprMultContext)_localctx).exprMult_.true_!= null || ((ExprMultContext)_localctx).exprMult_.false_!= null) {
+						((ExprMultContext)_localctx).variable =  ((ExprMultContext)_localctx).exprMult_.variable;
+						((ExprMultContext)_localctx).true_ =  ((ExprMultContext)_localctx).exprMult_.true_;
+						((ExprMultContext)_localctx).false_ =  ((ExprMultContext)_localctx).exprMult_.false_;
 					}
 				
 			}
@@ -3473,9 +3463,9 @@ public class eGramC3D extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprMult_Context extends ParserRuleContext {
 		public Variable t1;
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprNegContext exprNeg;
 		public ExprMult_Context exprMult_;
 		public TerminalNode MULT() { return getToken(eGramC3D.MULT, 0); }
@@ -3523,19 +3513,19 @@ public class eGramC3D extends Parser {
 				setState(465);
 				((ExprMult_Context)_localctx).exprNeg = exprNeg();
 
-						int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-						generate(Instruction.OP.mult, _localctx.t1.toString(), ((ExprMult_Context)_localctx).exprNeg.r.toString(), tv.get(t).toString());
-						((ExprMult_Context)_localctx).r = tv.get(t);
-						((ExprMult_Context)_localctx).cierto = ((ExprMult_Context)_localctx).exprNeg.cierto;
-						((ExprMult_Context)_localctx).falso = ((ExprMult_Context)_localctx).exprNeg.falso;
+						int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+						generate(Instruction.OP.mult, _localctx.t1.toString(), ((ExprMult_Context)_localctx).exprNeg.variable.toString(), tv.get(t).toString());
+						((ExprMult_Context)_localctx).variable =  tv.get(t);
+						((ExprMult_Context)_localctx).true_ =  ((ExprMult_Context)_localctx).exprNeg.true_;
+						((ExprMult_Context)_localctx).false_ =  ((ExprMult_Context)_localctx).exprNeg.false_;
 					
 				setState(467);
-				((ExprMult_Context)_localctx).exprMult_ = exprMult_(_localctx.r);
+				((ExprMult_Context)_localctx).exprMult_ = exprMult_(_localctx.variable);
 
-						if(((ExprMult_Context)_localctx).exprMult_.r!=null || ((ExprMult_Context)_localctx).exprMult_.cierto!=null || ((ExprMult_Context)_localctx).exprMult_.falso!=null) {
-							((ExprMult_Context)_localctx).r = ((ExprMult_Context)_localctx).exprMult_.r;
-							((ExprMult_Context)_localctx).cierto = ((ExprMult_Context)_localctx).exprMult_.cierto;
-							((ExprMult_Context)_localctx).falso = ((ExprMult_Context)_localctx).exprMult_.falso;
+						if(((ExprMult_Context)_localctx).exprMult_.variable!= null || ((ExprMult_Context)_localctx).exprMult_.true_!= null || ((ExprMult_Context)_localctx).exprMult_.false_!= null) {
+							((ExprMult_Context)_localctx).variable =  ((ExprMult_Context)_localctx).exprMult_.variable;
+							((ExprMult_Context)_localctx).true_ =  ((ExprMult_Context)_localctx).exprMult_.true_;
+							((ExprMult_Context)_localctx).false_ =  ((ExprMult_Context)_localctx).exprMult_.false_;
 						}
 					
 				}
@@ -3548,19 +3538,19 @@ public class eGramC3D extends Parser {
 				setState(471);
 				((ExprMult_Context)_localctx).exprNeg = exprNeg();
 
-						int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-						generate(Instruction.OP.div, _localctx.t1.toString(), ((ExprMult_Context)_localctx).exprNeg.r.toString(), tv.get(t).toString());
-						((ExprMult_Context)_localctx).r = tv.get(t);
-						((ExprMult_Context)_localctx).cierto = ((ExprMult_Context)_localctx).exprNeg.cierto;
-						((ExprMult_Context)_localctx).falso = ((ExprMult_Context)_localctx).exprNeg.falso;
+						int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+						generate(Instruction.OP.div, _localctx.t1.toString(), ((ExprMult_Context)_localctx).exprNeg.variable.toString(), tv.get(t).toString());
+						((ExprMult_Context)_localctx).variable =  tv.get(t);
+						((ExprMult_Context)_localctx).true_ =  ((ExprMult_Context)_localctx).exprNeg.true_;
+						((ExprMult_Context)_localctx).false_ =  ((ExprMult_Context)_localctx).exprNeg.false_;
 					
 				setState(473);
-				((ExprMult_Context)_localctx).exprMult_ = exprMult_(_localctx.r);
+				((ExprMult_Context)_localctx).exprMult_ = exprMult_(_localctx.variable);
 
-						if(((ExprMult_Context)_localctx).exprMult_.r!=null || ((ExprMult_Context)_localctx).exprMult_.cierto!=null || ((ExprMult_Context)_localctx).exprMult_.falso!=null) {
-							((ExprMult_Context)_localctx).r = ((ExprMult_Context)_localctx).exprMult_.r;
-							((ExprMult_Context)_localctx).cierto = ((ExprMult_Context)_localctx).exprMult_.cierto;
-							((ExprMult_Context)_localctx).falso = ((ExprMult_Context)_localctx).exprMult_.falso;
+						if(((ExprMult_Context)_localctx).exprMult_.variable!= null || ((ExprMult_Context)_localctx).exprMult_.true_!= null || ((ExprMult_Context)_localctx).exprMult_.false_!= null) {
+							((ExprMult_Context)_localctx).variable =  ((ExprMult_Context)_localctx).exprMult_.variable;
+							((ExprMult_Context)_localctx).true_ =  ((ExprMult_Context)_localctx).exprMult_.true_;
+							((ExprMult_Context)_localctx).false_ =  ((ExprMult_Context)_localctx).exprMult_.false_;
 						}
 					
 				}
@@ -3573,19 +3563,19 @@ public class eGramC3D extends Parser {
 				setState(477);
 				((ExprMult_Context)_localctx).exprNeg = exprNeg();
 
-						int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-						generate(Instruction.OP.mod, _localctx.t1.toString(), ((ExprMult_Context)_localctx).exprNeg.r.toString(), tv.get(t).toString());
-						((ExprMult_Context)_localctx).r = tv.get(t);
-						((ExprMult_Context)_localctx).cierto = ((ExprMult_Context)_localctx).exprNeg.cierto;
-						((ExprMult_Context)_localctx).falso = ((ExprMult_Context)_localctx).exprNeg.falso;
+						int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+						generate(Instruction.OP.mod, _localctx.t1.toString(), ((ExprMult_Context)_localctx).exprNeg.variable.toString(), tv.get(t).toString());
+						((ExprMult_Context)_localctx).variable =  tv.get(t);
+						((ExprMult_Context)_localctx).true_ =  ((ExprMult_Context)_localctx).exprNeg.true_;
+						((ExprMult_Context)_localctx).false_ =  ((ExprMult_Context)_localctx).exprNeg.false_;
 					
 				setState(479);
-				((ExprMult_Context)_localctx).exprMult_ = exprMult_(_localctx.r);
+				((ExprMult_Context)_localctx).exprMult_ = exprMult_(_localctx.variable);
 
-						if(((ExprMult_Context)_localctx).exprMult_.r!=null || ((ExprMult_Context)_localctx).exprMult_.cierto!=null || ((ExprMult_Context)_localctx).exprMult_.falso!=null) {
-							((ExprMult_Context)_localctx).r = ((ExprMult_Context)_localctx).exprMult_.r;
-							((ExprMult_Context)_localctx).cierto = ((ExprMult_Context)_localctx).exprMult_.cierto;
-							((ExprMult_Context)_localctx).falso = ((ExprMult_Context)_localctx).exprMult_.falso;
+						if(((ExprMult_Context)_localctx).exprMult_.variable!= null || ((ExprMult_Context)_localctx).exprMult_.true_!= null || ((ExprMult_Context)_localctx).exprMult_.false_!= null) {
+							((ExprMult_Context)_localctx).variable =  ((ExprMult_Context)_localctx).exprMult_.variable;
+							((ExprMult_Context)_localctx).true_ =  ((ExprMult_Context)_localctx).exprMult_.true_;
+							((ExprMult_Context)_localctx).false_ =  ((ExprMult_Context)_localctx).exprMult_.false_;
 						}
 					
 				}
@@ -3622,9 +3612,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprNegContext extends ParserRuleContext {
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public PrimarioContext primario;
 		public TerminalNode SUB() { return getToken(eGramC3D.SUB, 0); }
 		public PrimarioContext primario() {
@@ -3664,11 +3654,11 @@ public class eGramC3D extends Parser {
 				setState(486);
 				((ExprNegContext)_localctx).primario = primario();
 
-						int t = tv.newVar(true,pproc.peek(),Symbol.Types.VAR,Symbol.DataTypes.INT);
-						generate(Instruction.OP.neg, ((ExprNegContext)_localctx).primario.r.toString(), null, tv.get(t).toString());
-						((ExprNegContext)_localctx).r =  tv.get(t);
-						((ExprNegContext)_localctx).cierto =  ((ExprNegContext)_localctx).primario.cierto;
-						((ExprNegContext)_localctx).falso =  ((ExprNegContext)_localctx).primario.falso;
+						int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
+						generate(Instruction.OP.neg, ((ExprNegContext)_localctx).primario.variable.toString(), null, tv.get(t).toString());
+						((ExprNegContext)_localctx).variable =  tv.get(t);
+						((ExprNegContext)_localctx).true_ =  ((ExprNegContext)_localctx).primario.true_;
+						((ExprNegContext)_localctx).false_ =  ((ExprNegContext)_localctx).primario.false_;
 					
 				}
 				break;
@@ -3682,9 +3672,9 @@ public class eGramC3D extends Parser {
 				setState(489);
 				((ExprNegContext)_localctx).primario = primario();
 
-						((ExprNegContext)_localctx).r =  ((ExprNegContext)_localctx).primario.r;
-						((ExprNegContext)_localctx).cierto =  ((ExprNegContext)_localctx).primario.cierto;
-						((ExprNegContext)_localctx).falso =  ((ExprNegContext)_localctx).primario.falso;
+						((ExprNegContext)_localctx).variable =  ((ExprNegContext)_localctx).primario.variable;
+						((ExprNegContext)_localctx).true_ =  ((ExprNegContext)_localctx).primario.true_;
+						((ExprNegContext)_localctx).false_ =  ((ExprNegContext)_localctx).primario.false_;
 					
 				}
 				break;
@@ -3705,9 +3695,9 @@ public class eGramC3D extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class PrimarioContext extends ParserRuleContext {
-		public Variable r;
-		public Deque<Integer> cierto;
-		public Deque<Integer> falso;
+		public Variable variable;
+		public Deque<Integer> true_;
+		public Deque<Integer> false_;
 		public ExprContext expr;
 		public ReferenciaContext referencia;
 		public LiteralContext literal;
@@ -3758,9 +3748,9 @@ public class eGramC3D extends Parser {
 				setState(496);
 				match(RPAREN);
 
-						((PrimarioContext)_localctx).r =  ((PrimarioContext)_localctx).expr.r;
-						((PrimarioContext)_localctx).cierto =  ((PrimarioContext)_localctx).expr.cierto;
-						((PrimarioContext)_localctx).falso =  ((PrimarioContext)_localctx).expr.falso;
+						((PrimarioContext)_localctx).variable =  ((PrimarioContext)_localctx).expr.variable;
+						((PrimarioContext)_localctx).true_ =  ((PrimarioContext)_localctx).expr.true_;
+						((PrimarioContext)_localctx).false_ =  ((PrimarioContext)_localctx).expr.false_;
 					
 				}
 				break;
@@ -3770,21 +3760,21 @@ public class eGramC3D extends Parser {
 				setState(499);
 				((PrimarioContext)_localctx).referencia = referencia();
 
-						if(((PrimarioContext)_localctx).referencia.d!=null) {
+						if(((PrimarioContext)_localctx).referencia.offset!= null) {
 							// Caso para cuando hay desplazamiento
 							Variable t = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-							generate(Instruction.OP.ind_val, ((PrimarioContext)_localctx).referencia.r.toString(), ((PrimarioContext)_localctx).referencia.d.toString(), t.toString());
-							((PrimarioContext)_localctx).r =  t;
+							generate(Instruction.OP.ind_val, ((PrimarioContext)_localctx).referencia.variable.toString(), ((PrimarioContext)_localctx).referencia.offset.toString(), t.toString());
+							((PrimarioContext)_localctx).variable =  t;
 						} else {
-							((PrimarioContext)_localctx).r =  ((PrimarioContext)_localctx).referencia.r;
+							((PrimarioContext)_localctx).variable =  ((PrimarioContext)_localctx).referencia.variable;
 						}
-						if(((PrimarioContext)_localctx).referencia.datatypes==Symbol.DataTypes.BOOLEAN) {
-							generate(Instruction.OP.ifEQ, _localctx.r.toString(), "-1", null);
-							((PrimarioContext)_localctx).cierto = new ArrayDeque<Integer>();
-							_localctx.cierto.add(pc);
+						if(((PrimarioContext)_localctx).referencia.dataType == Symbol.DataTypes.BOOLEAN) {
+							generate(Instruction.OP.ifEQ, _localctx.variable.toString(), "-1", null);
+							((PrimarioContext)_localctx).true_ =  new ArrayDeque<Integer>();
+							_localctx.true_.add(pc);
 							generate(Instruction.OP.jump, null, null, null);
-							((PrimarioContext)_localctx).falso = new ArrayDeque<Integer>();
-							_localctx.falso.add(pc);
+							((PrimarioContext)_localctx).false_ =  new ArrayDeque<Integer>();
+							_localctx.false_.add(pc);
 						}
 					
 				}
@@ -3797,39 +3787,39 @@ public class eGramC3D extends Parser {
 				setState(502);
 				((PrimarioContext)_localctx).literal = literal();
 
-						int t=0;
+						int t = 0;
 						switch(((PrimarioContext)_localctx).literal.datatypes) {
 							case BOOLEAN:
-								t = tv.newVar(true,pproc.peek(), Symbol.Types.VAR,Symbol.DataTypes.BOOLEAN);
+								t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.BOOLEAN);
 								if((((PrimarioContext)_localctx).literal!=null?_input.getText(((PrimarioContext)_localctx).literal.start,((PrimarioContext)_localctx).literal.stop):null).equals("true")) {
 									generate(Instruction.OP.copy, "-1", null, tv.get(t).toString());
 									tv.get(t).setValue("-1");
 									generate(Instruction.OP.jump, null, null, null);
-									((PrimarioContext)_localctx).cierto = new ArrayDeque<Integer>();
-									_localctx.cierto.add(pc);
-									((PrimarioContext)_localctx).falso =  null;
+									((PrimarioContext)_localctx).true_ =  new ArrayDeque<Integer>();
+									_localctx.true_.add(pc);
+									((PrimarioContext)_localctx).false_ =  null;
 								} else {
 									generate(Instruction.OP.copy, "0", null, tv.get(t).toString());
 									tv.get(t).setValue("0");
 									generate(Instruction.OP.jump, null, null, null);
-									((PrimarioContext)_localctx).falso = new ArrayDeque<Integer>();
-									_localctx.falso.add(pc);
-									((PrimarioContext)_localctx).cierto =  null;
+									((PrimarioContext)_localctx).false_ =  new ArrayDeque<Integer>();
+									_localctx.false_.add(pc);
+									((PrimarioContext)_localctx).true_ =  null;
 								}
 								break;
 							case STRING:
-								t = tv.newVar(true,pproc.peek(), Symbol.Types.CONST,Symbol.DataTypes.STRING);
+								t = tv.newVar(true, pproc.peek(), Symbol.Types.CONST, Symbol.DataTypes.STRING);
 								tv.get(t).setValue((((PrimarioContext)_localctx).literal!=null?_input.getText(((PrimarioContext)_localctx).literal.start,((PrimarioContext)_localctx).literal.stop):null));
 								break;
 							case INT:
-								t = tv.newVar(true,pproc.peek(), Symbol.Types.VAR,Symbol.DataTypes.INT);
+								t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
 								generate(Instruction.OP.copy, (((PrimarioContext)_localctx).literal!=null?_input.getText(((PrimarioContext)_localctx).literal.start,((PrimarioContext)_localctx).literal.stop):null), null, tv.get(t).toString());
 								tv.get(t).setValue((((PrimarioContext)_localctx).literal!=null?_input.getText(((PrimarioContext)_localctx).literal.start,((PrimarioContext)_localctx).literal.stop):null));
 								break;
 							default:
 								break;
 						}
-						((PrimarioContext)_localctx).r =  tv.get(t);
+						((PrimarioContext)_localctx).variable =  tv.get(t);
 					
 				}
 				break;
@@ -3886,7 +3876,7 @@ public class eGramC3D extends Parser {
 				setState(507);
 				match(INTEGER);
 
-						((TipoContext)_localctx).datatypes = Symbol.DataTypes.INT;
+						((TipoContext)_localctx).datatypes =  Symbol.DataTypes.INT;
 					
 				}
 				break;
@@ -3896,7 +3886,7 @@ public class eGramC3D extends Parser {
 				setState(509);
 				match(BOOLEAN);
 
-						((TipoContext)_localctx).datatypes = Symbol.DataTypes.BOOLEAN;
+						((TipoContext)_localctx).datatypes =  Symbol.DataTypes.BOOLEAN;
 					
 				}
 				break;
@@ -3906,7 +3896,7 @@ public class eGramC3D extends Parser {
 				setState(511);
 				match(STRING);
 
-						((TipoContext)_localctx).datatypes = Symbol.DataTypes.STRING;
+						((TipoContext)_localctx).datatypes =  Symbol.DataTypes.STRING;
 					
 				}
 				break;
@@ -3963,7 +3953,7 @@ public class eGramC3D extends Parser {
 				setState(515);
 				match(LiteralInteger);
 
-						((LiteralContext)_localctx).datatypes = Symbol.DataTypes.INT;
+						((LiteralContext)_localctx).datatypes =  Symbol.DataTypes.INT;
 					
 				}
 				break;
@@ -3973,7 +3963,7 @@ public class eGramC3D extends Parser {
 				setState(517);
 				match(LiteralBoolean);
 
-						((LiteralContext)_localctx).datatypes = Symbol.DataTypes.BOOLEAN;
+						((LiteralContext)_localctx).datatypes =  Symbol.DataTypes.BOOLEAN;
 					
 				}
 				break;
@@ -3983,7 +3973,7 @@ public class eGramC3D extends Parser {
 				setState(519);
 				match(LiteralString);
 
-						((LiteralContext)_localctx).datatypes = Symbol.DataTypes.STRING;
+						((LiteralContext)_localctx).datatypes =  Symbol.DataTypes.STRING;
 					
 				}
 				break;
@@ -4003,7 +3993,7 @@ public class eGramC3D extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001/\u020c\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001.\u020c\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+
@@ -4085,7 +4075,7 @@ public class eGramC3D extends Parser {
 		"#\u0003#\u0202\b#\u0001$\u0001$\u0001$\u0001$\u0001$\u0001$\u0003$\u020a"+
 		"\b$\u0001$\u0000\u0000%\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012"+
 		"\u0014\u0016\u0018\u001a\u001c\u001e \"$&(*,.02468:<>@BDFH\u0000\u0001"+
-		"\u0002\u0000\u0011\u0011,,\u021a\u0000J\u0001\u0000\u0000\u0000\u0002"+
+		"\u0002\u0000\u0011\u0011++\u021a\u0000J\u0001\u0000\u0000\u0000\u0002"+
 		"Y\u0001\u0000\u0000\u0000\u0004\u008d\u0001\u0000\u0000\u0000\u0006\u008f"+
 		"\u0001\u0000\u0000\u0000\b\u00a6\u0001\u0000\u0000\u0000\n\u00a8\u0001"+
 		"\u0000\u0000\u0000\f\u00aa\u0001\u0000\u0000\u0000\u000e\u00b7\u0001\u0000"+
@@ -4115,11 +4105,11 @@ public class eGramC3D extends Parser {
 		"\u0000\u0000\u0000`a\u0001\u0000\u0000\u0000ac\u0001\u0000\u0000\u0000"+
 		"b`\u0001\u0000\u0000\u0000cd\u0003\u0012\t\u0000de\u0005\u0019\u0000\u0000"+
 		"ef\u0006\u0001\uffff\uffff\u0000f\u0003\u0001\u0000\u0000\u0000gh\u0003"+
-		"F#\u0000hi\u0005,\u0000\u0000in\u0006\u0002\uffff\uffff\u0000jk\u0005"+
+		"F#\u0000hi\u0005+\u0000\u0000in\u0006\u0002\uffff\uffff\u0000jk\u0005"+
 		"\u001f\u0000\u0000kl\u0003*\u0015\u0000lm\u0006\u0002\uffff\uffff\u0000"+
 		"mo\u0001\u0000\u0000\u0000nj\u0001\u0000\u0000\u0000no\u0001\u0000\u0000"+
 		"\u0000op\u0001\u0000\u0000\u0000pq\u0005\u001b\u0000\u0000q\u008e\u0001"+
-		"\u0000\u0000\u0000rs\u0005\u0003\u0000\u0000st\u0003F#\u0000tu\u0005,"+
+		"\u0000\u0000\u0000rs\u0005\u0003\u0000\u0000st\u0003F#\u0000tu\u0005+"+
 		"\u0000\u0000uv\u0005\u001f\u0000\u0000vw\u0003H$\u0000wx\u0005\u001b\u0000"+
 		"\u0000xy\u0006\u0002\uffff\uffff\u0000y\u008e\u0001\u0000\u0000\u0000"+
 		"z{\u0003\u0006\u0003\u0000{|\u0005\u0017\u0000\u0000|}\u0005\u001b\u0000"+
@@ -4134,7 +4124,7 @@ public class eGramC3D extends Parser {
 		"\u0001\u0000\u0000\u0000\u008dg\u0001\u0000\u0000\u0000\u008dr\u0001\u0000"+
 		"\u0000\u0000\u008dz\u0001\u0000\u0000\u0000\u008d~\u0001\u0000\u0000\u0000"+
 		"\u008e\u0005\u0001\u0000\u0000\u0000\u008f\u0090\u0003F#\u0000\u0090\u0091"+
-		"\u0005,\u0000\u0000\u0091\u0095\u0005\u0016\u0000\u0000\u0092\u0093\u0003"+
+		"\u0005+\u0000\u0000\u0091\u0095\u0005\u0016\u0000\u0000\u0092\u0093\u0003"+
 		"\n\u0005\u0000\u0093\u0094\u0005\u001d\u0000\u0000\u0094\u0096\u0001\u0000"+
 		"\u0000\u0000\u0095\u0092\u0001\u0000\u0000\u0000\u0095\u0096\u0001\u0000"+
 		"\u0000\u0000\u0096\u0097\u0001\u0000\u0000\u0000\u0097\u0098\u0003\n\u0005"+
@@ -4148,7 +4138,7 @@ public class eGramC3D extends Parser {
 		"\u0001\u0000\u0000\u0000\u00a6\u009b\u0001\u0000\u0000\u0000\u00a6\u00a5"+
 		"\u0001\u0000\u0000\u0000\u00a7\t\u0001\u0000\u0000\u0000\u00a8\u00a9\u0007"+
 		"\u0000\u0000\u0000\u00a9\u000b\u0001\u0000\u0000\u0000\u00aa\u00ab\u0005"+
-		",\u0000\u0000\u00ab\u00ad\u0005\u0014\u0000\u0000\u00ac\u00ae\u0003\u000e"+
+		"+\u0000\u0000\u00ab\u00ad\u0005\u0014\u0000\u0000\u00ac\u00ae\u0003\u000e"+
 		"\u0007\u0000\u00ad\u00ac\u0001\u0000\u0000\u0000\u00ad\u00ae\u0001\u0000"+
 		"\u0000\u0000\u00ae\u00af\u0001\u0000\u0000\u0000\u00af\u00b0\u0005\u0015"+
 		"\u0000\u0000\u00b0\u00b1\u0006\u0006\uffff\uffff\u0000\u00b1\r\u0001\u0000"+
@@ -4156,7 +4146,7 @@ public class eGramC3D extends Parser {
 		"\u0000\u00b4\u00b5\u0003\u000e\u0007\u0000\u00b5\u00b8\u0001\u0000\u0000"+
 		"\u0000\u00b6\u00b8\u0003\u0010\b\u0000\u00b7\u00b2\u0001\u0000\u0000\u0000"+
 		"\u00b7\u00b6\u0001\u0000\u0000\u0000\u00b8\u000f\u0001\u0000\u0000\u0000"+
-		"\u00b9\u00ba\u0003F#\u0000\u00ba\u00bb\u0005,\u0000\u0000\u00bb\u0011"+
+		"\u00b9\u00ba\u0003F#\u0000\u00ba\u00bb\u0005+\u0000\u0000\u00bb\u0011"+
 		"\u0001\u0000\u0000\u0000\u00bc\u00bd\u0003\u0016\u000b\u0000\u00bd\u00be"+
 		"\u0006\t\uffff\uffff\u0000\u00be\u00bf\u0003\u0014\n\u0000\u00bf\u00c0"+
 		"\u0006\t\uffff\uffff\u0000\u00c0\u0013\u0001\u0000\u0000\u0000\u00c1\u00c2"+
@@ -4241,16 +4231,16 @@ public class eGramC3D extends Parser {
 		"\u014d\u014e\u0006\u000f\uffff\uffff\u0000\u014e\u0151\u0001\u0000\u0000"+
 		"\u0000\u014f\u0151\u0001\u0000\u0000\u0000\u0150\u0149\u0001\u0000\u0000"+
 		"\u0000\u0150\u014f\u0001\u0000\u0000\u0000\u0151\u001f\u0001\u0000\u0000"+
-		"\u0000\u0152\u0153\u0005,\u0000\u0000\u0153\u0161\u0006\u0010\uffff\uffff"+
+		"\u0000\u0152\u0153\u0005+\u0000\u0000\u0153\u0161\u0006\u0010\uffff\uffff"+
 		"\u0000\u0154\u0155\u0003\"\u0011\u0000\u0155\u0156\u0005\u0017\u0000\u0000"+
 		"\u0156\u0157\u0006\u0010\uffff\uffff\u0000\u0157\u0161\u0001\u0000\u0000"+
-		"\u0000\u0158\u0159\u0005,\u0000\u0000\u0159\u015a\u0005\u0014\u0000\u0000"+
+		"\u0000\u0158\u0159\u0005+\u0000\u0000\u0159\u015a\u0005\u0014\u0000\u0000"+
 		"\u015a\u015b\u0005\u0015\u0000\u0000\u015b\u0161\u0006\u0010\uffff\uffff"+
 		"\u0000\u015c\u015d\u0003&\u0013\u0000\u015d\u015e\u0005\u0015\u0000\u0000"+
 		"\u015e\u015f\u0006\u0010\uffff\uffff\u0000\u015f\u0161\u0001\u0000\u0000"+
 		"\u0000\u0160\u0152\u0001\u0000\u0000\u0000\u0160\u0154\u0001\u0000\u0000"+
 		"\u0000\u0160\u0158\u0001\u0000\u0000\u0000\u0160\u015c\u0001\u0000\u0000"+
-		"\u0000\u0161!\u0001\u0000\u0000\u0000\u0162\u0163\u0005,\u0000\u0000\u0163"+
+		"\u0000\u0161!\u0001\u0000\u0000\u0000\u0162\u0163\u0005+\u0000\u0000\u0163"+
 		"\u0164\u0005\u0016\u0000\u0000\u0164\u0165\u0003*\u0015\u0000\u0165\u0166"+
 		"\u0006\u0011\uffff\uffff\u0000\u0166\u0167\u0003$\u0012\u0000\u0167\u0168"+
 		"\u0006\u0011\uffff\uffff\u0000\u0168#\u0001\u0000\u0000\u0000\u0169\u016a"+
@@ -4259,7 +4249,7 @@ public class eGramC3D extends Parser {
 		"\u0003$\u0012\u0000\u016e\u016f\u0006\u0012\uffff\uffff\u0000\u016f\u0172"+
 		"\u0001\u0000\u0000\u0000\u0170\u0172\u0006\u0012\uffff\uffff\u0000\u0171"+
 		"\u0169\u0001\u0000\u0000\u0000\u0171\u0170\u0001\u0000\u0000\u0000\u0172"+
-		"%\u0001\u0000\u0000\u0000\u0173\u0174\u0005,\u0000\u0000\u0174\u0175\u0005"+
+		"%\u0001\u0000\u0000\u0000\u0173\u0174\u0005+\u0000\u0000\u0174\u0175\u0005"+
 		"\u0014\u0000\u0000\u0175\u0176\u0003*\u0015\u0000\u0176\u0177\u0006\u0013"+
 		"\uffff\uffff\u0000\u0177\u0178\u0003(\u0014\u0000\u0178\'\u0001\u0000"+
 		"\u0000\u0000\u0179\u017a\u0005\u001a\u0000\u0000\u017a\u017b\u0003*\u0015"+
@@ -4270,7 +4260,7 @@ public class eGramC3D extends Parser {
 		"\u0183\u0006\u0015\uffff\uffff\u0000\u0183+\u0001\u0000\u0000\u0000\u0184"+
 		"\u0185\u00030\u0018\u0000\u0185\u0186\u0006\u0016\uffff\uffff\u0000\u0186"+
 		"\u0187\u0003.\u0017\u0000\u0187\u0188\u0006\u0016\uffff\uffff\u0000\u0188"+
-		"-\u0001\u0000\u0000\u0000\u0189\u018a\u0005*\u0000\u0000\u018a\u018b\u0006"+
+		"-\u0001\u0000\u0000\u0000\u0189\u018a\u0005)\u0000\u0000\u018a\u018b\u0006"+
 		"\u0017\uffff\uffff\u0000\u018b\u018c\u00030\u0018\u0000\u018c\u018d\u0006"+
 		"\u0017\uffff\uffff\u0000\u018d\u018e\u0003.\u0017\u0000\u018e\u018f\u0006"+
 		"\u0017\uffff\uffff\u0000\u018f\u0192\u0001\u0000\u0000\u0000\u0190\u0192"+
@@ -4278,12 +4268,12 @@ public class eGramC3D extends Parser {
 		"\u0001\u0000\u0000\u0000\u0192/\u0001\u0000\u0000\u0000\u0193\u0194\u0003"+
 		"4\u001a\u0000\u0194\u0195\u0006\u0018\uffff\uffff\u0000\u0195\u0196\u0003"+
 		"2\u0019\u0000\u0196\u0197\u0006\u0018\uffff\uffff\u0000\u01971\u0001\u0000"+
-		"\u0000\u0000\u0198\u0199\u0005)\u0000\u0000\u0199\u019a\u0006\u0019\uffff"+
+		"\u0000\u0000\u0198\u0199\u0005(\u0000\u0000\u0199\u019a\u0006\u0019\uffff"+
 		"\uffff\u0000\u019a\u019b\u00034\u001a\u0000\u019b\u019c\u0006\u0019\uffff"+
 		"\uffff\u0000\u019c\u019d\u00032\u0019\u0000\u019d\u019e\u0006\u0019\uffff"+
 		"\uffff\u0000\u019e\u01a1\u0001\u0000\u0000\u0000\u019f\u01a1\u0001\u0000"+
 		"\u0000\u0000\u01a0\u0198\u0001\u0000\u0000\u0000\u01a0\u019f\u0001\u0000"+
-		"\u0000\u0000\u01a13\u0001\u0000\u0000\u0000\u01a2\u01a3\u0005+\u0000\u0000"+
+		"\u0000\u0000\u01a13\u0001\u0000\u0000\u0000\u01a2\u01a3\u0005*\u0000\u0000"+
 		"\u01a3\u01a4\u00036\u001b\u0000\u01a4\u01a5\u0006\u001a\uffff\uffff\u0000"+
 		"\u01a5\u01aa\u0001\u0000\u0000\u0000\u01a6\u01a7\u00036\u001b\u0000\u01a7"+
 		"\u01a8\u0006\u001a\uffff\uffff\u0000\u01a8\u01aa\u0001\u0000\u0000\u0000"+
@@ -4297,10 +4287,10 @@ public class eGramC3D extends Parser {
 		"\u0001\u0000\u0000\u0000\u01b69\u0001\u0000\u0000\u0000\u01b7\u01b8\u0003"+
 		">\u001f\u0000\u01b8\u01b9\u0006\u001d\uffff\uffff\u0000\u01b9\u01ba\u0003"+
 		"<\u001e\u0000\u01ba\u01bb\u0006\u001d\uffff\uffff\u0000\u01bb;\u0001\u0000"+
-		"\u0000\u0000\u01bc\u01bd\u0005$\u0000\u0000\u01bd\u01be\u0003>\u001f\u0000"+
+		"\u0000\u0000\u01bc\u01bd\u0005#\u0000\u0000\u01bd\u01be\u0003>\u001f\u0000"+
 		"\u01be\u01bf\u0006\u001e\uffff\uffff\u0000\u01bf\u01c0\u0003<\u001e\u0000"+
 		"\u01c0\u01c1\u0006\u001e\uffff\uffff\u0000\u01c1\u01ca\u0001\u0000\u0000"+
-		"\u0000\u01c2\u01c3\u0005%\u0000\u0000\u01c3\u01c4\u0003>\u001f\u0000\u01c4"+
+		"\u0000\u01c2\u01c3\u0005$\u0000\u0000\u01c3\u01c4\u0003>\u001f\u0000\u01c4"+
 		"\u01c5\u0006\u001e\uffff\uffff\u0000\u01c5\u01c6\u0003<\u001e\u0000\u01c6"+
 		"\u01c7\u0006\u001e\uffff\uffff\u0000\u01c7\u01ca\u0001\u0000\u0000\u0000"+
 		"\u01c8\u01ca\u0001\u0000\u0000\u0000\u01c9\u01bc\u0001\u0000\u0000\u0000"+
@@ -4308,18 +4298,18 @@ public class eGramC3D extends Parser {
 		"\u01ca=\u0001\u0000\u0000\u0000\u01cb\u01cc\u0003B!\u0000\u01cc\u01cd"+
 		"\u0006\u001f\uffff\uffff\u0000\u01cd\u01ce\u0003@ \u0000\u01ce\u01cf\u0006"+
 		"\u001f\uffff\uffff\u0000\u01cf?\u0001\u0000\u0000\u0000\u01d0\u01d1\u0005"+
-		"&\u0000\u0000\u01d1\u01d2\u0003B!\u0000\u01d2\u01d3\u0006 \uffff\uffff"+
+		"%\u0000\u0000\u01d1\u01d2\u0003B!\u0000\u01d2\u01d3\u0006 \uffff\uffff"+
 		"\u0000\u01d3\u01d4\u0003@ \u0000\u01d4\u01d5\u0006 \uffff\uffff\u0000"+
-		"\u01d5\u01e4\u0001\u0000\u0000\u0000\u01d6\u01d7\u0005\'\u0000\u0000\u01d7"+
+		"\u01d5\u01e4\u0001\u0000\u0000\u0000\u01d6\u01d7\u0005&\u0000\u0000\u01d7"+
 		"\u01d8\u0003B!\u0000\u01d8\u01d9\u0006 \uffff\uffff\u0000\u01d9\u01da"+
 		"\u0003@ \u0000\u01da\u01db\u0006 \uffff\uffff\u0000\u01db\u01e4\u0001"+
-		"\u0000\u0000\u0000\u01dc\u01dd\u0005(\u0000\u0000\u01dd\u01de\u0003B!"+
-		"\u0000\u01de\u01df\u0006 \uffff\uffff\u0000\u01df\u01e0\u0003@ \u0000"+
+		"\u0000\u0000\u0000\u01dc\u01dd\u0005\'\u0000\u0000\u01dd\u01de\u0003B"+
+		"!\u0000\u01de\u01df\u0006 \uffff\uffff\u0000\u01df\u01e0\u0003@ \u0000"+
 		"\u01e0\u01e1\u0006 \uffff\uffff\u0000\u01e1\u01e4\u0001\u0000\u0000\u0000"+
 		"\u01e2\u01e4\u0001\u0000\u0000\u0000\u01e3\u01d0\u0001\u0000\u0000\u0000"+
 		"\u01e3\u01d6\u0001\u0000\u0000\u0000\u01e3\u01dc\u0001\u0000\u0000\u0000"+
 		"\u01e3\u01e2\u0001\u0000\u0000\u0000\u01e4A\u0001\u0000\u0000\u0000\u01e5"+
-		"\u01e6\u0005%\u0000\u0000\u01e6\u01e7\u0003D\"\u0000\u01e7\u01e8\u0006"+
+		"\u01e6\u0005$\u0000\u0000\u01e6\u01e7\u0003D\"\u0000\u01e7\u01e8\u0006"+
 		"!\uffff\uffff\u0000\u01e8\u01ed\u0001\u0000\u0000\u0000\u01e9\u01ea\u0003"+
 		"D\"\u0000\u01ea\u01eb\u0006!\uffff\uffff\u0000\u01eb\u01ed\u0001\u0000"+
 		"\u0000\u0000\u01ec\u01e5\u0001\u0000\u0000\u0000\u01ec\u01e9\u0001\u0000"+

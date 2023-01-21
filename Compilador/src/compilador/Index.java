@@ -9,13 +9,13 @@ package compilador;
 public class Index {
     private int li; // Límite inferior
     private int lf; // Límite superior
-    private int d; // Dimensión del índice
+    private int dimension; // Dimensión del índice
     private Index nextIndex; // Puntero al siguiente índice
 
     Index(int li, int lf) {
         this.li = li;
         this.lf = lf;
-        this.d = lf - li + 1;
+        this.dimension = lf - li + 1;
         this.nextIndex = null;
     }
 
@@ -61,7 +61,7 @@ public class Index {
      * 
      * @return La dimensión del índice.
      */
-    public int d() {
-        return d;
+    public int getDimension() {
+        return dimension;
     }
 }
