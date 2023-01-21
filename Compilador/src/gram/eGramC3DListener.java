@@ -134,46 +134,6 @@ public interface eGramC3DListener extends ParseTreeListener {
 	 */
 	void exitSent(eGramC3D.SentContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramC3D#contcase}.
-	 * @param ctx the parse tree
-	 */
-	void enterContcase(eGramC3D.ContcaseContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramC3D#contcase}.
-	 * @param ctx the parse tree
-	 */
-	void exitContcase(eGramC3D.ContcaseContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramC3D#contcase_}.
-	 * @param ctx the parse tree
-	 */
-	void enterContcase_(eGramC3D.Contcase_Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramC3D#contcase_}.
-	 * @param ctx the parse tree
-	 */
-	void exitContcase_(eGramC3D.Contcase_Context ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramC3D#caso}.
-	 * @param ctx the parse tree
-	 */
-	void enterCaso(eGramC3D.CasoContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramC3D#caso}.
-	 * @param ctx the parse tree
-	 */
-	void exitCaso(eGramC3D.CasoContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramC3D#endcase}.
-	 * @param ctx the parse tree
-	 */
-	void enterEndcase(eGramC3D.EndcaseContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramC3D#endcase}.
-	 * @param ctx the parse tree
-	 */
-	void exitEndcase(eGramC3D.EndcaseContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link eGramC3D#referencia}.
 	 * @param ctx the parse tree
 	 */

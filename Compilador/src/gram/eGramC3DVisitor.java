@@ -89,30 +89,6 @@ public interface eGramC3DVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSent(eGramC3D.SentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramC3D#contcase}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitContcase(eGramC3D.ContcaseContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramC3D#contcase_}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitContcase_(eGramC3D.Contcase_Context ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramC3D#caso}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCaso(eGramC3D.CasoContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramC3D#endcase}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEndcase(eGramC3D.EndcaseContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link eGramC3D#referencia}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

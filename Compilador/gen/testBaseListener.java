@@ -1,10 +1,10 @@
 // Generated from java-escape by ANTLR 4.11.1
 
-package gram;
-import compilador.*;
-import java.io.*;
-import java.util.Deque;
-import java.util.ArrayDeque;
+    package gram;
+    import compilador.*;
+    import java.io.*;
+    import java.util.Deque;
+    import java.util.ArrayDeque;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -12,408 +12,444 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
- * This class provides an empty implementation of {@link eGramC3DListener},
+ * This class provides an empty implementation of {@link testListener},
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
 @SuppressWarnings("CheckReturnValue")
-public class eGramC3DBaseListener implements eGramC3DListener {
+public class testBaseListener implements testListener {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterProgram(eGramC3D.ProgramContext ctx) { }
+	@Override public void enterPrograma(testParser.ProgramaContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitProgram(eGramC3D.ProgramContext ctx) { }
+	@Override public void exitPrograma(testParser.ProgramaContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMain(eGramC3D.MainContext ctx) { }
+	@Override public void enterDecl(testParser.DeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMain(eGramC3D.MainContext ctx) { }
+	@Override public void exitDecl(testParser.DeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDecl(eGramC3D.DeclContext ctx) { }
+	@Override public void enterDeclArray(testParser.DeclArrayContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDecl(eGramC3D.DeclContext ctx) { }
+	@Override public void exitDeclArray(testParser.DeclArrayContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclArray(eGramC3D.DeclArrayContext ctx) { }
+	@Override public void enterDeclArray_(testParser.DeclArray_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeclArray(eGramC3D.DeclArrayContext ctx) { }
+	@Override public void exitDeclArray_(testParser.DeclArray_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclArray_(eGramC3D.DeclArray_Context ctx) { }
+	@Override public void enterNumero(testParser.NumeroContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeclArray_(eGramC3D.DeclArray_Context ctx) { }
+	@Override public void exitNumero(testParser.NumeroContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNumero(eGramC3D.NumeroContext ctx) { }
+	@Override public void enterEncabezado(testParser.EncabezadoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNumero(eGramC3D.NumeroContext ctx) { }
+	@Override public void exitEncabezado(testParser.EncabezadoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEncabezado(eGramC3D.EncabezadoContext ctx) { }
+	@Override public void enterParametros(testParser.ParametrosContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEncabezado(eGramC3D.EncabezadoContext ctx) { }
+	@Override public void exitParametros(testParser.ParametrosContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParametros(eGramC3D.ParametrosContext ctx) { }
+	@Override public void enterParametro(testParser.ParametroContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParametros(eGramC3D.ParametrosContext ctx) { }
+	@Override public void exitParametro(testParser.ParametroContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParametro(eGramC3D.ParametroContext ctx) { }
+	@Override public void enterSents(testParser.SentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParametro(eGramC3D.ParametroContext ctx) { }
+	@Override public void exitSents(testParser.SentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSents(eGramC3D.SentsContext ctx) { }
+	@Override public void enterSents_(testParser.Sents_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSents(eGramC3D.SentsContext ctx) { }
+	@Override public void exitSents_(testParser.Sents_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSents_(eGramC3D.Sents_Context ctx) { }
+	@Override public void enterSent(testParser.SentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSents_(eGramC3D.Sents_Context ctx) { }
+	@Override public void exitSent(testParser.SentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSent(eGramC3D.SentContext ctx) { }
+	@Override public void enterContcase(testParser.ContcaseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSent(eGramC3D.SentContext ctx) { }
+	@Override public void exitContcase(testParser.ContcaseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReferencia(eGramC3D.ReferenciaContext ctx) { }
+	@Override public void enterContcase_(testParser.Contcase_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitReferencia(eGramC3D.ReferenciaContext ctx) { }
+	@Override public void exitContcase_(testParser.Contcase_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIdx(eGramC3D.IdxContext ctx) { }
+	@Override public void enterCaso(testParser.CasoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIdx(eGramC3D.IdxContext ctx) { }
+	@Override public void exitCaso(testParser.CasoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIdx_(eGramC3D.Idx_Context ctx) { }
+	@Override public void enterEndcase(testParser.EndcaseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIdx_(eGramC3D.Idx_Context ctx) { }
+	@Override public void exitEndcase(testParser.EndcaseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterContIdx(eGramC3D.ContIdxContext ctx) { }
+	@Override public void enterReferencia(testParser.ReferenciaContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitContIdx(eGramC3D.ContIdxContext ctx) { }
+	@Override public void exitReferencia(testParser.ReferenciaContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterContIdx_(eGramC3D.ContIdx_Context ctx) { }
+	@Override public void enterIdx(testParser.IdxContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitContIdx_(eGramC3D.ContIdx_Context ctx) { }
+	@Override public void exitIdx(testParser.IdxContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpr(eGramC3D.ExprContext ctx) { }
+	@Override public void enterIdx_(testParser.Idx_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpr(eGramC3D.ExprContext ctx) { }
+	@Override public void exitIdx_(testParser.Idx_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprOr(eGramC3D.ExprOrContext ctx) { }
+	@Override public void enterContIdx(testParser.ContIdxContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprOr(eGramC3D.ExprOrContext ctx) { }
+	@Override public void exitContIdx(testParser.ContIdxContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprOr_(eGramC3D.ExprOr_Context ctx) { }
+	@Override public void enterContIdx_(testParser.ContIdx_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprOr_(eGramC3D.ExprOr_Context ctx) { }
+	@Override public void exitContIdx_(testParser.ContIdx_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprAnd(eGramC3D.ExprAndContext ctx) { }
+	@Override public void enterExpr(testParser.ExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprAnd(eGramC3D.ExprAndContext ctx) { }
+	@Override public void exitExpr(testParser.ExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprAnd_(eGramC3D.ExprAnd_Context ctx) { }
+	@Override public void enterExprOr(testParser.ExprOrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprAnd_(eGramC3D.ExprAnd_Context ctx) { }
+	@Override public void exitExprOr(testParser.ExprOrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprNot(eGramC3D.ExprNotContext ctx) { }
+	@Override public void enterExprOr_(testParser.ExprOr_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprNot(eGramC3D.ExprNotContext ctx) { }
+	@Override public void exitExprOr_(testParser.ExprOr_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprComp(eGramC3D.ExprCompContext ctx) { }
+	@Override public void enterExprAnd(testParser.ExprAndContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprComp(eGramC3D.ExprCompContext ctx) { }
+	@Override public void exitExprAnd(testParser.ExprAndContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprComp_(eGramC3D.ExprComp_Context ctx) { }
+	@Override public void enterExprAnd_(testParser.ExprAnd_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprComp_(eGramC3D.ExprComp_Context ctx) { }
+	@Override public void exitExprAnd_(testParser.ExprAnd_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprAdd(eGramC3D.ExprAddContext ctx) { }
+	@Override public void enterExprNot(testParser.ExprNotContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprAdd(eGramC3D.ExprAddContext ctx) { }
+	@Override public void exitExprNot(testParser.ExprNotContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprAdd_(eGramC3D.ExprAdd_Context ctx) { }
+	@Override public void enterExprComp(testParser.ExprCompContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprAdd_(eGramC3D.ExprAdd_Context ctx) { }
+	@Override public void exitExprComp(testParser.ExprCompContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprMult(eGramC3D.ExprMultContext ctx) { }
+	@Override public void enterExprComp_(testParser.ExprComp_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprMult(eGramC3D.ExprMultContext ctx) { }
+	@Override public void exitExprComp_(testParser.ExprComp_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprMult_(eGramC3D.ExprMult_Context ctx) { }
+	@Override public void enterExprAdit(testParser.ExprAditContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprMult_(eGramC3D.ExprMult_Context ctx) { }
+	@Override public void exitExprAdit(testParser.ExprAditContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprNeg(eGramC3D.ExprNegContext ctx) { }
+	@Override public void enterExprAdit_(testParser.ExprAdit_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprNeg(eGramC3D.ExprNegContext ctx) { }
+	@Override public void exitExprAdit_(testParser.ExprAdit_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPrimario(eGramC3D.PrimarioContext ctx) { }
+	@Override public void enterExprMult(testParser.ExprMultContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPrimario(eGramC3D.PrimarioContext ctx) { }
+	@Override public void exitExprMult(testParser.ExprMultContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTipo(eGramC3D.TipoContext ctx) { }
+	@Override public void enterExprMult_(testParser.ExprMult_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTipo(eGramC3D.TipoContext ctx) { }
+	@Override public void exitExprMult_(testParser.ExprMult_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLiteral(eGramC3D.LiteralContext ctx) { }
+	@Override public void enterExprNeg(testParser.ExprNegContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLiteral(eGramC3D.LiteralContext ctx) { }
+	@Override public void exitExprNeg(testParser.ExprNegContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPrimario(testParser.PrimarioContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPrimario(testParser.PrimarioContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTipo(testParser.TipoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTipo(testParser.TipoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLiteral(testParser.LiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLiteral(testParser.LiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

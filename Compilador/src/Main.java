@@ -68,7 +68,6 @@ public class Main {
         }
 
 
-
         //Ensamblado de código sin optimizar
         Assembler normal = new Assembler(buildPath + filename, parserC3D.getC3D(),
                 parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
@@ -79,14 +78,16 @@ public class Main {
         Optimizer optimizer = new Optimizer(buildPath + filename + "_OPT", parserC3D.getC3D(),
                 parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
         optimizer.optimize();
-        //optimizer.getTv().HTMLTable(buildPath + "/tablavariables_OPT.html");//TODO: pasar este método al main 
+
+        printVariablesTable(buildPath+"/Sin optimizar/", parserC3D.getTv()); // Tabla de variables sin optimizar
+
         // Ensamblado de código optimizado
         Assembler optimized = new Assembler(buildPath + filename + "_OPT",
                 optimizer.getC3D(), optimizer.getTv(), optimizer.getTp(),
                 optimizer.getTe());
         optimized.assemble();
 
-
+        // Imprimir ficheros de comprobación
         printFiles(buildPath, tokens, parser, parserC3D);
 
     }
