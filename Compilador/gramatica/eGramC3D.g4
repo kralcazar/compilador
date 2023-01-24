@@ -130,6 +130,9 @@ program:
         }
         EOF
         {
+            Tag e=te.get(te.newTag(false));
+            generate(Instruction.OP.skip, null, null, e.toString());
+            backpatch($main.sents_seg,e);
             tv.calcDespOcupVL(tp);
         }
     ;
@@ -139,7 +142,7 @@ program:
 /*                                      MAIN                                               */
 /*******************************************************************************************/
 main
-    returns[Procedure procedure, Symbol symbol]:
+    returns[Procedure procedure, Symbol symbol, Deque<Integer> sents_seg]:
     MAIN
         {
             Symbol symbol = new Symbol();
@@ -155,8 +158,15 @@ main
         }
         BEGIN
         {
-            pproc.push($procedure.getNp());
-            depth ++;
+            //pproc.push($procedure.getNp());
+            //depth ++;
+            /*
+            try{
+                ts = ts.blockGoesDown();
+            } catch(SymbolTable.SymbolTableException e) {
+                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+            }
+            **/
 
             Tag e = te.get(te.newTag(true));
             $procedure.setStartTag(e.getNe());
@@ -165,13 +175,11 @@ main
         }
         decl* sents END
         {
-            Etiqueta e=te.get(te.nuevaEtiqueta(false));
-            genera(OP.skip, null, null, e.toString());
-            backpatch($sents.sents_seg,e); // por si sents.seg no se completa
-
+            $sents_seg = $sents.sents_seg;
             C3D.get(pc-1).setInstFinal(true);
-            pproc.pop();
-            depth --;
+            //pproc.pop();
+            //depth --;
+            //ts = ts.blockGoesUp();
         }
     ;
 
@@ -182,7 +190,7 @@ decl:
 	tipo ID
         {
             Symbol symbol = new Symbol();
-            int nv = 0;
+            int nv = 1;
             try {
                 symbol = ts.get($ID.getText());
                 nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, symbol.dataType());
@@ -328,7 +336,7 @@ sents
             } else{
                 $sents_seg = $sent.sent_seg;
             }
-	    }
+	    } |
 	;
 
 sents_[Deque<Integer> sents_seg]

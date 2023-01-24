@@ -1,36 +1,38 @@
-i$1 = 6
 e1: skip
 pmb test$5
-a$3 = 2
-rtn 5, a$3
+a$1 = 2
+rtn 5, a$1
 e3: skip
 pmb indice$6
-i$5 = 6
-if i$5 != 6 goto e6
+i$3 = 6
+a$5 = 2
+param_s a$5
+call printi$3
+if i$3 != 6 goto e7
 param_s t$8
 call prints$4
-e6: skip
-if i$5 != 6 goto e9
+e7: skip
+if i$3 != 6 goto e10
 param_s t$10
 call prints$4
-goto e11
-e9: skip
+goto e12
+e10: skip
 param_s t$11
 call prints$4
-e11: skip
+e12: skip
 call test$5
 store t$12
-e13: skip
-if i$5 != 5 goto e16
-i$5 = i$5 + 1
-goto e13
-e16: skip
+e14: skip
+if i$3 != 5 goto e17
+i$3 = i$3 + 1
+goto e14
 e17: skip
+e18: skip
 t$16 = 5
 param_s t$16
 call printi$3
-i$5 = i$5 + 1
-if i$5 >= 50 goto e21
-goto e17
-e21: skip
+i$3 = i$3 + 1
+if i$3 >= 50 goto e22
+goto e18
+e22: skip
 call indice$6

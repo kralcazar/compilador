@@ -15,11 +15,12 @@ includelib \masm32\lib\masm32.lib
 .data?
 	inputBuffer db 65536 dup(?)
 	DISP  DW  1000 DUP (?)
-	i$1  DD  ?
+	i$3  DD  ?
+	a$5  DD  ?
+	t$12  DD  ?
+	t$16  DD  ?
 .code
 start PROC
-	mov eax, 6
-	mov i$1, eax
 e1:
 e3:
 	call indice$6
@@ -183,62 +184,68 @@ indice$6:
 	push ebp
 	mov ebp, esp  ; BP = SP
 	mov [esi+0], ebp  ; DISP(prof) = BP
-	sub esp, 48  ; reserva memoria para las variables locales
+	sub esp, 0  ; reserva memoria para las variables locales
 	mov eax, 6
-	mov [ebp-4], eax
-	mov eax, [ebp-4]
+	mov i$3, eax
+	mov eax, 2
+	mov a$5, eax
+	mov eax, a$5  ; eax = a$5
+	push eax
+	call printi$3
+	add esp, 0
+	mov eax, i$3  ; eax = i$3
 	mov ebx, 6
 	cmp eax, ebx
-	jne e6
+	jne e7
 	mov eax, OFFSET t$8  ; eax = @ t$8
 	push eax
 	call prints$4
 	add esp, 0
-e6:
-	mov eax, [ebp-4]
+e7:
+	mov eax, i$3  ; eax = i$3
 	mov ebx, 6
 	cmp eax, ebx
-	jne e9
+	jne e10
 	mov eax, OFFSET t$10  ; eax = @ t$10
 	push eax
 	call prints$4
 	add esp, 0
-	jmp e11
-e9:
+	jmp e12
+e10:
 	mov eax, OFFSET t$11  ; eax = @ t$11
 	push eax
 	call prints$4
 	add esp, 0
-e11:
+e12:
 	call test$5
 	add esp, 0
-	mov [ebp-20], eax
-e13:
-	mov eax, [ebp-4]
+	mov t$12, eax
+e14:
+	mov eax, i$3  ; eax = i$3
 	mov ebx, 5
 	cmp eax, ebx
-	jne e16
-	mov eax, [ebp-4]
+	jne e17
+	mov eax, i$3  ; eax = i$3
 	mov ebx, 1
 	add eax, ebx
-	mov [ebp-4], eax
-	jmp e13
-e16:
+	mov i$3, eax
+	jmp e14
 e17:
+e18:
 	mov eax, 5
-	mov [ebp-36], eax
-	mov eax, [ebp-36]
+	mov t$16, eax
+	mov eax, t$16  ; eax = t$16
 	push eax
 	call printi$3
 	add esp, 0
-	mov eax, [ebp-4]
+	mov eax, i$3  ; eax = i$3
 	mov ebx, 1
 	add eax, ebx
-	mov [ebp-4], eax
-	mov eax, [ebp-4]
+	mov i$3, eax
+	mov eax, i$3  ; eax = i$3
 	mov ebx, 50
 	cmp eax, ebx
-	jge e21
-	jmp e17
-e21:
+	jge e22
+	jmp e18
+e22:
 END start

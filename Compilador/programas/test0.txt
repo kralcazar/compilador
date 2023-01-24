@@ -1,6 +1,4 @@
 
-    ent i = 6;
-
 
 funcion ent test() {
     ent a=2;
@@ -10,6 +8,9 @@ funcion ent test() {
 indice{
 
     ent i = 6;
+
+    ent a=2;
+    printi(a);
     si(i==6){
         prints("found1");
     }

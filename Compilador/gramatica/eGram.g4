@@ -106,13 +106,13 @@ main returns[Symbol symbol]:
                 errors += "Error semántico en línea " + $MAIN.getLine() + ": El índice ya ha sido declarado\n";
             }
 
-            symbolTable = symbolTable.blockIn();
-            proceduresStack.push($symbol);
+            //symbolTable = symbolTable.blockIn();
+            //proceduresStack.push($symbol);
         }
         decl* sents END
         {
-            symbolTable = symbolTable.blockOut();
-            proceduresStack.pop();
+            //symbolTable = symbolTable.blockOut();
+            //proceduresStack.pop();
 
             if(depthCondition != 0) {
                 errors += "Error semántico - Línea " + $MAIN.getLine() +
@@ -232,11 +232,13 @@ decl:
 /*******************************************************************************************/
 sents:
     sent sents_
+    | //lambda
     ;
 
 sents_:
     sent sents_
-    |; //lambda
+    | //lambda
+    ;
 
 sent:
 	IF expr
