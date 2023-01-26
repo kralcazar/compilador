@@ -106,13 +106,13 @@ main returns[Symbol symbol]:
                 errors += "Error semántico en línea " + $MAIN.getLine() + ": El índice ya ha sido declarado\n";
             }
 
-            //symbolTable = symbolTable.blockIn();
-            //proceduresStack.push($symbol);
+            symbolTable = symbolTable.blockIn();
+            proceduresStack.push($symbol);
         }
         decl* sents END
         {
-            //symbolTable = symbolTable.blockOut();
-            //proceduresStack.pop();
+            symbolTable = symbolTable.blockOut();
+            proceduresStack.pop();
 
             if(depthCondition != 0) {
                 errors += "Error semántico - Línea " + $MAIN.getLine() +
@@ -1047,5 +1047,4 @@ fragment LETRADIGITO:
 WS:             [ \r\n\t]+ -> skip;
 BLOCK_COMMENT:  '/*' .*? '*/' -> skip;
 LINE_COMMENT:   '//' ~[\r\n]* -> skip;
-
 

@@ -9,16 +9,8 @@ indice{
 
     ent i = 6;
 
-    ent a=2;
-    printi(a);
-    si(i==6){
-        prints("found1");
-    }
-    si(i==6){
-        prints("found2");
-    }sino{
-        prints("notfound");
-    }
+    ent l=2;
+
     test();
     mientras (i == 5) {
         i = i +1;
@@ -30,6 +22,4 @@ indice{
     } mientras (i < 50);
 
 
-
 }
-

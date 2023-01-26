@@ -130,6 +130,9 @@ program:
         }
         EOF
         {
+            Tag e=te.get(te.newTag(false));
+            generate(Instruction.OP.skip, null, null, e.toString());
+            backpatch($main.sents_seg,e);
             tv.calcDespOcupVL(tp);
         }
     ;
@@ -156,30 +159,27 @@ main
         BEGIN
         {
             depth ++;
-/*
+
             try{
                 ts = ts.blockGoesDown();
             } catch(SymbolTable.SymbolTableException e) {
                 System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-            }*/
+            }
             pproc.push($procedure.getNp());
 
             Tag e = te.get(te.newTag(true));
             $procedure.setStartTag(e.getNe());
 		    $procedure.setNumParams(0);
-            generate(Instruction.OP.skip, null, null, e.toString()); //TODO: averiguar como saltar a esta etiqueta desde program
+            generate(Instruction.OP.skip, null, null, e.toString());//TODO: averiguar como saltar a esta etiqueta desde program
             generate(Instruction.OP.pmb, null, null, $procedure.toString());
         }
         decl* sents
         {
-            Tag et=te.get(te.newTag(false));
-            generate(Instruction.OP.skip, null, null, et.toString());
-            backpatch($sents.sents_seg,et);
 		    generate(Instruction.OP.ret, null, null, String.valueOf($procedure.getNp()));
             C3D.get(pc-1).setInstFinal(true);
             pproc.pop();
             depth --;
-            //ts = ts.blockGoesUp();
+            ts = ts.blockGoesUp();
         }
         END
     ;
@@ -814,7 +814,6 @@ exprComp returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]
 	exprAdd
         {
             $variable = $exprAdd.variable;
-
             $true_ = $exprAdd.true_;
             $false_ = $exprAdd.false_;
         }
@@ -844,8 +843,6 @@ exprAdd returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	exprMult
         {
             $variable = $exprMult.variable;
-
-
             $true_ = $exprMult.true_;
             $false_ = $exprMult.false_;
         }
