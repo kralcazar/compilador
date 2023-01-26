@@ -348,8 +348,8 @@ public class eGramParser extends Parser {
 			                errors += "Error semántico en línea " + ((MainContext)_localctx).MAIN.getLine() + ": El índice ya ha sido declarado\n";
 			            }
 
-			            symbolTable = symbolTable.blockIn();
-			            proceduresStack.push(_localctx.symbol);
+			            //symbolTable = symbolTable.blockIn();
+			            //proceduresStack.push(_localctx.symbol);
 			        
 			setState(86);
 			_errHandler.sync(this);
@@ -370,8 +370,8 @@ public class eGramParser extends Parser {
 			setState(90);
 			match(END);
 
-			            symbolTable = symbolTable.blockOut();
-			            proceduresStack.pop();
+			            //symbolTable = symbolTable.blockOut();
+			            //proceduresStack.pop();
 
 			            if(depthCondition != 0) {
 			                errors += "Error semántico - Línea " + ((MainContext)_localctx).MAIN.getLine() +

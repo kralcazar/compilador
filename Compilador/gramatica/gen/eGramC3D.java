@@ -406,7 +406,7 @@ public class eGramC3D extends Parser {
 			setState(83);
 			match(BEGIN);
 
-			            depth ++;
+			           depth ++;
 			/*
 			            try{
 			                ts = ts.blockGoesDown();
@@ -535,7 +535,7 @@ public class eGramC3D extends Parser {
 				((DeclContext)_localctx).ID = match(ID);
 
 				            Symbol symbol = new Symbol();
-				            int nv = 1;
+				            int nv = 0;
 				            try {
 				                symbol = ts.get(((DeclContext)_localctx).ID.getText());
 				                nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, symbol.dataType());
@@ -3406,6 +3406,7 @@ public class eGramC3D extends Parser {
 				((PrimarioContext)_localctx).literal = literal();
 
 				            int t = 0;
+
 				            switch(((PrimarioContext)_localctx).literal.datatypes) {
 				                case BOOLEAN:
 				                    t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.BOOLEAN);

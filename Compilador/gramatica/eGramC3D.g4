@@ -155,7 +155,7 @@ main
         }
         BEGIN
         {
-            depth ++;
+           depth ++;
 /*
             try{
                 ts = ts.blockGoesDown();
@@ -191,7 +191,7 @@ decl:
 	tipo ID
         {
             Symbol symbol = new Symbol();
-            int nv = 1;
+            int nv = 0;
             try {
                 symbol = ts.get($ID.getText());
                 nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, symbol.dataType());
@@ -1007,6 +1007,7 @@ primario returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]
 	| literal
         {
             int t = 0;
+
             switch($literal.datatypes) {
                 case BOOLEAN:
                     t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.BOOLEAN);
