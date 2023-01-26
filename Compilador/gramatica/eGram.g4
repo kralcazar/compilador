@@ -123,6 +123,9 @@ main returns[Symbol symbol]:
 /*******************************************************************************************/
 /*                                   DECLARACIONES                                         */
 /*******************************************************************************************/
+declAndFunc:
+    decl | funcs;
+
 decl:
     type ID
         {
@@ -212,7 +215,7 @@ funcs:
                     parameter = parameter.getNext();
                 }
             }
-            decl* sents END
+            declAndFunc* sents END
             {
                 symbolTable = symbolTable.blockOut();
                 proceduresStack.pop();

@@ -15,8 +15,8 @@ includelib \masm32\lib\masm32.lib
 .code
 start PROC
 e1:
-e3:
-	call indice$6
+e5:
+	call indice$7
 	add esp, 0
 	invoke ExitProcess, 0
 start ENDP
@@ -163,6 +163,7 @@ test$5:
 	mov ebp, esp  ; BP = SP
 	mov [esi+0], ebp  ; DISP(prof) = BP
 	sub esp, 8  ; reserva memoria para las variables locales
+e2:
 	mov eax, 2
 	mov [ebp-4], eax
 	mov eax, [ebp-4]
@@ -171,7 +172,22 @@ test$5:
 	lea edi, DISP  ; EDI = @DISP
 	pop [edi+0]  ; DISP[prof] = antiguo valor
 	ret
-indice$6:
+testa$6:
+	mov  esi, OFFSET DISP  ; ESI = @DISP
+	push [esi+4]
+	push ebp
+	mov ebp, esp  ; BP = SP
+	mov [esi+4], ebp  ; DISP(prof) = BP
+	sub esp, 8  ; reserva memoria para las variables locales
+	mov eax, 2
+	mov [ebp-4], eax
+	mov eax, [ebp-4]
+	mov esp, ebp  ; SP = BP
+	pop ebp  ; BP = antiguo BP
+	lea edi, DISP  ; EDI = @DISP
+	pop [edi+4]  ; DISP[prof] = antiguo valor
+	ret
+indice$7:
 	mov  esi, OFFSET DISP  ; ESI = @DISP
 	push [esi+0]
 	push ebp
@@ -185,18 +201,18 @@ indice$6:
 	call test$5
 	add esp, 0
 	mov [ebp-20], eax
-e5:
+e7:
 	mov eax, [ebp-4]
 	mov ebx, 5
 	cmp eax, ebx
-	jne e8
+	jne e10
 	mov eax, [ebp-4]
 	mov ebx, 1
 	add eax, ebx
 	mov [ebp-4], eax
-	jmp e5
-e8:
-e9:
+	jmp e7
+e10:
+e11:
 	mov eax, 5
 	mov [ebp-36], eax
 	mov eax, [ebp-36]
@@ -210,9 +226,9 @@ e9:
 	mov eax, [ebp-4]
 	mov ebx, 50
 	cmp eax, ebx
-	jge e13
-	jmp e9
-e13:
+	jge e15
+	jmp e11
+e15:
 	mov esp, ebp  ; SP = BP
 	pop ebp  ; BP = antiguo BP
 	lea edi, DISP  ; EDI = @DISP

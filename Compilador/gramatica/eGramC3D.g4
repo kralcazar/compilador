@@ -164,7 +164,7 @@ main
             generate(Instruction.OP.skip, null, null, e.toString()); //TODO: averiguar como saltar a esta etiqueta desde program
             generate(Instruction.OP.pmb, null, null, $procedure.toString());
         }
-        (funcs | decl)* sents
+        decl* sents
         {
             Tag et=te.get(te.newTag(false));
             generate(Instruction.OP.skip, null, null, et.toString());
@@ -180,6 +180,9 @@ main
 /*******************************************************************************************/
 /*                                     DECLARACIONES                                       */
 /*******************************************************************************************/
+declAndFunc:
+    decl | funcs;
+
 decl:
 	tipo ID
         {
@@ -260,7 +263,7 @@ funcs:
             generate(Instruction.OP.skip, null, null, e.toString());
             generate(Instruction.OP.pmb, null, null, $encabezado.procedure.toString());
         }
-        decl* sents END
+        declAndFunc* sents END
         {
             C3D.get(pc-1).setInstFinal(true);
             pproc.pop();

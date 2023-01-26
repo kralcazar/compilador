@@ -1,25 +1,29 @@
 e1: skip
 pmb test$5
+e2: skip
+pmb testa$6
 a$1 = 2
-rtn 5, a$1
-e3: skip
-pmb indice$6
-i$3 = 6
-l$5 = 2
-call test$5
-store t$7
+rtn 6, a$1
+a$3 = 2
+rtn 5, a$3
 e5: skip
-if i$3 != 5 goto e8
-i$3 = i$3 + 1
-goto e5
-e8: skip
-e9: skip
-t$11 = 5
-param_s t$11
+pmb indice$7
+i$5 = 6
+l$7 = 2
+call test$5
+store t$9
+e7: skip
+if i$5 != 5 goto e10
+i$5 = i$5 + 1
+goto e7
+e10: skip
+e11: skip
+t$13 = 5
+param_s t$13
 call printi$3
-i$3 = i$3 + 1
-if i$3 >= 50 goto e13
-goto e9
-e13: skip
-rtn 6
-call indice$6
+i$5 = i$5 + 1
+if i$5 >= 50 goto e15
+goto e11
+e15: skip
+rtn 7
+call indice$7

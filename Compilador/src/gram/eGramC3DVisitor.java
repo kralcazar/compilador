@@ -29,6 +29,12 @@ public interface eGramC3DVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMain(eGramC3D.MainContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link eGramC3D#declAndFunc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclAndFunc(eGramC3D.DeclAndFuncContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link eGramC3D#decl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
