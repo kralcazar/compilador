@@ -184,7 +184,7 @@ declAndFunc:
     decl | funcs;
 
 decl:
-	tipo ID
+	type ID
         {
             Symbol symbol = new Symbol();
             int nv = 0;
@@ -216,7 +216,7 @@ decl:
             }
         }
         )? SEMI
-	| CONSTANT tipo ID ASSIGN literal SEMI
+	| CONSTANT type ID ASSIGN literal SEMI
 	    {
             Symbol symbol;
             try {
@@ -233,7 +233,7 @@ decl:
 	;
 
 funcs:
-    FUNCTION tipo encabezado BEGIN
+    FUNCTION type header BEGIN
         {
             depth++;
             try{
@@ -241,9 +241,9 @@ funcs:
             } catch(SymbolTable.SymbolTableException e) {
                 System.out.println("Error en la tabla de símbolos: "+e.getMessage());
             }
-            pproc.push($encabezado.procedure.getNp());
+            pproc.push($header.procedure.getNp());
             // Crear variables para los parámetros
-            Symbol aux = $encabezado.symbol.getNext();
+            Symbol aux = $header.symbol.getNext();
             int nparam = 1;
             while(aux!= null) {
                 try {
@@ -258,10 +258,10 @@ funcs:
                 nparam++;
             }
             Tag e = te.get(te.newTag(true));
-            $encabezado.procedure.setStartTag(e.getNe());
-            $encabezado.procedure.setNumParams(nparam-1);
+            $header.procedure.setStartTag(e.getNe());
+            $header.procedure.setNumParams(nparam-1);
             generate(Instruction.OP.skip, null, null, e.toString());
-            generate(Instruction.OP.pmb, null, null, $encabezado.procedure.toString());
+            generate(Instruction.OP.pmb, null, null, $header.procedure.toString());
         }
         declAndFunc* sents END
         {
@@ -272,54 +272,9 @@ funcs:
         }
 ;
 
-declArray:
-	tipo ID LBRACK (numero DOUBLEDOT)? numero declArray_
-        {
-            Symbol symbol = null;
-            int nv = 0;
-            try {
-                symbol = ts.get($ID.getText());
-                Table dt = symbol.getTable();
-                nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, dt.dataType());
-                tv.get(nv).setId(symbol.getId());
-                symbol.setVariableNumber(nv);
-                tv.get(nv).setElements(dt.getEntries());
-            } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-            }
-        }
-;
-
-declArray_:
-	RBRACK LBRACK (numero DOUBLEDOT)? numero declArray_
-	|; // lambda
-
-numero
-	returns[int value, boolean constante]:
-	LiteralInteger
-	| ID;
-
-encabezado
-	returns[Procedure procedure, Symbol symbol]:
-	ID LPAREN parametros? RPAREN
-        {
-            Symbol symbol = new Symbol();
-            Procedure procedure;
-            try {
-                symbol = ts.get($ID.getText());
-                procedure = tp.newProc(depth, symbol.getType(), $ID.getText());
-                symbol.setProcedure(procedure);
-                $procedure = procedure;
-                $symbol = symbol;
-            } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-            }
-        }
-	;
-
-parametros: parametro COMMA parametros | parametro;
-
-parametro: tipo ID;
+/*******************************************************************************************/
+/*                                    SENTENCIAS                                           */
+/*******************************************************************************************/
 
 sents
 	returns[Deque<Integer> sents_seg]:
@@ -478,45 +433,95 @@ sent[Deque<Integer> sents_seg]
         {
             generate(Instruction.OP.ret, null, null, pproc.peek().toString());
         }
-	| referencia ASSIGN expr SEMI
+	| reference ASSIGN expr SEMI
         {
-            if($referencia.offset!= null) {
-                if($referencia.dataType == Symbol.DataTypes.BOOLEAN) {
+            if($reference.offset!= null) {
+                if($reference.dataType == Symbol.DataTypes.BOOLEAN) {
                     Tag ec = te.get(te.newTag(false));
                     Tag ef = te.get(te.newTag(false));
                     Tag efn = te.get(te.newTag(false));
                     generate(Instruction.OP.skip, null, null, ec.toString());
-                    generate(Instruction.OP.ind_ass, $referencia.offset.toString(), "-1", $referencia.variable.toString());
+                    generate(Instruction.OP.ind_ass, $reference.offset.toString(), "-1", $reference.variable.toString());
                     generate(Instruction.OP.jump, null, null, efn.toString());
                     generate(Instruction.OP.skip, null, null, ef.toString());
-                    generate(Instruction.OP.ind_ass, $referencia.offset.toString(), "0", $referencia.variable.toString());
+                    generate(Instruction.OP.ind_ass, $reference.offset.toString(), "0", $reference.variable.toString());
                     generate(Instruction.OP.skip, null, null, efn.toString());
                     backpatch($expr.true_, ec);
                     backpatch($expr.false_, ef);
                 } else {
-                    generate(Instruction.OP.ind_ass, $referencia.offset.toString(), $expr.variable.toString(), $referencia.variable.toString());
+                    generate(Instruction.OP.ind_ass, $reference.offset.toString(), $expr.variable.toString(), $reference.variable.toString());
                 }
             } else {
-                if($referencia.dataType == Symbol.DataTypes.BOOLEAN) {
+                if($reference.dataType == Symbol.DataTypes.BOOLEAN) {
                     Tag ec = te.get(te.newTag(false));
                     Tag ef = te.get(te.newTag(false));
                     Tag efn = te.get(te.newTag(false));
                     generate(Instruction.OP.skip, null, null, ec.toString());
-                    generate(Instruction.OP.copy, "-1", null, $referencia.variable.toString());
+                    generate(Instruction.OP.copy, "-1", null, $reference.variable.toString());
                     generate(Instruction.OP.jump, null, null, efn.toString());
                     generate(Instruction.OP.skip, null, null, ef.toString());
-                    generate(Instruction.OP.copy, "0", null, $referencia.variable.toString());
+                    generate(Instruction.OP.copy, "0", null, $reference.variable.toString());
                     generate(Instruction.OP.skip, null, null, efn.toString());
                     backpatch($expr.true_, ec);
                     backpatch($expr.false_, ef);
                 } else {
-                    generate(Instruction.OP.copy, $expr.variable.toString(), null, $referencia.variable.toString());
+                    generate(Instruction.OP.copy, $expr.variable.toString(), null, $reference.variable.toString());
                 }
             }
         }
-	| referencia SEMI;
+	| reference SEMI;
 
-referencia
+
+header
+	returns[Procedure procedure, Symbol symbol]:
+	ID LPAREN parameters? RPAREN
+        {
+            Symbol symbol = new Symbol();
+            Procedure procedure;
+            try {
+                symbol = ts.get($ID.getText());
+                procedure = tp.newProc(depth, symbol.getType(), $ID.getText());
+                symbol.setProcedure(procedure);
+                $procedure = procedure;
+                $symbol = symbol;
+            } catch(SymbolTable.SymbolTableException e) {
+                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+            }
+        }
+	;
+
+parameters: parameter COMMA parameters | parameter;
+
+parameter: type ID;
+
+declArray:
+	type ID LBRACK (number DOUBLEDOT)? number declArray_
+        {
+            Symbol symbol = null;
+            int nv = 0;
+            try {
+                symbol = ts.get($ID.getText());
+                Table dt = symbol.getTable();
+                nv = tv.newVar(false, pproc.peek(), Symbol.Types.VAR, dt.dataType());
+                tv.get(nv).setId(symbol.getId());
+                symbol.setVariableNumber(nv);
+                tv.get(nv).setElements(dt.getEntries());
+            } catch(SymbolTable.SymbolTableException e) {
+                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+            }
+        }
+;
+
+declArray_:
+	RBRACK LBRACK (number DOUBLEDOT)? number declArray_
+	|; // lambda
+
+number
+	returns[int value, boolean constante]:
+	LiteralInteger
+	| ID;
+
+reference
 	returns[Variable variable, Variable offset, Symbol.DataTypes dataType]:
 	ID
 	    {
@@ -701,6 +706,10 @@ contIdx_[Deque<Variable> pparams]:
 	    contIdx_[$pparams]
 	| // lambda
 	;
+
+/*******************************************************************************************/
+/*                                   EXPRESIONES                                           */
+/*******************************************************************************************/
 
 expr returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	exprOr
@@ -960,40 +969,40 @@ exprMult_[Variable t1] returns[Variable variable, Deque<Integer> true_, Deque<In
 	|; //lambda
 
 exprNeg returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
-	SUB primario
+	SUB primary
         {
             int t = tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT);
-            generate(Instruction.OP.neg, $primario.variable.toString(), null, tv.get(t).toString());
+            generate(Instruction.OP.neg, $primary.variable.toString(), null, tv.get(t).toString());
             $variable = tv.get(t);
-            $true_ = $primario.true_;
-            $false_ = $primario.false_;
+            $true_ = $primary.true_;
+            $false_ = $primary.false_;
         }
-	| primario
+	| primary
         {
-            $variable = $primario.variable;
-            $true_ = $primario.true_;
-            $false_ = $primario.false_;
+            $variable = $primary.variable;
+            $true_ = $primary.true_;
+            $false_ = $primary.false_;
         }
 	;
 
-primario returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
+primary returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]:
 	LPAREN expr RPAREN
         {
             $variable = $expr.variable;
             $true_ = $expr.true_;
             $false_ = $expr.false_;
         }
-	| referencia
+	| reference
         {
-            if($referencia.offset!= null) {
+            if($reference.offset!= null) {
                 // Caso para cuando hay desplazamiento
                 Variable t = tv.get(tv.newVar(true, pproc.peek(), Symbol.Types.VAR, Symbol.DataTypes.INT));
-                generate(Instruction.OP.ind_val, $referencia.variable.toString(), $referencia.offset.toString(), t.toString());
+                generate(Instruction.OP.ind_val, $reference.variable.toString(), $reference.offset.toString(), t.toString());
                 $variable = t;
             } else {
-                $variable = $referencia.variable;
+                $variable = $reference.variable;
             }
-            if($referencia.dataType == Symbol.DataTypes.BOOLEAN) {
+            if($reference.dataType == Symbol.DataTypes.BOOLEAN) {
                 generate(Instruction.OP.ifEQ, $variable.toString(), "-1", null);
                 $true_ = new ArrayDeque<Integer>();
                 $true_.add(pc);
@@ -1041,7 +1050,10 @@ primario returns[Variable variable, Deque<Integer> true_, Deque<Integer> false_]
         }
 	;
 
-tipo returns[Symbol.DataTypes datatypes]:
+/*******************************************************************************************/
+/*                                     TIPOS                                               */
+/*******************************************************************************************/
+type returns[Symbol.DataTypes datatypes]:
 	INTEGER
         {
             $datatypes = Symbol.DataTypes.INT;

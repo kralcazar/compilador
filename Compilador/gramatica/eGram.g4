@@ -915,9 +915,6 @@ exprNeg returns[Symbol.DataTypes dataType, boolean zero]:
 	    };
 
 
-/*******************************************************************************************/
-/*                                     TIPOS                                               */
-/*******************************************************************************************/
 primary returns[Symbol.DataTypes dataType, boolean zero]:
 	LPAREN expr RPAREN
 	    {
@@ -946,6 +943,9 @@ primary returns[Symbol.DataTypes dataType, boolean zero]:
         }
 	;
 
+/*******************************************************************************************/
+/*                                     TIPOS                                               */
+/*******************************************************************************************/
 type returns[Symbol.DataTypes dataType]:
 	INTEGER
 	    {

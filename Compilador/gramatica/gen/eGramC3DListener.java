@@ -64,66 +64,6 @@ public interface eGramC3DListener extends ParseTreeListener {
 	 */
 	void exitFuncs(eGramC3D.FuncsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramC3D#declArray}.
-	 * @param ctx the parse tree
-	 */
-	void enterDeclArray(eGramC3D.DeclArrayContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramC3D#declArray}.
-	 * @param ctx the parse tree
-	 */
-	void exitDeclArray(eGramC3D.DeclArrayContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramC3D#declArray_}.
-	 * @param ctx the parse tree
-	 */
-	void enterDeclArray_(eGramC3D.DeclArray_Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramC3D#declArray_}.
-	 * @param ctx the parse tree
-	 */
-	void exitDeclArray_(eGramC3D.DeclArray_Context ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramC3D#numero}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumero(eGramC3D.NumeroContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramC3D#numero}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumero(eGramC3D.NumeroContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramC3D#encabezado}.
-	 * @param ctx the parse tree
-	 */
-	void enterEncabezado(eGramC3D.EncabezadoContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramC3D#encabezado}.
-	 * @param ctx the parse tree
-	 */
-	void exitEncabezado(eGramC3D.EncabezadoContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramC3D#parametros}.
-	 * @param ctx the parse tree
-	 */
-	void enterParametros(eGramC3D.ParametrosContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramC3D#parametros}.
-	 * @param ctx the parse tree
-	 */
-	void exitParametros(eGramC3D.ParametrosContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link eGramC3D#parametro}.
-	 * @param ctx the parse tree
-	 */
-	void enterParametro(eGramC3D.ParametroContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link eGramC3D#parametro}.
-	 * @param ctx the parse tree
-	 */
-	void exitParametro(eGramC3D.ParametroContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link eGramC3D#sents}.
 	 * @param ctx the parse tree
 	 */
@@ -154,15 +94,75 @@ public interface eGramC3DListener extends ParseTreeListener {
 	 */
 	void exitSent(eGramC3D.SentContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramC3D#referencia}.
+	 * Enter a parse tree produced by {@link eGramC3D#header}.
 	 * @param ctx the parse tree
 	 */
-	void enterReferencia(eGramC3D.ReferenciaContext ctx);
+	void enterHeader(eGramC3D.HeaderContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramC3D#referencia}.
+	 * Exit a parse tree produced by {@link eGramC3D#header}.
 	 * @param ctx the parse tree
 	 */
-	void exitReferencia(eGramC3D.ReferenciaContext ctx);
+	void exitHeader(eGramC3D.HeaderContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link eGramC3D#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameters(eGramC3D.ParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramC3D#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameters(eGramC3D.ParametersContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link eGramC3D#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameter(eGramC3D.ParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramC3D#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameter(eGramC3D.ParameterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link eGramC3D#declArray}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclArray(eGramC3D.DeclArrayContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramC3D#declArray}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclArray(eGramC3D.DeclArrayContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link eGramC3D#declArray_}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclArray_(eGramC3D.DeclArray_Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramC3D#declArray_}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclArray_(eGramC3D.DeclArray_Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link eGramC3D#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(eGramC3D.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramC3D#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(eGramC3D.NumberContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link eGramC3D#reference}.
+	 * @param ctx the parse tree
+	 */
+	void enterReference(eGramC3D.ReferenceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramC3D#reference}.
+	 * @param ctx the parse tree
+	 */
+	void exitReference(eGramC3D.ReferenceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link eGramC3D#idx}.
 	 * @param ctx the parse tree
@@ -334,25 +334,25 @@ public interface eGramC3DListener extends ParseTreeListener {
 	 */
 	void exitExprNeg(eGramC3D.ExprNegContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramC3D#primario}.
+	 * Enter a parse tree produced by {@link eGramC3D#primary}.
 	 * @param ctx the parse tree
 	 */
-	void enterPrimario(eGramC3D.PrimarioContext ctx);
+	void enterPrimary(eGramC3D.PrimaryContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramC3D#primario}.
+	 * Exit a parse tree produced by {@link eGramC3D#primary}.
 	 * @param ctx the parse tree
 	 */
-	void exitPrimario(eGramC3D.PrimarioContext ctx);
+	void exitPrimary(eGramC3D.PrimaryContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link eGramC3D#tipo}.
+	 * Enter a parse tree produced by {@link eGramC3D#type}.
 	 * @param ctx the parse tree
 	 */
-	void enterTipo(eGramC3D.TipoContext ctx);
+	void enterType(eGramC3D.TypeContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link eGramC3D#tipo}.
+	 * Exit a parse tree produced by {@link eGramC3D#type}.
 	 * @param ctx the parse tree
 	 */
-	void exitTipo(eGramC3D.TipoContext ctx);
+	void exitType(eGramC3D.TypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link eGramC3D#literal}.
 	 * @param ctx the parse tree

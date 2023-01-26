@@ -47,42 +47,6 @@ public interface eGramC3DVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFuncs(eGramC3D.FuncsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramC3D#declArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDeclArray(eGramC3D.DeclArrayContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramC3D#declArray_}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDeclArray_(eGramC3D.DeclArray_Context ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramC3D#numero}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNumero(eGramC3D.NumeroContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramC3D#encabezado}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEncabezado(eGramC3D.EncabezadoContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramC3D#parametros}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParametros(eGramC3D.ParametrosContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link eGramC3D#parametro}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParametro(eGramC3D.ParametroContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link eGramC3D#sents}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -101,11 +65,47 @@ public interface eGramC3DVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSent(eGramC3D.SentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramC3D#referencia}.
+	 * Visit a parse tree produced by {@link eGramC3D#header}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitReferencia(eGramC3D.ReferenciaContext ctx);
+	T visitHeader(eGramC3D.HeaderContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link eGramC3D#parameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameters(eGramC3D.ParametersContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link eGramC3D#parameter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameter(eGramC3D.ParameterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link eGramC3D#declArray}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclArray(eGramC3D.DeclArrayContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link eGramC3D#declArray_}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclArray_(eGramC3D.DeclArray_Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link eGramC3D#number}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumber(eGramC3D.NumberContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link eGramC3D#reference}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReference(eGramC3D.ReferenceContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link eGramC3D#idx}.
 	 * @param ctx the parse tree
@@ -209,17 +209,17 @@ public interface eGramC3DVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprNeg(eGramC3D.ExprNegContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramC3D#primario}.
+	 * Visit a parse tree produced by {@link eGramC3D#primary}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPrimario(eGramC3D.PrimarioContext ctx);
+	T visitPrimary(eGramC3D.PrimaryContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramC3D#tipo}.
+	 * Visit a parse tree produced by {@link eGramC3D#type}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTipo(eGramC3D.TipoContext ctx);
+	T visitType(eGramC3D.TypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link eGramC3D#literal}.
 	 * @param ctx the parse tree
