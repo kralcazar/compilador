@@ -45,6 +45,13 @@ public class eGramC3DBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitFuncs(eGramC3D.FuncsContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitDeclArray(eGramC3D.DeclArrayContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

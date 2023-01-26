@@ -59,6 +59,18 @@ public class eGramC3DBaseListener implements eGramC3DListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterFuncs(eGramC3D.FuncsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFuncs(eGramC3D.FuncsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDeclArray(eGramC3D.DeclArrayContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -118,7 +118,7 @@ program:
                 System.out.println("Error en la tabla de símbolos: "+e.getMessage());
             }
         }
-    (decl+ | main)+
+    (funcs+ | main)+
         {
             //Llamar al main despues de leerlo todo
             try {
@@ -155,13 +155,7 @@ main
         }
         BEGIN
         {
-           depth ++;
-/*
-            try{
-                ts = ts.blockGoesDown();
-            } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-            }*/
+            depth ++;
             pproc.push($procedure.getNp());
 
             Tag e = te.get(te.newTag(true));
@@ -170,7 +164,7 @@ main
             generate(Instruction.OP.skip, null, null, e.toString()); //TODO: averiguar como saltar a esta etiqueta desde program
             generate(Instruction.OP.pmb, null, null, $procedure.toString());
         }
-        decl* sents
+        (funcs | decl)* sents
         {
             Tag et=te.get(te.newTag(false));
             generate(Instruction.OP.skip, null, null, et.toString());
@@ -179,7 +173,6 @@ main
             C3D.get(pc-1).setInstFinal(true);
             pproc.pop();
             depth --;
-            //ts = ts.blockGoesUp();
         }
         END
     ;
@@ -234,8 +227,11 @@ decl:
             }
         }
 	| declArray RBRACK SEMI
-	| FUNCTION tipo encabezado BEGIN
-	    {
+	;
+
+funcs:
+    FUNCTION tipo encabezado BEGIN
+        {
             depth++;
             try{
                 ts = ts.blockGoesDown();
@@ -264,15 +260,14 @@ decl:
             generate(Instruction.OP.skip, null, null, e.toString());
             generate(Instruction.OP.pmb, null, null, $encabezado.procedure.toString());
         }
-	    decl* sents END
+        decl* sents END
         {
             C3D.get(pc-1).setInstFinal(true);
             pproc.pop();
             depth--;
             ts = ts.blockGoesUp();
         }
-
-	;
+;
 
 declArray:
 	tipo ID LBRACK (numero DOUBLEDOT)? numero declArray_

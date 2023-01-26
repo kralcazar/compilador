@@ -35,6 +35,12 @@ public interface eGramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDecl(eGramParser.DeclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link eGramParser#funcs}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncs(eGramParser.FuncsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link eGramParser#sents}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

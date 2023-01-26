@@ -44,6 +44,16 @@ public interface eGramListener extends ParseTreeListener {
 	 */
 	void exitDecl(eGramParser.DeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link eGramParser#funcs}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncs(eGramParser.FuncsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramParser#funcs}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncs(eGramParser.FuncsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link eGramParser#sents}.
 	 * @param ctx the parse tree
 	 */

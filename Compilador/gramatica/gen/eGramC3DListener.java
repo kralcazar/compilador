@@ -44,6 +44,16 @@ public interface eGramC3DListener extends ParseTreeListener {
 	 */
 	void exitDecl(eGramC3D.DeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link eGramC3D#funcs}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncs(eGramC3D.FuncsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link eGramC3D#funcs}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncs(eGramC3D.FuncsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link eGramC3D#declArray}.
 	 * @param ctx the parse tree
 	 */

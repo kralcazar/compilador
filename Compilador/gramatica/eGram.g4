@@ -83,7 +83,7 @@ program:
                 symbolTable.insert("prints", new Symbol("prints", arg, Symbol.Types.PROC, Symbol.DataTypes.NULL));
             } catch (SymbolTable.SymbolTableException e) {}
         }
-    (decl+ | main)+ EOF
+    (funcs+ | main)+ EOF
         {
             symbolTable.blockOut();
             if(!errors.isEmpty()) {
@@ -106,13 +106,11 @@ main returns[Symbol symbol]:
                 errors += "Error semántico en línea " + $MAIN.getLine() + ": El índice ya ha sido declarado\n";
             }
 
-            //symbolTable = symbolTable.blockIn();
-            //proceduresStack.push($symbol);
+            proceduresStack.push($symbol);
         }
         decl* sents END
         {
-            //symbolTable = symbolTable.blockOut();
-            //proceduresStack.pop();
+            proceduresStack.pop();
 
             if(depthCondition != 0) {
                 errors += "Error semántico - Línea " + $MAIN.getLine() +
@@ -189,43 +187,45 @@ decl:
             }
         }
     | arrayDecl
-    | FUNCTION type header[$type.dataType] BEGIN
-        {
-            try {
-                symbolTable.insert($header.procedure.getId(),$header.procedure);
-            } catch (SymbolTable.SymbolTableException e) {
-                errors += "Error semántico en línea " + $FUNCTION.getLine() + ": " + e.getMessage() + "\n";
-            }
-            symbolTable = symbolTable.blockIn();
-            proceduresStack.push($header.procedure);
-            Symbol parameter = $header.procedure.getNext();
-            while (parameter != null) {
-                Symbol aux = new Symbol(parameter);
-                aux.setInitialized(true);
-                aux.setNext(null);
+    ;
+
+funcs:
+    FUNCTION type header[$type.dataType] BEGIN
+            {
                 try {
-                    symbolTable.insert(aux.getId(),aux);
+                    symbolTable.insert($header.procedure.getId(),$header.procedure);
                 } catch (SymbolTable.SymbolTableException e) {
                     errors += "Error semántico en línea " + $FUNCTION.getLine() + ": " + e.getMessage() + "\n";
                 }
-                parameter = parameter.getNext();
+                symbolTable = symbolTable.blockIn();
+                proceduresStack.push($header.procedure);
+                Symbol parameter = $header.procedure.getNext();
+                while (parameter != null) {
+                    Symbol aux = new Symbol(parameter);
+                    aux.setInitialized(true);
+                    aux.setNext(null);
+                    try {
+                        symbolTable.insert(aux.getId(),aux);
+                    } catch (SymbolTable.SymbolTableException e) {
+                        errors += "Error semántico en línea " + $FUNCTION.getLine() + ": " + e.getMessage() + "\n";
+                    }
+                    parameter = parameter.getNext();
+                }
             }
-        }
-        decl* sents END
-        {
-            symbolTable = symbolTable.blockOut();
-            proceduresStack.pop();
-            if(!$header.procedure.isReturnFound()) {
-                errors += "Error semántico en línea " + $FUNCTION.getLine() +
-                ": 'devolver' no encontrado para la función '" + $header.procedure.getId() + "'\n";
+            decl* sents END
+            {
+                symbolTable = symbolTable.blockOut();
+                proceduresStack.pop();
+                if(!$header.procedure.isReturnFound()) {
+                    errors += "Error semántico en línea " + $FUNCTION.getLine() +
+                    ": 'devolver' no encontrado para la función '" + $header.procedure.getId() + "'\n";
+                }
+                if(depthCondition != 0) {
+                    errors += "Error semántico - Línea " + $FUNCTION.getLine() +
+                    ": no se puede definir una función en una estructura condicional o repetitiva\n";
+                }
             }
-            if(depthCondition != 0) {
-                errors += "Error semántico - Línea " + $FUNCTION.getLine() +
-                ": no se puede definir una función en una estructura condicional o repetitiva\n";
-            }
-        }
-    ;
-
+;
 
 /*******************************************************************************************/
 /*                                    SENTENCIAS                                           */
