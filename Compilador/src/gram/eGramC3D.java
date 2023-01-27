@@ -318,7 +318,7 @@ public class eGramC3D extends Parser {
 
 			            //Llamar al main despues de leerlo todo
 			            try {
-			                 symbol = ts.get("indice");//TODO: intentar llamada directa a la palabra
+			                 symbol = ts.get("indice");
 			                 generate(Instruction.OP.call, null, null, symbol.getProcedure().toString());
 			            } catch(SymbolTable.SymbolTableException e) {
 			                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
