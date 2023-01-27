@@ -95,18 +95,6 @@ public class eGramBaseListener implements eGramListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSents_(eGramParser.Sents_Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSents_(eGramParser.Sents_Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterSent(eGramParser.SentContext ctx) { }
 	/**
 	 * {@inheritDoc}

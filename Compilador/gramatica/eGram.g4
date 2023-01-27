@@ -20,13 +20,12 @@ grammar eGram;
     private String errors="";
     private String folder;
     private Deque<Symbol> proceduresStack = new ArrayDeque<Symbol>();
+    public SymbolTable getSymbolTable(){ return symbolTable; }
 
     public eGramParser(TokenStream input, String folder){
         this(input);
         this.folder=folder;
     }
-
-    public SymbolTable getSymbolTable(){ return symbolTable; }
 
     // Se sobreescribe la salida del error otorgada por Antlr4 según el contenido de la misma
     @Override
@@ -37,19 +36,15 @@ grammar eGram;
         String expected = msg;
 
         if(expected.contains("expecting")){
-            //TODO: MODIFICAR PARA "HACERLO NUESTRO"
             expected = expected.substring(expected.indexOf("expecting") + 10);
             notificacion += "encontrado: '" + offendingToken.getText() + "' esperado: "+ expected;
         }else if(expected.contains("missing")){
-            //TODO: MODIFICAR PARA "HACERLO NUESTRO"
             expected = expected.substring(expected.indexOf("missing") + 8);
             expected = expected.substring(0, expected.indexOf("at") - 1);
             notificacion += "encontrado: '" + offendingToken.getText() + "', falta "+ expected;
         }else if(expected.contains("alternative")){
                 expected = expected.substring(expected.indexOf("input") + 6).replace("'","");
                 notificacion += "Se ha detectado un error antes de la entrada '" + offendingToken.getText()+"'.";
-                //Eliminar el siguiente token encontrado tras analizar el token que genera error
-                //TODO: La siguiente instrucción solo quita el offendingToken que se encuentra despues del error, no los de antes. caso que funciona: int i = 6; caso que no funciona: ent i 6;
                 expected = expected.substring(0, expected.length()-offendingToken.getText().length());
                 String[] lines = offendingToken.getInputStream().toString().split(System.getProperty("line.separator"));
                 if(expected.length()==0){ //Es posible que sea porque falta cerrar la sentencia con punto y coma
@@ -239,20 +234,15 @@ funcs:
 /*                                    SENTENCIAS                                           */
 /*******************************************************************************************/
 sents:
-    sent sents_
-    | //lambda
-    ;
-
-sents_:
-    sent sents_
+    sent sents
     | //lambda
     ;
 
 sent:
 	IF expr
 	    {
-	        if($expr.dataType!=Symbol.DataTypes.BOOLEAN) {
-                errors+="Error semántico en línea " + $IF.getLine() +
+	        if($expr.dataType != Symbol.DataTypes.BOOLEAN) {
+                errors += "Error semántico en línea " + $IF.getLine() +
                 ": tipos incompatibles (esperado 'BOOLEAN', encontrado '" + $expr.dataType + "')\n";
             }
 	    }
@@ -348,24 +338,7 @@ sent:
                     "', encontrado '" + $expr.dataType + "')\n";
                 } else if(depthCondition == 0) {
                     // Devolver correcto
-
-                    //TODO: PORQUE VUELVE A HACER PEEK EN VEZ DE PILLAR LA REFERENCIA procedure
-                    proceduresStack.peek().setReturnFound(true);
-                }
-            }
-	    }
-	| RETURN SEMI
-	    {
-	        Symbol procedure;
-            if(proceduresStack.size()==0) {
-                // Devolver fuera de una función
-                errors += "Error semántico en línea " + $RETURN.getLine() + ": devolver fuera de función\n";
-            } else {
-                procedure = proceduresStack.peek();
-                if (procedure.getType() == Symbol.Types.FUNC) {
-                    // Devolver vacío en una función
-                    errors += "Error semántico en línea " + $RETURN.getLine() +
-                    ": devolver vacío en una función)\n";
+                    procedure.setReturnFound(true);
                 }
             }
 	    }
@@ -398,8 +371,7 @@ sent:
             if($reference.symbol != null) {
                 if($reference.symbol.getType() != Symbol.Types.FUNC && $reference.symbol.getType() != Symbol.Types.PROC) {
                     // Tiene que ser función o procedimiento
-                    errors += "Error semántico en línea " + $SEMI.getLine() +
-                    ": se esperaba una función o un procedimiento\n";
+                    errors += "Error semántico en línea " + $SEMI.getLine() + ": se esperaba una función o un procedimiento\n";
                 }
             }
         }
@@ -408,15 +380,10 @@ sent:
 header[Symbol.DataTypes dataType] returns[Symbol procedure]:
 	ID
 	    {
-	        if($dataType != null) {
-                // Función
-                $procedure = new Symbol($ID.getText(), null, Symbol.Types.FUNC, $dataType);
-            } else {
-                // Procedimiento
-                $procedure = new Symbol($ID.getText(), null, Symbol.Types.PROC, Symbol.DataTypes.NULL);
-            }
+            $procedure = new Symbol($ID.getText(), null, Symbol.Types.FUNC, $dataType);
 	    }
-	    LPAREN params[$procedure]? RPAREN ;
+	    LPAREN params[$procedure]? RPAREN
+    ;
 
 params[Symbol prev]:
 	param COMMA
@@ -708,7 +675,8 @@ contIdx_[Deque<Symbol.DataTypes> pparams]:
 	        $pparams.add($expr.dataType);
 	    }
 	    contIdx_[$pparams]
-	|; // lambda
+	| // lambda
+	;
 
 
 /*******************************************************************************************/

@@ -124,17 +124,7 @@ program:
                 System.out.println("Error en la tabla de símbolos: "+e.getMessage());
             }
         }
-    (funcs+ | main)+
-        {
-            //Llamar al main despues de leerlo todo
-            try {
-                symbol = ts.get("indice");//TODO: intentar llamada directa a la palabra
-                generate(Instruction.OP.call, null, null, symbol.getProcedure().toString());
-            } catch(SymbolTable.SymbolTableException e) {
-                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
-            }
-        }
-        EOF
+    (funcs+ | main)+ EOF
         {
             tv.calcDespOcupVL(tp);
         }
@@ -297,7 +287,7 @@ sents
             } else{
                 $sents_seg = $sent.sent_seg;
             }
-	    } |
+	    }
 	;
 
 sents_[Deque<Integer> sents_seg]
@@ -435,10 +425,6 @@ sent[Deque<Integer> sents_seg]
             }
             generate(Instruction.OP.ret, $expr.variable.toString(), null, pproc.peek().toString());
         }
-	| RETURN SEMI
-        {
-            generate(Instruction.OP.ret, null, null, pproc.peek().toString());
-        }
 	| reference ASSIGN expr SEMI
         {
             if($reference.offset!= null) {
@@ -478,8 +464,7 @@ sent[Deque<Integer> sents_seg]
 	| reference SEMI;
 
 
-header
-	returns[Procedure procedure, Symbol symbol]:
+header returns[Procedure procedure, Symbol symbol]:
 	ID LPAREN parameters? RPAREN
         {
             Symbol symbol = new Symbol();

@@ -53,12 +53,6 @@ public interface eGramVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSents(eGramParser.SentsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link eGramParser#sents_}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSents_(eGramParser.Sents_Context ctx);
-	/**
 	 * Visit a parse tree produced by {@link eGramParser#sent}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
