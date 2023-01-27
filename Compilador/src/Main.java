@@ -66,24 +66,10 @@ public class Main {
             throw e;
         }
 
-        printVariablesTable(buildPath, parserC3D.getTv(), "VariablesTable_NoOpt"); // Tabla de variables sin optimizar
-
         //Ensamblado de código sin optimizar
-        Assembler normal = new Assembler(buildPath + filename+ "_NoOpt", parserC3D.getC3D(),
+        Assembler normal = new Assembler(buildPath + filename, parserC3D.getC3D(),
                 parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
         normal.assemble();
-
-
-        //Optimización de código
-        Optimizer optimizer = new Optimizer(buildPath + filename , parserC3D.getC3D(),
-                parserC3D.getTv(), parserC3D.getTp(), parserC3D.getTe());
-        optimizer.optimize();
-
-        // Ensamblado de código optimizado
-        Assembler optimized = new Assembler(buildPath + filename,
-                optimizer.getC3D(), optimizer.getTv(), optimizer.getTp(),
-                optimizer.getTe());
-        optimized.assemble();
 
         // Imprimir ficheros para comprobación
         printFiles(buildPath, tokens, parser, parserC3D);

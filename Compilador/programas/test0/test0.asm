@@ -163,6 +163,8 @@ test$5:
 	sub esp, 8  ; reserva memoria para las variables locales
 e2:
 	mov eax, 2
+	mov [ebp-8], eax
+	mov eax, [ebp-8]
 	mov [ebp-4], eax
 	mov eax, [ebp-4]
 	mov esp, ebp  ; SP = BP
@@ -170,6 +172,7 @@ e2:
 	lea edi, DISP  ; EDI = @DISP
 	pop [edi+0]  ; DISP[prof] = antiguo valor
 	ret
+e4:
 testa$6:
 	mov  esi, OFFSET DISP  ; ESI = @DISP
 	push [esi+4]
@@ -178,6 +181,8 @@ testa$6:
 	mov [esi+4], ebp  ; DISP(prof) = BP
 	sub esp, 8  ; reserva memoria para las variables locales
 	mov eax, 2
+	mov [ebp-8], eax
+	mov eax, [ebp-8]
 	mov [ebp-4], eax
 	mov eax, [ebp-4]
 	mov esp, ebp  ; SP = BP
@@ -185,6 +190,7 @@ testa$6:
 	lea edi, DISP  ; EDI = @DISP
 	pop [edi+4]  ; DISP[prof] = antiguo valor
 	ret
+e3:
 indice$7:
 	mov  esi, OFFSET DISP  ; ESI = @DISP
 	push [esi+0]
@@ -193,21 +199,35 @@ indice$7:
 	mov [esi+0], ebp  ; DISP(prof) = BP
 	sub esp, 48  ; reserva memoria para las variables locales
 	mov eax, 6
+	mov [ebp-8], eax
+	mov eax, [ebp-8]
 	mov [ebp-4], eax
 	mov eax, 2
+	mov [ebp-16], eax
+	mov eax, [ebp-16]
 	mov [ebp-12], eax
 	call test$5
 	add esp, 0
 	mov [ebp-20], eax
+e6:
 e7:
+	mov eax, 5
+	mov [ebp-24], eax
 	mov eax, [ebp-4]
-	mov ebx, 5
+	mov ebx, [ebp-24]
 	cmp eax, ebx
-	jne e10
+	je e8
+	jmp e10
+e8:
+	mov eax, 1
+	mov [ebp-28], eax
 	mov eax, [ebp-4]
-	mov ebx, 1
+	mov ebx, [ebp-28]
 	add eax, ebx
+	mov [ebp-32], eax
+	mov eax, [ebp-32]
 	mov [ebp-4], eax
+e9:
 	jmp e7
 e10:
 e11:
@@ -217,12 +237,23 @@ e11:
 	push eax
 	call printi$3
 	add esp, 0
+e12:
+	mov eax, 1
+	mov [ebp-40], eax
 	mov eax, [ebp-4]
-	mov ebx, 1
+	mov ebx, [ebp-40]
 	add eax, ebx
+	mov [ebp-44], eax
+	mov eax, [ebp-44]
 	mov [ebp-4], eax
+e13:
+e14:
+	mov eax, 50
+	mov [ebp-48], eax
+	jmp e15
 	jmp e11
 e15:
+e16:
 	mov esp, ebp  ; SP = BP
 	pop ebp  ; BP = antiguo BP
 	lea edi, DISP  ; EDI = @DISP

@@ -2,27 +2,48 @@ e1: skip
 pmb test$5
 e2: skip
 pmb testa$6
-a$1 = 2
+t$2 = 2
+a$1 = t$2
 rtn 6, a$1
-a$3 = 2
+e3: skip
+t$4 = 2
+a$3 = t$4
 rtn 5, a$3
+e4: skip
 e5: skip
 pmb indice$7
-i$5 = 6
-l$7 = 2
+t$6 = 6
+i$5 = t$6
+t$8 = 2
+l$7 = t$8
 call test$5
 store t$9
+e6: skip
 e7: skip
-if i$5 != 5 goto e10
-i$5 = i$5 + 1
+t$10 = 5
+if i$5 == t$10 goto e8
+goto e10
+e8: skip
+t$11 = 1
+t$12 = i$5 + t$11
+i$5 = t$12
+e9: skip
 goto e7
 e10: skip
 e11: skip
 t$13 = 5
 param_s t$13
 call printi$3
-i$5 = i$5 + 1
-if i$5 >= 50 goto e15
+e12: skip
+t$14 = 1
+t$15 = i$5 + t$14
+i$5 = t$15
+e13: skip
+e14: skip
+t$16 = 50
+if i$5 < t$16 goto e11
+goto e15
 goto e11
 e15: skip
+e16: skip
 rtn 7
