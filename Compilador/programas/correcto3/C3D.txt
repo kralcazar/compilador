@@ -1,0 +1,64 @@
+e1: skip
+pmb indice$5
+t$2 = 2
+i$1 = t$2
+t$4 = 4
+j$3 = t$4
+t$5 = 2
+if i$1 == t$5 goto e2
+goto e5
+e2: skip
+t$6 = 3
+if j$3 > t$6 goto e3
+goto e5
+e3: skip
+param_s t$7
+call prints$4
+e4: skip
+goto e7
+e5: skip
+param_s t$8
+call prints$4
+e6: skip
+e7: skip
+t$9 = 10
+t$10 = -t$9
+if i$1 > t$10 goto e9
+goto e8
+e8: skip
+t$11 = 0
+if j$3 < t$11 goto e9
+goto e11
+e9: skip
+param_s t$12
+call prints$4
+e10: skip
+goto e13
+e11: skip
+param_s t$13
+call prints$4
+e12: skip
+e13: skip
+t$14 = 3
+if i$1 < t$14 goto e15
+goto e14
+e14: skip
+t$15 = 6
+if j$3 == t$15 goto e15
+goto e17
+e15: skip
+param_s t$16
+call prints$4
+e16: skip
+goto e19
+e17: skip
+param_s t$17
+call prints$4
+e18: skip
+e19: skip
+param_s t$18
+call prints$4
+e20: skip
+e21: skip
+rtn 5
+call indice$5

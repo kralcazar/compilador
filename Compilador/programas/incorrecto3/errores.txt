@@ -1,0 +1,2 @@
+Error semántico en línea 5: módulo por cero
+Error semántico en línea 6: división por cero

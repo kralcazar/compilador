@@ -1,0 +1,23 @@
+funcion ent funcion1(ent e){
+    a = d;
+}
+
+funcion ent funcion2(){
+    c = "Test";
+}
+
+indice{
+    ent a = 6;
+    logico b = falso;
+    palabra c;
+    ent d = 3;
+    ent f = "10";
+
+    si(b<7){
+        c=a;
+    }
+
+    funcion1();
+    funcion2(d);
+    d = b + a;
+}

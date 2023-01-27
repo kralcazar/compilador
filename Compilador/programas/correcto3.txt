@@ -1,0 +1,24 @@
+indice{
+    ent i = 2;
+    ent j = 4;
+
+    si(i == 2 && j > 3){
+        prints("Se cumple primer if. ");
+    }sino{
+        prints("No se cumple primer if. ");
+    }
+
+    si(i > -10 || j < 0){
+        prints("Se cumple segundo if. ");
+    }sino{
+        prints("No se cumple primer if. ");
+    }
+
+    si(i < 3 || j == 6){
+        prints("Se cumple tercer if. ");
+    }sino{
+        prints("No se tercer primer if. ");
+    }
+
+    prints("Se acabaron las comprobaciones.");
+}

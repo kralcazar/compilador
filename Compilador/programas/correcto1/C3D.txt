@@ -1,0 +1,23 @@
+e1: skip
+pmb indice$5
+text$1 = t$2
+t$4 = 4
+i$3 = t$4
+t$6 = 6
+j$5 = t$6
+t$8 = i$3 + j$5
+x$7 = t$8
+e2: skip
+t$9 = 2
+t$10 = x$7 / t$9
+x$7 = t$10
+e3: skip
+param_s text$1
+call prints$4
+e4: skip
+param_s x$7
+call printi$3
+e5: skip
+e6: skip
+rtn 5
+call indice$5

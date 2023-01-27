@@ -1,0 +1,13 @@
+funcion logico esMenorQueCien(ent i){
+    logico resultado = falso;
+    j = 5;
+    si(i < 100){
+        resultado = verdadero;
+    }sino{
+        resultado = falso;
+    }
+}
+
+indice{
+    prints("Nunca saldré por pantalla");
+}

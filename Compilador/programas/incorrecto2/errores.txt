@@ -1,0 +1,12 @@
+Error semántico en línea 2: no se ha encontrado el símbolo a en la tabla de símbolos
+Error semántico en línea 2: no se ha encontrado el símbolo d en la tabla de símbolos
+Error semántico en línea 2: tipos incompatibles (encontrado NULL)
+Error semántico en línea 1: 'devolver' no encontrado para la función 'funcion1'
+Error semántico en línea 6: no se ha encontrado el símbolo c en la tabla de símbolos
+Error semántico en línea 5: 'devolver' no encontrado para la función 'funcion2'
+Error semántico en línea 14: tipos incompatibles (esperado 'INT', encontrado 'STRING')
+Error semántico en línea 16: tipos incompatibles (esperado INT, encontrado BOOLEAN)
+Error semántico en línea 17: asignación de tipo incorrecto (esperado 'STRING', encontrado 'INT')
+Error semántico en línea 20: falta(n) argumento(s) para funcion1
+Error semántico en línea 21: demasiados argumentos para funcion2
+Error semántico en línea 22: tipos incompatibles (esperado BOOLEAN, encontrado INT)

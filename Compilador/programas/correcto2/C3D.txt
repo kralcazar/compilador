@@ -1,0 +1,48 @@
+e1: skip
+pmb potencia$5
+t$3 = pot$1 * pot$1
+resultado$2 = t$3
+e2: skip
+rtn 5, resultado$2
+e3: skip
+e4: skip
+pmb indice$6
+t$5 = 2
+x$4 = t$5
+t$8 = 10
+i$7 = t$8
+e5: skip
+t$9 = 0
+if i$7 > t$9 goto e6
+goto e14
+e6: skip
+param_s x$4
+call printi$3
+e7: skip
+param_s t$10
+call prints$4
+e8: skip
+param_s x$4
+call potencia$5
+store t$11
+y$6 = t$11
+e9: skip
+param_s y$6
+call printi$3
+e10: skip
+param_s t$12
+call prints$4
+e11: skip
+t$13 = 1
+t$14 = i$7 - t$13
+i$7 = t$14
+e12: skip
+t$15 = 1
+t$16 = x$4 + t$15
+x$4 = t$16
+e13: skip
+goto e5
+e14: skip
+e15: skip
+rtn 6
+call indice$6

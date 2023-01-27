@@ -1,9 +1,0 @@
-indice{
-	ent i = 2;
-	ent j = 4;
-	ent x;
-	
-	x = i + j;
-	
-	escribir(x);
-}

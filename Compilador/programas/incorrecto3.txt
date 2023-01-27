@@ -1,0 +1,7 @@
+indice{
+    ent numeroPar = 20;
+    ent resultado;
+
+    resultado = numeroPar%0;
+    resultado = numeroPar/0;
+}

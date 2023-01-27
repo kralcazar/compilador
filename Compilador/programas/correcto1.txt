@@ -1,0 +1,14 @@
+indice{
+    //"Hello, World!" programs are often the first a student learns to write in a given language
+    palabra text = "Hola, mundo!";
+    ent i = 4;
+    ent j = 6;
+    ent x;
+
+    /* Este cálculo podría servir para calcular la nota de una asignatura */
+    x = i + j;
+    x = x / 2;
+
+    prints(text);
+    printi(x);
+}

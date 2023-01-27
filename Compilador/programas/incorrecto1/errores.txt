@@ -1,0 +1,2 @@
+Error semántico en línea 3: no se ha encontrado el símbolo j en la tabla de símbolos
+Error semántico en línea 1: 'devolver' no encontrado para la función 'esMenorQueCien'

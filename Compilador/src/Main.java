@@ -16,8 +16,6 @@ public class Main {
             System.out.println("Argumentos necesarios no encontrados");
             return;
         }
-        //String file = System.getProperty("user.dir") + "\\programas\\test.esl";
-        //String buildPath = System.getProperty("user.dir") + "\\programas\\test.esl";
         // Nombre del archivo procesado
         String filename = FilenameUtils.getBaseName(args[0]);
         String buildPath = System.getProperty("user.dir") + "\\programas\\" + filename + "\\";

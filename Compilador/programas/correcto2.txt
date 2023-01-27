@@ -1,0 +1,28 @@
+//Función que devuelve la potencia de 2
+funcion ent potencia(ent pot){
+    ent resultado;
+    resultado = pot * pot;
+    devolver resultado;
+}
+
+indice{
+    ent x = 2;
+    ent y;
+    ent i = 10;
+
+    //Bucle que imprime el cuadrado de 10 números empezando por el 2
+    mientras(i > 0){
+        printi(x);
+        prints(" al cuadrado es ");
+        y = potencia(x);
+        printi(y);
+        prints(". ");
+        i=i-1;
+        x=x+1;
+    }
+
+
+
+
+
+}
