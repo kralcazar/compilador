@@ -3,9 +3,9 @@ package compilador;
 import java.util.ArrayList;
 
 /**
- * TablaEtiquetas. Clase que sirve para almacenar las etiquetas que se generan
- * al analizar el código.
+ * Clase que sirve para almacenar las etiquetas que se generan.
  *
+ *  @author Joan Campaner i Crist Alcázar
  */
 public class TagsTable {
     private int ne; // Número de etiquetas

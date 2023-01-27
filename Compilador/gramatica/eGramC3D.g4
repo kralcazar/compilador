@@ -1,4 +1,10 @@
 parser grammar eGramC3D;
+/**
+ * Gramática para análisis semántico
+ *
+ *  @author Joan Campaner i Crist Alcázar
+ */
+
 options
 {
 	tokenVocab = eGramLexer;

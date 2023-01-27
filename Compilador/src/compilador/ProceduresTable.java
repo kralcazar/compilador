@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * TablaProcedimientos. Clase que sirve para almacenar los procedimientos que
- * aparecen en el código.
+ * Clase que sirve para almacenar los procedimientos.
  *
+ * @author Joan Campaner i Crist Alcázar
  */
+
 public class ProceduresTable {
     private ArrayList<Procedure> tp;
     private int np;

@@ -1,11 +1,9 @@
 package compilador;
 
 /**
- * Simbolo. Clase que sirve para gestionar la información relacionada con los
- * símbolos que aparecen en el código fuente.
- * 
- * @author Gian Lucas Martín Chamorro
- * @author Jordi Antoni Sastre Moll
+ * Clase que sirve para gestionar la información relacionada con los símbolos.
+ *
+ * @author Joan Campaner i Crist Alcázar
  */
 public class Symbol {
 	private String id;

@@ -1,5 +1,10 @@
 package compilador;
 
+/**
+ * La clase Tag que sirve para etiquetar el código de tres direcciones.
+ *
+ * @author Joan Campaner i Crist Alcázar
+ */
 public class Tag {
     private int ne; // Número de etiqueta
     private int line; // Número de línea

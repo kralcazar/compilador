@@ -2,10 +2,9 @@ package compilador;
 
 /**
  * La clase Tabla representa una tabla o 'array' y contiene la información
- * necesaria para verificar que se usan de forma correcta en los archivos que se
- * analizan.
+ * necesaria.
  *
- * @author @gianm99
+ * @author Joan Campaner i Crist Alcázar
  */
 public class Table {
     private Symbol.DataTypes dataType; // Tipo subyacente de la tabla

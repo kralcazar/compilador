@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import compilador.Instruction.OP;
 
+/**
+ *
+ *
+ * @author Joan Campaner i Crist Alcázar
+ */
+
 public class Optimizer {
     private String directory;
     private ArrayList<Instruction> C3D;

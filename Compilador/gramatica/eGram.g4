@@ -1,4 +1,9 @@
 grammar eGram;
+/**
+ * Gramática para análisis léxico y sintáctico
+ *
+ *  @author Joan Campaner i Crist Alcázar
+ */
 
 @header {
     package gram;

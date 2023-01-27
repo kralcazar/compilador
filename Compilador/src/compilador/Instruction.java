@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 /**
  * La clase Instruccion representa una insttrucción de código de tres direcciones.
+ *
+ * @author Joan Campaner i Crist Alcázar
  */
 public class Instruction {
     private OP opCode; // El código de la operación

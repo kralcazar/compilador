@@ -1,7 +1,9 @@
 package compilador;
 
 /**
- * Clase para imprimir texto con colores por la terminal.
+ * Variables que indican colores de consola
+ *
+ * @author Joan Campaner i Crist Alcázar
  */
 public class ConsoleColors {
     // Reset

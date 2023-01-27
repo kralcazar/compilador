@@ -5,10 +5,11 @@ import compilador.Symbol.DataTypes;
 import compilador.Symbol.Types;
 
 /**
- * TablaVariable. Clase que sirve para almacenar las variables que aparecen en
- * el código.
+ * Clase que sirve para almacenar las variables.
  *
+ *  @author Joan Campaner i Crist Alcázar
  */
+
 public class VariablesTable {
     private ArrayList<Variable> tv;
     private int nv;

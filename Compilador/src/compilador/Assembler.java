@@ -10,6 +10,12 @@ import compilador.Instruction.OP;
 import compilador.Symbol.DataTypes;
 import compilador.Symbol.Types;
 
+/**
+ * Clase para generar el código ensamblador
+ *
+ * @author Joan Campaner i Crist Alcázar
+ */
+
 public class Assembler {
     private String folder;
     private ArrayList<Instruction> C3D;

@@ -4,7 +4,7 @@ package compilador;
  * Procedmiento. Clase que sirve para gestionar los procedimientos que aparecen
  * en el código fuente.
  * 
- * @author Gian Lucas Martín Chamorro
+ * @author Joan Campaner i Crist Alcázar
  */
 public class Procedure {
 

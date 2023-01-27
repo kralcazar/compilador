@@ -4,7 +4,7 @@ package compilador;
  * La clase Indice representa un índice de una tabla y contiene la información
  * relacionada.
  * 
- * @author Gian Lucas Martín Chamorro
+ * @author Joan Campaner i Crist Alcázar
  */
 public class Index {
     private int li; // Límite inferior

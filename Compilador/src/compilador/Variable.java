@@ -4,6 +4,7 @@ package compilador;
  * Variable. Clase que sirve para gestionar las variables que aparecen en el
  * código fuente.
  *
+ *  @author Joan Campaner i Crist Alcázar
  */
 public class Variable {
     private int variableNumber; // Número de variable
