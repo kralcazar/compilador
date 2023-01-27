@@ -26,4 +26,3 @@ if i$5 >= 50 goto e15
 goto e11
 e15: skip
 rtn 7
-call indice$7

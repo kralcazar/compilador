@@ -367,7 +367,6 @@ public class Assembler {
         Instruction ins = C3D.get(i);
         switch (ins.getOpCode()) {
             case and:
-                // a = b and c
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 c = variablesTable.get(ins.getOperating(2));
@@ -385,7 +384,6 @@ public class Assembler {
                 storeRegMem(a, "eax");
                 break;
             case or:
-                // a = b or c
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 c = variablesTable.get(ins.getOperating(2));
@@ -403,7 +401,6 @@ public class Assembler {
                 storeRegMem(a, "eax");
                 break;
             case not:
-                // a = not b
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 asm.add("\txor eax, eax  ; EAX = 0");
@@ -416,7 +413,6 @@ public class Assembler {
                 storeRegMem(a, "eax");
                 break;
             case add:
-                // a = b + c
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 c = variablesTable.get(ins.getOperating(2));
@@ -434,7 +430,6 @@ public class Assembler {
                 storeRegMem(a, "eax");
                 break;
             case sub:
-                // a = b - c
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 c = variablesTable.get(ins.getOperating(2));
@@ -452,7 +447,6 @@ public class Assembler {
                 storeRegMem(a, "eax");
                 break;
             case neg:
-                // a = -b
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 asm.add("\txor eax, eax  ; EAX = 0");
@@ -465,7 +459,6 @@ public class Assembler {
                 storeRegMem(a, "eax");
                 break;
             case div:
-                // a = b / c
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 c = variablesTable.get(ins.getOperating(2));
@@ -485,7 +478,6 @@ public class Assembler {
                 storeRegMem(a, "eax");
                 break;
             case mod:
-                // a = b % c
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 c = variablesTable.get(ins.getOperating(2));
@@ -505,7 +497,6 @@ public class Assembler {
                 storeRegMem(a, "edx");
                 break;
             case mult:
-                // a = b * c
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 c = variablesTable.get(ins.getOperating(2));
@@ -523,7 +514,6 @@ public class Assembler {
                 storeRegMem(a, "eax");
                 break;
             case copy:
-                // a = b
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 if (b == null) {
@@ -536,7 +526,6 @@ public class Assembler {
                 storeRegMem(a, "eax");
                 break;
             case ind_val:
-                // a = b [c]
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 c = variablesTable.get(ins.getOperating(2));
@@ -551,7 +540,6 @@ public class Assembler {
                 storeRegMem(a, "eax");
                 break;
             case ind_ass:
-                // a [b] = c
                 a = variablesTable.get(ins.destination());
                 b = variablesTable.get(ins.getOperating(1));
                 c = variablesTable.get(ins.getOperating(2));
@@ -570,15 +558,12 @@ public class Assembler {
                 asm.add("mov [eax], ebx  ; a[b] = c");
                 break;
             case skip:
-                // e: skip
                 asm.add(ins.destination() + ":");
                 break;
             case jump:
-                // goto e
                 asm.add("\tjmp " + ins.destination());
                 break;
             case ifEQ:
-                // if a == b goto e
                 a = variablesTable.get(ins.getOperating(1));
                 b = variablesTable.get(ins.getOperating(2));
                 if (a != null) {
@@ -595,7 +580,6 @@ public class Assembler {
                 asm.add("\tje " + ins.destination());
                 break;
             case ifNE:
-                // if a != b goto e
                 a = variablesTable.get(ins.getOperating(1));
                 b = variablesTable.get(ins.getOperating(2));
                 if (a != null) {
@@ -611,25 +595,7 @@ public class Assembler {
                 asm.add("\tcmp eax, ebx");
                 asm.add("\tjne " + ins.destination());
                 break;
-            case ifGE:
-                // if a >= b goto e
-                a = variablesTable.get(ins.getOperating(1));
-                b = variablesTable.get(ins.getOperating(2));
-                if (a != null) {
-                    loadMemReg("eax", a);
-                } else {
-                    asm.add("\tmov eax, " + ins.getOperating(1));
-                }
-                if (b != null) {
-                    loadMemReg("ebx", b);
-                } else {
-                    asm.add("\tmov ebx, " + ins.getOperating(2));
-                }
-                asm.add("\tcmp eax, ebx");
-                asm.add("\tjge " + ins.destination());
-                break;
             case ifGT:
-                // if a > b goto e
                 a = variablesTable.get(ins.getOperating(1));
                 b = variablesTable.get(ins.getOperating(2));
                 if (a != null) {
@@ -645,25 +611,7 @@ public class Assembler {
                 asm.add("\tcmp eax, ebx");
                 asm.add("\tjg " + ins.destination());
                 break;
-            case ifLT:
-                // if a <= b goto e
-                a = variablesTable.get(ins.getOperating(1));
-                b = variablesTable.get(ins.getOperating(2));
-                if (a != null) {
-                    loadMemReg("eax", a);
-                } else {
-                    asm.add("\tmov eax, " + ins.getOperating(1));
-                }
-                if (b != null) {
-                    loadMemReg("ebx", b);
-                } else {
-                    asm.add("\tmov ebx, " + ins.getOperating(2));
-                }
-                asm.add("\tcmp eax, ebx");
-                asm.add("\tjl " + ins.destination());
-                break;
             case ifLE:
-                // if a < b goto e
                 a = variablesTable.get(ins.getOperating(1));
                 b = variablesTable.get(ins.getOperating(2));
                 if (a != null) {
@@ -680,13 +628,11 @@ public class Assembler {
                 asm.add("\tjle " + ins.destination());
                 break;
             case call:
-                // call ne
                 int numpar4 = proceduresTable.get(ins.destination()).getNumParams() * 4;
                 asm.add("\tcall " + ins.destination());
                 asm.add("\tadd esp, " + numpar4);
                 break;
             case params:
-                // params a
                 a = variablesTable.get(ins.destination());
                 if (a.type() == Types.CONST && a.getDataType() == DataTypes.STRING) {
                     loadAddrReg("eax", a);
@@ -696,7 +642,6 @@ public class Assembler {
                 asm.add("\tpush eax");
                 break;
             case st:
-                // store a
                 a = variablesTable.get(ins.destination());
                 storeRegMem(a, "eax");
                 break;
@@ -726,7 +671,6 @@ public class Assembler {
             profx = 0;
         }
         if (x.type() == Symbol.Types.CONST) {
-            // x es un valor constante
             asm.add("\tmov " + R + ", " + x);
         } else if (x.getDesp() == 0) {
             // x es una variable global

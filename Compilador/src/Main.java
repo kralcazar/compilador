@@ -52,8 +52,6 @@ public class Main {
             return;
         }
 
-
-
         //Generación del código intermedio
         eGramC3D parserC3D;
         parserC3D = new eGramC3D(tokens, buildPath, parser.getSymbolTable());

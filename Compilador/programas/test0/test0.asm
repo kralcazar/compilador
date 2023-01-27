@@ -16,8 +16,6 @@ includelib \masm32\lib\masm32.lib
 start PROC
 e1:
 e5:
-	call indice$7
-	add esp, 0
 	invoke ExitProcess, 0
 start ENDP
 read$1:
@@ -223,10 +221,6 @@ e11:
 	mov ebx, 1
 	add eax, ebx
 	mov [ebp-4], eax
-	mov eax, [ebp-4]
-	mov ebx, 50
-	cmp eax, ebx
-	jge e15
 	jmp e11
 e15:
 	mov esp, ebp  ; SP = BP
