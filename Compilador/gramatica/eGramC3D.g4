@@ -124,7 +124,17 @@ program:
                 System.out.println("Error en la tabla de símbolos: "+e.getMessage());
             }
         }
-    (funcs+ | main)+ EOF
+    (funcs+ | main)+
+        {
+            //Llamar al main despues de leerlo todo
+            try {
+                 symbol = ts.get("indice");//TODO: intentar llamada directa a la palabra
+                 generate(Instruction.OP.call, null, null, symbol.getProcedure().toString());
+            } catch(SymbolTable.SymbolTableException e) {
+                System.out.println("Error en la tabla de símbolos: "+e.getMessage());
+            }
+        }
+        EOF
         {
             tv.calcDespOcupVL(tp);
         }

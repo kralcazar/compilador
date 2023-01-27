@@ -47,3 +47,4 @@ goto e11
 e15: skip
 e16: skip
 rtn 7
+call indice$7
